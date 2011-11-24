@@ -1,0 +1,6 @@
+,,
+checkbuttonpresent,Register
+clickbutton,Register
+checkbuttonpresent,maritalTypesSpinner
+clickbyid,maritalTypesSpinner
+verifyscreen,resources//scanfu//register//household_type.png

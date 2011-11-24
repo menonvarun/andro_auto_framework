@@ -1,0 +1,10 @@
+<suite name="Android automation framework" verbose="3"
+	thread-count="1">
+	<test name="Android automation framework - 1">
+		<packages>
+			<package name="test.*" />
+		</packages>
+
+	</test>
+
+</suite>
