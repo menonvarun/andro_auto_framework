@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset='utf-8'>
+
+  <title>menonvarun/andro_auto_framework @ GitHub</title>
+
+  <style type="text/css">
+    body {
+      margin-top: 1.0em;
+      background-color: #a5d0b1;
+      font-family: Helvetica, Arial, FreeSans, san-serif;
+      color: #000000;
+    }
+    #container {
+      margin: 0 auto;
+      width: 700px;
+    }
+    h1 { font-size: 3.8em; color: #5a2f4e; margin-bottom: 3px; }
+    h1 .small { font-size: 0.4em; }
+    h1 a { text-decoration: none }
+    h2 { font-size: 1.5em; color: #5a2f4e; }
+    h3 { text-align: center; color: #5a2f4e; }
+    a { color: #5a2f4e; }
+    .description { font-size: 1.2em; margin-bottom: 30px; margin-top: 30px; font-style: italic;}
+    .download { float: right; }
+    pre { background: #000; color: #fff; padding: 15px;}
+    hr { border: 0; width: 80%; border-bottom: 1px solid #aaa}
+    .footer { text-align:center; padding-top:30px; font-style: italic; }
+  </style>
+</head>
+
+<body>
+  <a href="https://github.com/menonvarun/andro_auto_framework"><img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub" /></a>
+
+  <div id="container">
+
+    <div class="download">
+      <a href="https://github.com/menonvarun/andro_auto_framework/zipball/master">
+        <img border="0" width="90" src="https://github.com/images/modules/download/zip.png"></a>
+      <a href="https://github.com/menonvarun/andro_auto_framework/tarball/master">
+        <img border="0" width="90" src="https://github.com/images/modules/download/tar.png"></a>
+    </div>
+
+    <h1><a href="https://github.com/menonvarun/andro_auto_framework">andro_auto_framework</a>
+      <span class="small">by <a href="https://github.com/menonvarun">menonvarun</a></span></h1>
+
+    <div class="description">
+      Android based system automation using a keyword driven approach
+    </div>
+
+    
+      <p>This is an android native app automation framework.
+This tool is based on keyword driven approach. For defining a test-case user have to diefine his cases in "csv" format.
+These csv fiel will be converted to java fiels and then executed using the TestNG execution framework.
+It uses following open-source tools:
+1. Selenium Nativedriver
+2. TestNG
+3. Sikuli</p>
+    
+
+    
+      <h2>Dependencies</h2>
+      <p>1. Selenium Nativedriver
+2. TestNG
+3. Sikuli
+4. Ant</p>
+    
+
+    
+      <h2>Install</h2>
+      <p>1. Export the andro_auto_framework from git to your local system.
+2. Import the source code of the android app that needs to be installed into your eclipse IDE.
+3. Copy the "server-standalone.jar" from the andro_auto_framework/lib folder to the root of the Android project inside Eclipse IDE.
+4. Open the AndroidManifest.xml file of your Android app and paste the following to it:
+
+<instrumentation android:targetPackage="{app package name}"
+		android:name="com.google.android.testing.nativedriver.server.ServerInstrumentation" />
+	<uses-permission android:name="android.permission.INTERNET" />
+	<uses-permission android:name="android.permission.WAKE_LOCK" />
+	<uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
+Here the {app package name} needs to be replaced with the name of the package as specified in the mainfest element's package attribute.
+
+5. Build and install the android app on to the simulator.
+6. Go to the android sdk installation folder and inside it to platform-tools. Then run the following commands:
+	- adb shell am instrument {app_package_name}/com.google.android.testing.nativedriver.server.ServerInstrumentation
+	Here {app_package_name} needs to be replaced with the name of the package as specified in the mainfest element's package attribute.
+	- adb forward tcp:54129 tcp:54129
+
+You can confirm that the instrumentation is started by running adb logcat and looking for a line like this:
+	I/com.google.android.testing.nativedriver.server.ServerInstrumentation(  273): Jetty started on port 54129
+7. Package name and initial activity name has to be defined in the BaseClass.java file. (This will be converted to properties file going forward)
+8. Run the ant command at the root of the andro_auto_framework directory:
+
+ant custom-testng
+
+This will compile your code and execute your test cases. Currently TestNG and Junit report are generated.
+</p>
+    
+
+    
+
+    
+      <h2>Authors</h2>
+      <p>Varun Menon (mr.varun.menon@gmail.com)<br/>      </p>
+    
+
+    
+      <h2>Contact</h2>
+      <p> (mr.varun.menon@gmail.com)<br/>      </p>
+    
+
+    <h2>Download</h2>
+    <p>
+      You can download this project in either
+      <a href="https://github.com/menonvarun/andro_auto_framework/zipball/master">zip</a> or
+      <a href="https://github.com/menonvarun/andro_auto_framework/tarball/master">tar formats.
+    </p>
+    <p>You can also clone the project with <a href="http://git-scm.com">Git</a>
+      by running:
+      <pre>$ git clone git://github.com/menonvarun/andro_auto_framework</pre>
+    </p>
+
+    <div class="footer">
+      get the source code on GitHub : <a href="https://github.com/menonvarun/andro_auto_framework">menonvarun/andro_auto_framework</a>
+    </div>
+
+  </div>
+
+</body>
+</html>
