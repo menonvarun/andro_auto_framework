@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite hostname="varun-desk" name="test.scanfu.login.Login" tests="6" failures="0" timestamp="2 Dec 2011 10:25:48 GMT" time="98.663" errors="0">
+  <testcase name="initialPage" time="4.166" classname="test.scanfu.login.Login"/>
+  <testcase name="registertoscanfuFemale" time="20.484" classname="test.scanfu.register.Register"/>
+  <testcase name="registertoscanfuMale" time="20.163" classname="test.scanfu.register.Register"/>
+  <testcase name="registertoscanfuwithwithoutfilling" time="13.325" classname="test.scanfu.register.Register"/>
+  <testcase name="verifymenuandsettings" time="8.59" classname="test.scanfu.register.Register"/>
+  <testcase name="verifyregistrationmartialtype" time="7.474" classname="test.scanfu.register.Register"/>
+</testsuite>
