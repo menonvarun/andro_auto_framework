@@ -50,51 +50,66 @@
     </div>
 
     
-      <p>This is an android native app automation framework.
-This tool is based on keyword driven approach. For defining a test-case user have to diefine his cases in "csv" format.
-These csv fiel will be converted to java fiels and then executed using the TestNG execution framework.
-It uses following open-source tools:
-1. Selenium Nativedriver
-2. TestNG
+      <p align="justify">This is an android native app automation framework.
+This tool is based on keyword driven approach. For defining a test-case user have to define his cases in "csv" format.
+These csv file will be converted to java files and then executed using the TestNG execution framework.
+It uses following open-source tools:</br></br>
+1. Selenium Nativedriver</br>
+2. TestNG</br>
 3. Sikuli</p>
-    
 
+<h2>Video</h2>
+      <p>Following you can see a video of running testcase on scanfu application</br>
+<iframe width="640" height="360" src="http://www.youtube.com/embed/xx21buxn--U" frameborder="0" allowfullscreen></iframe>
+</p>
+
+<h2>Reports</h2>
+<p>This framework generates 3 types of reports for the test execution:</br>
+1. TestNG default under <b><i>test-report/TestNG-report</i></b>. <a href="TestNG-report/index.html">TestNG sample report</a></br>
+2. Junit report under <b><i>test-report/Junit</i></b>. <a href="junit-noframes.html">Junit sample report</a></br>
+3. TestNG-xslt report under <b><i>test-report/TestNG-XSLT-report</i></b>. <a href="TestNG-XSLT-report/index.html">TestNG-xslt sample report</a></br>
+</p>
     
       <h2>Dependencies</h2>
-      <p>1. Selenium Nativedriver
-2. TestNG
-3. Sikuli
-4. Ant</p>
+      <p>1. Selenium Nativedriver</br>
+2. TestNG</br>
+3. Sikuli</br>
+4. Ant</br></p>
     
 
     
       <h2>Install</h2>
-      <p>1. Export the andro_auto_framework from git to your local system.
-2. Import the source code of the android app that needs to be installed into your eclipse IDE.
-3. Copy the "server-standalone.jar" from the andro_auto_framework/lib folder to the root of the Android project inside Eclipse IDE.
-4. Open the AndroidManifest.xml file of your Android app and paste the following to it:
+      <p align="justify">1. Export the andro_auto_framework from git to your local system.</br>
+2. Import the source code of the android app that needs to be installed into your eclipse IDE.</br>
+3. Copy the "server-standalone.jar" from the andro_auto_framework/lib folder to the root of the Android project inside Eclipse IDE.</br>
+4. Open the AndroidManifest.xml file of your Android app and paste the following to it:</br>
+</br>
+<pre style="font-family: Andale Mono, Lucida Console, Monaco, fixed, monospace; color: #000000; background-color: #eee;font-size: 12px;border: 1px dashed #999999;line-height: 14px;padding: 5px; overflow: auto; width: 100%"><code>&lt;instrumentation android:targetPackage=&quot;{app package name}&quot;
+        android:name=&quot;com.google.android.testing.nativedriver.server.ServerInstrumentation&quot; /&gt;
+    &lt;uses-permission android:name=&quot;android.permission.INTERNET&quot; /&gt;
+    &lt;uses-permission android:name=&quot;android.permission.WAKE_LOCK&quot; /&gt;
+    &lt;uses-permission android:name=&quot;android.permission.DISABLE_KEYGUARD&quot; /&gt;
+</code></pre>
+Here the {app package name} needs to be replaced with the name of the package as specified in the mainfest element's package attribute.</br></br>
 
-<instrumentation android:targetPackage="{app package name}"
-		android:name="com.google.android.testing.nativedriver.server.ServerInstrumentation" />
-	<uses-permission android:name="android.permission.INTERNET" />
-	<uses-permission android:name="android.permission.WAKE_LOCK" />
-	<uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
-Here the {app package name} needs to be replaced with the name of the package as specified in the mainfest element's package attribute.
+5. Build and install the android app on to the simulator.</br>
+6. Go to the android sdk installation folder and inside it to platform-tools. Then run the following commands:</br>
+	<pre style="font-family: Andale Mono, Lucida Console, Monaco, fixed, monospace; color: #000000; background-color: #eee;font-size: 12px;border: 1px dashed #999999;line-height: 14px;padding: 5px; overflow: auto; width: 100%"><code> adb shell am instrument {app_package_name}/com.google.android.testing.nativedriver.server.ServerInstrumentation
+</code></pre>
+	Here {app_package_name} needs to be replaced with the name of the package as specified in the mainfest element's package attribute.</br>
+	<pre style="font-family: Andale Mono, Lucida Console, Monaco, fixed, monospace; color: #000000; background-color: #eee;font-size: 12px;border: 1px dashed #999999;line-height: 14px;padding: 5px; overflow: auto; width: 100%"><code>adb forward tcp:54129 tcp:54129
+</code></pre>
+</br>
+You can confirm that the instrumentation is started by running adb logcat and looking for a line like this:</br>
+	<pre style="font-family: Andale Mono, Lucida Console, Monaco, fixed, monospace; color: #000000; background-color: #eee;font-size: 12px;border: 1px dashed #999999;line-height: 14px;padding: 5px; overflow: auto; width: 100%"><code>I/com.google.android.testing.nativedriver.server.ServerInstrumentation(  273): Jetty started on port 54129
+</code></pre>
+7. Package name and initial activity name has to be defined in the BaseClass.java file. (This will be converted to properties file going forward)</br>
+8. Run the ant command at the root of the andro_auto_framework directory:</br>
 
-5. Build and install the android app on to the simulator.
-6. Go to the android sdk installation folder and inside it to platform-tools. Then run the following commands:
-	- adb shell am instrument {app_package_name}/com.google.android.testing.nativedriver.server.ServerInstrumentation
-	Here {app_package_name} needs to be replaced with the name of the package as specified in the mainfest element's package attribute.
-	- adb forward tcp:54129 tcp:54129
+<pre style="font-family: Andale Mono, Lucida Console, Monaco, fixed, monospace; color: #000000; background-color: #eee;font-size: 12px;border: 1px dashed #999999;line-height: 14px;padding: 5px; overflow: auto; width: 100%"><code>ant andro-test
+</code></pre>
 
-You can confirm that the instrumentation is started by running adb logcat and looking for a line like this:
-	I/com.google.android.testing.nativedriver.server.ServerInstrumentation(  273): Jetty started on port 54129
-7. Package name and initial activity name has to be defined in the BaseClass.java file. (This will be converted to properties file going forward)
-8. Run the ant command at the root of the andro_auto_framework directory:
-
-ant custom-testng
-
-This will compile your code and execute your test cases. Currently TestNG and Junit report are generated.
+This will compile your code and execute your test cases. Currently TestNG and Junit report are generated.</br>
 </p>
     
 
@@ -102,12 +117,14 @@ This will compile your code and execute your test cases. Currently TestNG and Ju
 
     
       <h2>Authors</h2>
-      <p>Varun Menon (mr.varun.menon@gmail.com)<br/>      </p>
+      <p>Varun Menon (mr.varun.menon@gmail.com)
+<br/>      </p>
     
 
     
       <h2>Contact</h2>
-      <p> (mr.varun.menon@gmail.com)<br/>      </p>
+      <p> (mr.varun.menon@gmail.com)
+<br/>      </p>
     
 
     <h2>Download</h2>
