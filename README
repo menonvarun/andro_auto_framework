@@ -40,7 +40,7 @@ You can confirm that the instrumentation is started by running adb logcat and lo
 7. Package name and initial activity name has to be defined in the BaseClass.java file. (This will be converted to properties file going forward)
 8. Run the ant command at the root of the andro_auto_framework directory:
 
-ant custom-testng
+ant andro-test
 
 This will compile your code and execute your test cases. Currently TestNG and Junit report are generated.
 
