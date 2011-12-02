@@ -90,6 +90,9 @@ public class KeywordCaller {
 		case clickbyid:
 			kd.clickbyid(driver, args.get(0));
 			break;
+		case clicktext:
+			kd.clicktext(driver, args.get(0));
+			break;
 		default:
 			Assert.fail("Mentioned keyword not supported: "+key);
 		}

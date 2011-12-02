@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="AndroAutomation" basedir=".">
+<project name="andro_auto_framework" basedir=".">
 	<property name="RELEASE_ROOT" value="." />
 	<property name="SRC" value="${RELEASE_ROOT}/src" />
 	<property name="LIB" value="${RELEASE_ROOT}/lib" />
@@ -42,45 +42,44 @@
 		<pathelement path="${BIN}">
 		</pathelement>
 	</path>
-	<target name="custom-testng" depends="generate-java-code">
+	<target name="andro-test" depends="generate-java-code">
 		<antcall target="compile" />
 		<delete dir="${REPORT}" />
 		<mkdir dir="${REPORT}" />
-		<testng outputdir="${REPORT}" classpathref="master-classpath">
+		<mkdir dir="${REPORT}/TestNG-report" />
+		<testng outputdir="${REPORT}/TestNG-report" classpathref="master-classpath">
 			<xmlfileset dir="${RELEASE_ROOT}" includes="testng.xml" />
 		</testng>
 		<antcall target="reports" />
 	</target>
 	<target name="reports">
-		<delete dir="${REPORT}/Junit1" />
-		<mkdir dir="${REPORT}/Junit1" />
-		<junitreport todir="${REPORT}/Junit1">
-			<fileset dir="${REPORT}">
+		<delete dir="${REPORT}/Junit" />
+		<mkdir dir="${REPORT}/Junit" />
+		<junitreport todir="${REPORT}/Junit">
+			<fileset dir="${REPORT}/TestNG-report">
 				<include name="*/*TEST*.xml" />
 			</fileset>
 
-			<report format="noframes" todir="${REPORT}/Junit1" />
+			<report format="noframes" todir="${REPORT}/Junit" />
 		</junitreport>
+		<antcall target="testng-xslt-report" />
 	</target>
 	<target name="testng-xslt-report">
-		<delete dir="${REPORT}/testng-xslt" />
-		<mkdir dir="${REPORT}/testng-xslt/" />
-		<mkdir dir="${REPORT}/testng-xslt/style" />
-		<path id="master-classpath">
-			<pathelement location="${BIN}" />
-			<fileset dir="${LIB}">
-				<include name="**/*.jar" />
-			</fileset>
-		</path>
-		<xslt in="${REPORT}/testng-results.xml" style="${RELEASE_ROOT}/testng-results.xsl" out="${REPORT}/testng-xslt/index.html" classpathref="master-classpath" processor="SaxonLiaison">
-			<param expression="${REPORT}/testng-xslt/" name="testNgXslt.outputDir" />
-
-			<param expression="true" name="testNgXslt.sortTestCaseLinks" />
-
-			<param expression="FAIL,SKIP,PASS,CONF,BY_CLASS" name="testNgXslt.testDetailsFilter" />
-
-			<param expression="true" name="testNgXslt.showRuntimeTotals" />
+		<delete dir="${basedir}/testng-xslt" />
+		<mkdir dir="${basedir}/testng-xslt" />
+		<xslt in="${REPORT}/TestNG-report/testng-results.xml" style="${basedir}/testng-results.xsl" out="${basedir}/testng-xslt/index.html" processor="SaxonLiaison">
+			<param name="testNgXslt.outputDir" expression="${basedir}/testng-xslt/" />
+			<param name="testNgXslt.sortTestCaseLinks" expression="true" />
+			<param name="testNgXslt.testDetailsFilter" expression="FAIL,SKIP,PASS,CONF,BY_CLASS" />
+			<param name="testNgXslt.showRuntimeTotals" expression="true" />
+			<classpath refid="master-classpath" />
 		</xslt>
 
+		<mkdir dir="${REPORT}/TestNG-XSLT-report" />
+
+		<copy todir="${REPORT}/TestNG-XSLT-report">
+			<fileset dir="${basedir}/testng-xslt" />
+		</copy>
+		<delete dir="${basedir}/testng-xslt" />
 	</target>
 </project>

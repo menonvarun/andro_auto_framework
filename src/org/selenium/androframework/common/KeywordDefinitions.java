@@ -97,6 +97,11 @@ public class KeywordDefinitions {
 		clickElementByText(driver, "android.widget.Spinner", buttonText);
 	}
 	
+	public void clicktext(AndroidNativeDriver driver, String text){
+		WebElement element= driver.findElementByPartialText(text);
+		element.click();
+	}
+	
 	public void assertspinnerpresent(AndroidNativeDriver driver, String spinnerText) {
 		boolean found= verifyElementTextByClassName(driver,"android.widget.Spinner",spinnerText);
 		if (!found) {
@@ -132,7 +137,7 @@ public class KeywordDefinitions {
 	public void verifyscreen(String imagePath) {
 		Screen s = new Screen();
 		try {
-			s.wait(imagePath, 10);
+			s.wait(imagePath, 30);
 		} catch (FindFailed e) {
 			System.out.println(e);
 			Assert.fail("Unable to verify the screen");
@@ -142,7 +147,7 @@ public class KeywordDefinitions {
 	public void waitForScreen(String imagePath, Double time) {
 		Screen s = new Screen();
 		if (time == null) {
-			time = (double) 10;
+			time = (double) 30;
 		}
 		try {
 			s.wait(imagePath, time);
