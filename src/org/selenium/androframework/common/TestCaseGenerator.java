@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import org.selenium.androframework.api.DefaultProperties;
 
 public class TestCaseGenerator {
 	HashMap<String, ArrayList<String>> hm = new HashMap<String, ArrayList<String>>();
@@ -90,7 +91,7 @@ public class TestCaseGenerator {
 				String fileName = new File(testfile).getName();
 				fileName = fileName.substring(0, fileName.indexOf(".csv"));
 				output.write("public void " + fileName + "(){\n");
-				//output.write("driver=getDriver();\n");
+				// output.write("driver=getDriver();\n");
 				output.write("AndroFrameworkExecutor afe = new AndroFrameworkExecutor();\n");
 				output.write("afe.androExecutor(driver,\"" + testfile
 						+ "\");\n}\n\n");
@@ -106,13 +107,16 @@ public class TestCaseGenerator {
 	public static void main(String[] args) {
 		TestCaseGenerator tc = new TestCaseGenerator();
 		HashMap<String, ArrayList<String>> hm1 = new HashMap<String, ArrayList<String>>();
-		tc.listDirectory(new File("resources/scanfu"), "", hm1);
+		DefaultProperties prop = new DefaultProperties();
+		tc.listDirectory(
+				new File("resources/"
+						+ prop.getValueFromProperty("TESTCASE_FOLDER")), "",
+				hm1);
 
 		System.out.println(hm1);
 		try {
 			tc.classGenerator(hm1);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

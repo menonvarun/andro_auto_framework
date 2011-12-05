@@ -1,0 +1,6 @@
+,,
+checktextpresent,Posts
+clicktext,Posts
+checktextpresent,Hello world!
+clicktext,Hello world!
+verifyscreen,resources/wordpress/blog/helloworld.jpg

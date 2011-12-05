@@ -76,9 +76,12 @@ public class KeywordDefinitions {
 	public void asserttextpresent(AndroidNativeDriver driver, String text) {
 		boolean result = uf.waitForElementPresent(driver,
 				AndroidNativeBy.partialText(text));
-		String elementText=driver.findElement(AndroidNativeBy.partialText(text)).getText();
+		String elementText = driver.findElement(
+				AndroidNativeBy.partialText(text)).getText();
 		Assert.assertTrue("Test failed. Unable to find text: " + text, result);
-		Assert.assertTrue("Test failed. Text dont match expected: " + text+" but present is: "+elementText,text.contentEquals(elementText));
+		Assert.assertTrue("Test failed. Text dont match expected: " + text
+				+ " but present is: " + elementText,
+				text.contentEquals(elementText));
 	}
 
 	public void clickback(AndroidNativeDriver driver) {
@@ -88,22 +91,24 @@ public class KeywordDefinitions {
 	public void clickbutton(AndroidNativeDriver driver, String buttonText) {
 		clickElementByText(driver, ClassNames.BUTTON, buttonText);
 	}
-	
+
 	public void clickradiobutton(AndroidNativeDriver driver, String buttonText) {
 		clickElementByText(driver, ClassNames.RADIO_BUTTON, buttonText);
 	}
-	
+
 	public void clickspinner(AndroidNativeDriver driver, String buttonText) {
 		clickElementByText(driver, "android.widget.Spinner", buttonText);
 	}
-	
-	public void clicktext(AndroidNativeDriver driver, String text){
-		WebElement element= driver.findElementByPartialText(text);
+
+	public void clicktext(AndroidNativeDriver driver, String text) {
+		WebElement element = driver.findElementByPartialText(text);
 		element.click();
 	}
-	
-	public void assertspinnerpresent(AndroidNativeDriver driver, String spinnerText) {
-		boolean found= verifyElementTextByClassName(driver,"android.widget.Spinner",spinnerText);
+
+	public void assertspinnerpresent(AndroidNativeDriver driver,
+			String spinnerText) {
+		boolean found = verifyElementTextByClassName(driver,
+				"android.widget.Spinner", spinnerText);
 		if (!found) {
 			Assert.fail("Unable to find spinner with text :" + spinnerText);
 		}
@@ -130,7 +135,7 @@ public class KeywordDefinitions {
 		}
 		element.click();
 		element.sendKeys(text);
-		element.click();
+		// element.click();
 
 	}
 
@@ -225,8 +230,24 @@ public class KeywordDefinitions {
 					+ " for clicking");
 		}
 	}
-	public void clickbyid(AndroidNativeDriver driver,String id){
-		AndroidNativeElement element = driver.findElement(AndroidNativeBy.id(id));
+
+	public void clickbyid(AndroidNativeDriver driver, String id) {
+		AndroidNativeElement element = driver.findElement(AndroidNativeBy
+				.id(id));
 		element.click();
+	}
+
+	public void scrollup(AndroidNativeDriver driver, int noOfTimes) {
+		for (int i = 1; i <= noOfTimes; i++) {
+			driver.getKeyboard().sendKeys(AndroidKeys.DPAD_UP);
+		}
+
+	}
+
+	public void scrollDown(AndroidNativeDriver driver, int noOfTimes) {
+		for (int i = 1; i <= noOfTimes; i++) {
+			driver.getKeyboard().sendKeys(AndroidKeys.DPAD_DOWN);
+		}
+
 	}
 }

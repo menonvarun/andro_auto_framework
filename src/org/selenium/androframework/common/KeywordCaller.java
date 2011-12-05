@@ -93,6 +93,22 @@ public class KeywordCaller {
 		case clicktext:
 			kd.clicktext(driver, args.get(0));
 			break;
+		case scrollup:
+			int noOfTimes;
+			if(args.get(0)=="" || args ==null){
+				noOfTimes=1;
+			}else
+				noOfTimes=Integer.parseInt(args.get(0));
+			kd.scrollup(driver, noOfTimes);
+			break;
+		case scrolldown:
+			int noOfTimesDown;
+			if(args.get(0)=="" || args ==null){
+				noOfTimesDown=1;
+			}else
+				noOfTimesDown=Integer.parseInt(args.get(0));
+			kd.scrollup(driver, noOfTimesDown);
+			break;
 		default:
 			Assert.fail("Mentioned keyword not supported: "+key);
 		}

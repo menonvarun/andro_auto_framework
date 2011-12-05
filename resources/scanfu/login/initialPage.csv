@@ -1,5 +1,0 @@
-,,
-verifyscreen,resources//scanfu//login//Initial_screen_scanfu.png
-assertbuttonpresent,Register
-assertbuttonpresent,Register Using Facebook
-assertbuttonpresent,Why Should I Register?

@@ -1,9 +1,0 @@
-,,
-checkbuttonpresent,Register
-clickbutton,Register
-clickradiobutton,Male
-entertext,register_user_age,1980
-clickback
-checkbuttonpresent,Register
-clickbutton,Register
-verifyscreen,resources//scanfu//error.png

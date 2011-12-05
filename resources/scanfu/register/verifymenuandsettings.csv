@@ -1,9 +1,0 @@
-,,
-checkbuttonpresent,Register
-clickmenu
-asserttextpresent,Home
-asserttextpresent,Favorites
-asserttextpresent,Shopping Carts
-asserttextpresent,Settings
-clicktext,Settings
-verifyscreen,resources/scanfu/register/settings.jpg

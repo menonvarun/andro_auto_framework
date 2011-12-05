@@ -13,7 +13,7 @@ public class IdentifyByType {
 
 	public static By getLocatorType(String locator) {
 		SupportedByType sbt=null;
-		String[] st = locator.split(",");
+		String[] st = locator.split("~");
 		
 		if (st.length > 1) {
 			locator=st[1];

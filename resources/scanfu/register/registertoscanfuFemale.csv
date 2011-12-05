@@ -1,9 +1,0 @@
-,,
-checkbuttonpresent,Register
-clickbutton,Register
-clickradiobutton,Female
-entertext,register_user_age,1990
-clickback
-entertext,register_user_zip,50001
-clickbutton,Register
-asserttextpresent,User registered succesfully71
