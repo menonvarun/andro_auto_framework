@@ -1,53 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testng-results skipped="0" failed="0" total="6" passed="6">
+<testng-results skipped="0" failed="0" total="5" passed="5">
   <reporter-output>
   </reporter-output>
-  <suite name="Android automation framework" duration-ms="98663" started-at="2011-12-02T15:54:09Z" finished-at="2011-12-02T15:55:48Z">
+  <suite name="Android automation framework" duration-ms="79090" started-at="2011-12-05T16:29:24Z" finished-at="2011-12-05T16:30:43Z">
     <groups>
     </groups>
-    <test name="Android automation framework - 1" duration-ms="98663" started-at="2011-12-02T15:54:09Z" finished-at="2011-12-02T15:55:48Z">
-      <class name="test.scanfu.register.Register">
-        <test-method status="PASS" signature="beforeMethod()" name="beforeMethod" is-config="true" duration-ms="3520" started-at="2011-12-02T15:54:16Z" finished-at="2011-12-02T15:54:20Z">
+    <test name="Android automation framework - 1" duration-ms="79090" started-at="2011-12-05T16:29:24Z" finished-at="2011-12-05T16:30:43Z">
+      <class name="test.wordpress.blog.Blog">
+        <test-method status="PASS" signature="beforeTest()" name="beforeTest" is-config="true" duration-ms="37" started-at="2011-12-05T16:29:24Z" finished-at="2011-12-05T16:29:24Z">
         </test-method>
-        <test-method status="PASS" signature="registertoscanfuFemale()" name="registertoscanfuFemale" duration-ms="20484" started-at="2011-12-02T15:54:20Z" finished-at="2011-12-02T15:54:40Z">
+        <test-method status="PASS" signature="beforeMethod()" name="beforeMethod" is-config="true" duration-ms="4415" started-at="2011-12-05T16:29:24Z" finished-at="2011-12-05T16:29:29Z">
         </test-method>
-        <test-method status="PASS" signature="afterMethod()" name="afterMethod" is-config="true" duration-ms="852" started-at="2011-12-02T15:54:40Z" finished-at="2011-12-02T15:54:41Z">
+        <test-method status="PASS" signature="createNewPost()" name="createNewPost" duration-ms="28873" started-at="2011-12-05T16:29:29Z" finished-at="2011-12-05T16:29:58Z">
         </test-method>
-        <test-method status="PASS" signature="beforeMethod()" name="beforeMethod" is-config="true" duration-ms="4715" started-at="2011-12-02T15:54:41Z" finished-at="2011-12-02T15:54:46Z">
+        <test-method status="PASS" signature="afterMethod()" name="afterMethod" is-config="true" duration-ms="230" started-at="2011-12-05T16:29:58Z" finished-at="2011-12-05T16:29:58Z">
         </test-method>
-        <test-method status="PASS" signature="registertoscanfuMale()" name="registertoscanfuMale" duration-ms="20163" started-at="2011-12-02T15:54:46Z" finished-at="2011-12-02T15:55:06Z">
+        <test-method status="PASS" signature="beforeMethod()" name="beforeMethod" is-config="true" duration-ms="4012" started-at="2011-12-05T16:29:58Z" finished-at="2011-12-05T16:30:02Z">
         </test-method>
-        <test-method status="PASS" signature="afterMethod()" name="afterMethod" is-config="true" duration-ms="1318" started-at="2011-12-02T15:55:06Z" finished-at="2011-12-02T15:55:07Z">
+        <test-method status="PASS" signature="verifyFormatInNewPost()" name="verifyFormatInNewPost" duration-ms="9475" started-at="2011-12-05T16:30:02Z" finished-at="2011-12-05T16:30:11Z">
         </test-method>
-        <test-method status="PASS" signature="beforeMethod()" name="beforeMethod" is-config="true" duration-ms="4315" started-at="2011-12-02T15:55:07Z" finished-at="2011-12-02T15:55:12Z">
+        <test-method status="PASS" signature="afterMethod()" name="afterMethod" is-config="true" duration-ms="613" started-at="2011-12-05T16:30:11Z" finished-at="2011-12-05T16:30:12Z">
         </test-method>
-        <test-method status="PASS" signature="registertoscanfuwithwithoutfilling()" name="registertoscanfuwithwithoutfilling" duration-ms="13325" started-at="2011-12-02T15:55:12Z" finished-at="2011-12-02T15:55:25Z">
+        <test-method status="PASS" signature="beforeMethod()" name="beforeMethod" is-config="true" duration-ms="4430" started-at="2011-12-05T16:30:12Z" finished-at="2011-12-05T16:30:16Z">
         </test-method>
-        <test-method status="PASS" signature="afterMethod()" name="afterMethod" is-config="true" duration-ms="485" started-at="2011-12-02T15:55:25Z" finished-at="2011-12-02T15:55:26Z">
+        <test-method status="PASS" signature="verifyPost()" name="verifyPost" duration-ms="6586" started-at="2011-12-05T16:30:16Z" finished-at="2011-12-05T16:30:23Z">
         </test-method>
-        <test-method status="PASS" signature="beforeMethod()" name="beforeMethod" is-config="true" duration-ms="2112" started-at="2011-12-02T15:55:26Z" finished-at="2011-12-02T15:55:28Z">
+        <test-method status="PASS" signature="afterMethod()" name="afterMethod" is-config="true" duration-ms="371" started-at="2011-12-05T16:30:23Z" finished-at="2011-12-05T16:30:23Z">
         </test-method>
-        <test-method status="PASS" signature="verifymenuandsettings()" name="verifymenuandsettings" duration-ms="8590" started-at="2011-12-02T15:55:28Z" finished-at="2011-12-02T15:55:36Z">
+        <test-method status="PASS" signature="beforeMethod()" name="beforeMethod" is-config="true" duration-ms="4811" started-at="2011-12-05T16:30:23Z" finished-at="2011-12-05T16:30:28Z">
         </test-method>
-        <test-method status="PASS" signature="afterMethod()" name="afterMethod" is-config="true" duration-ms="785" started-at="2011-12-02T15:55:36Z" finished-at="2011-12-02T15:55:37Z">
+        <test-method status="PASS" signature="verifymenu()" name="verifymenu" duration-ms="2555" started-at="2011-12-05T16:30:28Z" finished-at="2011-12-05T16:30:31Z">
         </test-method>
-        <test-method status="PASS" signature="beforeMethod()" name="beforeMethod" is-config="true" duration-ms="2561" started-at="2011-12-02T15:55:37Z" finished-at="2011-12-02T15:55:40Z">
+        <test-method status="PASS" signature="afterMethod()" name="afterMethod" is-config="true" duration-ms="445" started-at="2011-12-05T16:30:31Z" finished-at="2011-12-05T16:30:31Z">
         </test-method>
-        <test-method status="PASS" signature="verifyregistrationmartialtype()" name="verifyregistrationmartialtype" duration-ms="7474" started-at="2011-12-02T15:55:40Z" finished-at="2011-12-02T15:55:47Z">
+        <test-method status="PASS" signature="beforeMethod()" name="beforeMethod" is-config="true" duration-ms="5186" started-at="2011-12-05T16:30:31Z" finished-at="2011-12-05T16:30:36Z">
         </test-method>
-        <test-method status="PASS" signature="afterMethod()" name="afterMethod" is-config="true" duration-ms="863" started-at="2011-12-02T15:55:47Z" finished-at="2011-12-02T15:55:48Z">
+        <test-method status="PASS" signature="verifystatusInNewPost()" name="verifystatusInNewPost" duration-ms="6740" started-at="2011-12-05T16:30:36Z" finished-at="2011-12-05T16:30:43Z">
         </test-method>
-      </class>
-      <class name="test.scanfu.login.Login">
-        <test-method status="PASS" signature="beforeTest()" name="beforeTest" is-config="true" duration-ms="26" started-at="2011-12-02T15:54:09Z" finished-at="2011-12-02T15:54:09Z">
+        <test-method status="PASS" signature="afterMethod()" name="afterMethod" is-config="true" duration-ms="322" started-at="2011-12-05T16:30:43Z" finished-at="2011-12-05T16:30:43Z">
         </test-method>
-        <test-method status="PASS" signature="beforeMethod()" name="beforeMethod" is-config="true" duration-ms="2543" started-at="2011-12-02T15:54:09Z" finished-at="2011-12-02T15:54:12Z">
-        </test-method>
-        <test-method status="PASS" signature="initialPage()" name="initialPage" duration-ms="4166" started-at="2011-12-02T15:54:12Z" finished-at="2011-12-02T15:54:16Z">
-        </test-method>
-        <test-method status="PASS" signature="afterMethod()" name="afterMethod" is-config="true" duration-ms="345" started-at="2011-12-02T15:54:16Z" finished-at="2011-12-02T15:54:16Z">
-        </test-method>
-        <test-method status="PASS" signature="afterTest()" name="afterTest" is-config="true" duration-ms="2" started-at="2011-12-02T15:55:48Z" finished-at="2011-12-02T15:55:48Z">
+        <test-method status="PASS" signature="afterTest()" name="afterTest" is-config="true" duration-ms="1" started-at="2011-12-05T16:30:44Z" finished-at="2011-12-05T16:30:44Z">
         </test-method>
       </class>
     </test>

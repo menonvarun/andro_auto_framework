@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite hostname="varun-desk" name="test.scanfu.login.Login" tests="6" failures="0" timestamp="2 Dec 2011 10:25:48 GMT" time="98.663" errors="0">
-  <testcase name="initialPage" time="4.166" classname="test.scanfu.login.Login"/>
-  <testcase name="registertoscanfuFemale" time="20.484" classname="test.scanfu.register.Register"/>
-  <testcase name="registertoscanfuMale" time="20.163" classname="test.scanfu.register.Register"/>
-  <testcase name="registertoscanfuwithwithoutfilling" time="13.325" classname="test.scanfu.register.Register"/>
-  <testcase name="verifymenuandsettings" time="8.59" classname="test.scanfu.register.Register"/>
-  <testcase name="verifyregistrationmartialtype" time="7.474" classname="test.scanfu.register.Register"/>
+<testsuite hostname="varun-desk" name="test.wordpress.blog.Blog" tests="5" failures="0" timestamp="5 Dec 2011 11:00:44 GMT" time="79.09" errors="0">
+  <testcase name="createNewPost" time="28.873" classname="test.wordpress.blog.Blog"/>
+  <testcase name="verifyFormatInNewPost" time="9.475" classname="test.wordpress.blog.Blog"/>
+  <testcase name="verifyPost" time="6.586" classname="test.wordpress.blog.Blog"/>
+  <testcase name="verifymenu" time="2.555" classname="test.wordpress.blog.Blog"/>
+  <testcase name="verifystatusInNewPost" time="6.74" classname="test.wordpress.blog.Blog"/>
 </testsuite>

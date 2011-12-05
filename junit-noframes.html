@@ -100,7 +100,7 @@
 <th>Tests</th><th>Failures</th><th>Errors</th><th>Success rate</th><th>Time</th>
 </tr>
 <tr valign="top" class="">
-<td>6</td><td>0</td><td>0</td><td>100.00%</td><td>74.202</td>
+<td>5</td><td>0</td><td>0</td><td>100.00%</td><td>54.229</td>
 </tr>
 </table>
 <table border="0" width="95%">
@@ -118,80 +118,48 @@
 <th width="80%">Name</th><th>Tests</th><th>Errors</th><th>Failures</th><th nowrap>Time(s)</th><th nowrap>Time Stamp</th><th>Host</th>
 </tr>
 <tr valign="top" class="">
-<td><a href="#test.scanfu.login">test.scanfu.login</a></td><td>1</td><td>0</td><td>0</td><td>4.166</td><td>2 Dec 2011 10:25:48 GMT</td><td>varun-desk</td>
-</tr>
-<tr valign="top" class="">
-<td><a href="#test.scanfu.register">test.scanfu.register</a></td><td>5</td><td>0</td><td>0</td><td>70.036</td><td>2 Dec 2011 10:25:48 GMT</td><td>varun-desk</td>
+<td><a href="#test.wordpress.blog">test.wordpress.blog</a></td><td>5</td><td>0</td><td>0</td><td>54.229</td><td>5 Dec 2011 11:00:44 GMT</td><td>varun-desk</td>
 </tr>
 </table>
 <hr size="1" width="95%" align="left">
-<a name="test.scanfu.login"></a>
-<h3>Package test.scanfu.login</h3>
+<a name="test.wordpress.blog"></a>
+<h3>Package test.wordpress.blog</h3>
 <table class="details" border="0" cellpadding="5" cellspacing="2" width="95%">
 <tr valign="top">
 <th width="80%">Name</th><th>Tests</th><th>Errors</th><th>Failures</th><th nowrap>Time(s)</th><th nowrap>Time Stamp</th><th>Host</th>
 </tr>
 <tr valign="top" class="">
-<td><a href="#Login">Login</a></td><td>1</td><td>0</td><td>0</td><td>4.166</td><td>2 Dec 2011 10:25:48 GMT</td><td>varun-desk</td>
-</tr>
-</table>
-<a href="#top">Back to top</a>
-<p></p>
-<p></p>
-<a name="test.scanfu.register"></a>
-<h3>Package test.scanfu.register</h3>
-<table class="details" border="0" cellpadding="5" cellspacing="2" width="95%">
-<tr valign="top">
-<th width="80%">Name</th><th>Tests</th><th>Errors</th><th>Failures</th><th nowrap>Time(s)</th><th nowrap>Time Stamp</th><th>Host</th>
-</tr>
-<tr valign="top" class="">
-<td><a href="#Register">Register</a></td><td>5</td><td>0</td><td>0</td><td>70.036</td><td>2 Dec 2011 10:25:48 GMT</td><td>varun-desk</td>
+<td><a href="#Blog">Blog</a></td><td>5</td><td>0</td><td>0</td><td>54.229</td><td>5 Dec 2011 11:00:44 GMT</td><td>varun-desk</td>
 </tr>
 </table>
 <a href="#top">Back to top</a>
 <p></p>
 <p></p>
 <hr size="1" width="95%" align="left">
-<a name="Login"></a>
-<h3>TestCase Login</h3>
+<a name="Blog"></a>
+<h3>TestCase Blog</h3>
 <table class="details" border="0" cellpadding="5" cellspacing="2" width="95%">
 <tr valign="top">
 <th>Name</th><th>Status</th><th width="80%">Type</th><th nowrap>Time(s)</th>
 </tr>
 <tr valign="top" class="">
-<td>initialPage</td><td>Success</td><td></td><td>4.166</td>
+<td>verifyFormatInNewPost</td><td>Success</td><td></td><td>9.475</td>
+</tr>
+<tr valign="top" class="">
+<td>verifymenu</td><td>Success</td><td></td><td>2.555</td>
+</tr>
+<tr valign="top" class="">
+<td>createNewPost</td><td>Success</td><td></td><td>28.873</td>
+</tr>
+<tr valign="top" class="">
+<td>verifystatusInNewPost</td><td>Success</td><td></td><td>6.740</td>
+</tr>
+<tr valign="top" class="">
+<td>verifyPost</td><td>Success</td><td></td><td>6.586</td>
 </tr>
 </table>
 <div class="Properties">
-<a href="javascript:displayProperties('test.scanfu.login.Login');">
-                    Properties &raquo;
-                </a>
-</div>
-<p></p>
-<a href="#top">Back to top</a><a name="Register"></a>
-<h3>TestCase Register</h3>
-<table class="details" border="0" cellpadding="5" cellspacing="2" width="95%">
-<tr valign="top">
-<th>Name</th><th>Status</th><th width="80%">Type</th><th nowrap>Time(s)</th>
-</tr>
-<tr valign="top" class="">
-<td>registertoscanfuwithwithoutfilling</td><td>Success</td><td></td><td>13.325</td>
-</tr>
-<tr valign="top" class="">
-<td>registertoscanfuMale</td><td>Success</td><td></td><td>20.163</td>
-</tr>
-<tr valign="top" class="">
-<td>verifymenuandsettings</td><td>Success</td><td></td><td>8.590</td>
-</tr>
-<tr valign="top" class="">
-<td>verifyregistrationmartialtype</td><td>Success</td><td></td><td>7.474</td>
-</tr>
-<tr valign="top" class="">
-<td>registertoscanfuFemale</td><td>Success</td><td></td><td>20.484</td>
-</tr>
-</table>
-<div class="Properties">
-<a href="javascript:displayProperties('test.scanfu.register.Register');">
+<a href="javascript:displayProperties('test.wordpress.blog.Blog');">
                     Properties &raquo;
                 </a>
 </div>
