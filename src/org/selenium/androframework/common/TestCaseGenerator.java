@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import junit.framework.Assert;
+
 import org.selenium.androframework.api.DefaultProperties;
 
 public class TestCaseGenerator {
@@ -55,50 +57,20 @@ public class TestCaseGenerator {
 
 	public void classGenerator(HashMap<String, ArrayList<String>> hm)
 			throws Exception {
+
 		Iterator<String> it = hm.keySet().iterator();
 
-		int count = 0;
 		while (it.hasNext()) {
 			String classPath = it.next();
 			String packagePath = classPath.toLowerCase();
 			String javaClassFile = new File(packagePath).getName();
 			String javaClassName = javaClassFile.substring(0, 1).toUpperCase()
 					+ javaClassFile.substring(1);
-			count++;
 			new File("src/test/" + packagePath).mkdirs();
 			Writer output = new BufferedWriter(new FileWriter("src/test/"
 					+ packagePath + "/" + javaClassName + ".java"));
-			FileInputStream fstream = new FileInputStream(
-					"resources/TestTemplate.java");
-			DataInputStream in = new DataInputStream(fstream);
-			BufferedReader br = new BufferedReader(new InputStreamReader(in));
-			String strLine;
-			output.write("package test." + packagePath.replace("/", ".")
-					+ ";\n");
-			for (int i = 0; i < 5; i++) {
-				if ((strLine = br.readLine()) != null) {
-					output.write(strLine + "\n");
-				}
-			}
-
-			output.write("public class " + javaClassName
-					+ " extends BaseClass{\n");
 			ArrayList<String> ar = hm.get(classPath);
-			Iterator<String> arrayIt = ar.iterator();
-			while (arrayIt.hasNext()) {
-				output.write("@Test\n");
-				String testfile = arrayIt.next();
-				String fileName = new File(testfile).getName();
-				fileName = fileName.substring(0, fileName.indexOf(".csv"));
-				output.write("public void " + fileName + "(){\n");
-				// output.write("driver=getDriver();\n");
-				output.write("AndroFrameworkExecutor afe = new AndroFrameworkExecutor();\n");
-				output.write("afe.androExecutor(driver,\"" + testfile
-						+ "\");\n}\n\n");
-
-			}
-			output.write("\n}");
-			br.close();
+			classWriter(classPath, ar, output);
 			output.close();
 		}
 
@@ -118,6 +90,63 @@ public class TestCaseGenerator {
 			tc.classGenerator(hm1);
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+	}
+
+	private void classWriter(String classPath, ArrayList<String> ar,
+			Writer output) {
+		FileInputStream fstream;
+		try {
+			String tempString = "";
+			String outputStringClass = "package test."
+					+ classPath.replace("/", ".") + ";\n";
+			String outputStringTestCase = "";
+			String testCase = "";
+
+			fstream = new FileInputStream("resources/Template");
+			DataInputStream in = new DataInputStream(fstream);
+			BufferedReader br = new BufferedReader(new InputStreamReader(in));
+			boolean flag = false;
+			while ((tempString = br.readLine()) != null) {
+				if (tempString.equalsIgnoreCase("@Test"))
+					flag = true;
+
+				if (!flag)
+					outputStringClass += tempString + "\n";
+				else
+					outputStringTestCase += tempString + "\n";
+
+			}
+			String packagePath = classPath.toLowerCase();
+			String javaClassFile = new File(packagePath).getName();
+			String javaClassName = javaClassFile.substring(0, 1).toUpperCase()
+					+ javaClassFile.substring(1);
+			outputStringClass = outputStringClass.replace("TestClassName",
+					javaClassName);
+			output.write(outputStringClass + "\n");
+
+			Iterator<String> arrayIt = ar.iterator();
+			while (arrayIt.hasNext()) {
+				String testfile = arrayIt.next();
+				String fileName = new File(testfile).getName();
+				fileName = fileName.substring(0, fileName.indexOf(".csv"));
+				
+				testCase = outputStringTestCase.replace("testName", fileName);
+				testCase = testCase.replace("filePath", testfile);
+				
+				output.write(testCase + "\n");
+			}
+
+			output.write("}");
+
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			Assert.fail(e.toString());
+		}
+
+		catch (IOException e) {
+			// TODO Auto-generated catch block
+			Assert.fail(e.toString());
 		}
 	}
 }
