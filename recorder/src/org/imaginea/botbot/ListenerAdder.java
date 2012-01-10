@@ -14,7 +14,9 @@ import android.content.Intent;
 import android.util.Log;
 import android.view.*;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -61,20 +63,51 @@ public class ListenerAdder {
 		 */
 	}
 
+	public OnItemSelectedListener containItemSelectedListener(View v) {
+		Object temp = null;
+		Class klass = v.getClass();
+
+		while (!klass.equals(View.class)) {
+			klass = klass.getSuperclass();
+		}
+
+		try {
+			// Obviously this is not the best way to test if a listener
+			// exists. But it's all we've got ...
+			Field f = klass.getDeclaredField("mOnItemSelectedListener");
+			f.setAccessible(true);
+			temp = f.get(v);
+			Log.i("debugger", "Found temp: " + temp.toString());
+		} catch (Exception e) {
+			// Log.i("debugger", "Adding listener error. " + e);
+		}
+		return (OnItemSelectedListener) temp;
+		/*
+		 * Class c = view.getClass(); Method[] methods = c.getDeclaredMethods();
+		 * for(Method m : methods){ if(m.getName().contentEquals("onClick")){
+		 * return true; } } return false;
+		 */
+	}
+
 	public void addListeners(View view) {
 		boolean containsClick = containOnClikListener(view);
-		if (containsClick) {
-			Log.i("debugger", "Adding View: " + view);
+		// Log.i("debugger", "Found View: " + view);
+		if (containsClick || (view instanceof ImageView)) {
 			processedView.add(view);
 			return;
 		} else {
-			// Log.i("debugger", "Adding listener: " + view);
-			if (view instanceof AdapterView && (view instanceof Spinner)) {
-				((AdapterView) view).setOnItemSelectedListener(new OnItemSelectedListenerTest() );
+			if (view instanceof Spinner) {
+				int dPos = ((Spinner) view).getSelectedItemPosition();
+				OnItemSelectedListener tmp = containItemSelectedListener(view);
+
+				((Spinner) view)
+						.setOnItemSelectedListener(new OnItemSelectedListenerTest(
+								tmp, dPos));
 				processedView.add(view);
 				return;
-			}else if(view instanceof AdapterView ){
-				((AdapterView) view).setOnItemClickListener(new OnItemClickListenerTest() );
+			} else if (view instanceof AdapterView) {
+				((AdapterView) view)
+						.setOnItemClickListener(new OnItemClickListenerTest());
 				processedView.add(view);
 				return;
 			}

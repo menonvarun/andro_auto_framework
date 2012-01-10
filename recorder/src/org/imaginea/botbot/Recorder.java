@@ -6,11 +6,13 @@ import java.util.logging.Logger;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.widget.Spinner;
+import android.widget.TextView;
 
 public class Recorder {
 	static ArrayList<Command> commandList = new ArrayList<Command>();
 	private static final String LOG_TAG = "debugger";
-	private static CommandTransmitter ct = new CommandTransmitter();
+//	private static CommandTransmitter ct = new CommandTransmitter();
 
 	public static void record(String command, Object view, Object... args) {
 		if (command.contentEquals("entertext")) {
@@ -20,6 +22,13 @@ public class Recorder {
 				commandList.remove(temp);
 			}
 		}
+		if (view instanceof Spinner){
+			Object arg = args[0];
+			if(arg instanceof TextView){
+				String text = ((TextView) arg).getText().toString();
+				args[0]=text;
+			}
+		}
 		Command comm = new Command();
 		try {
 			comm.add(command, ((View) view), args);
@@ -27,7 +36,7 @@ public class Recorder {
 		} catch (ClassCastException e) {
 			comm.add(command, view, args);
 		}
-		ct.publish(comm.getJson());
+		//ct.publish(comm.getJson());
 		commandList.add(comm);
 		Log.i(LOG_TAG, "command received: " + comm.toString());
 	}

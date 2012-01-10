@@ -3,6 +3,7 @@ package org.imaginea.botbot;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.AlertDialog;
 import android.content.res.Resources.NotFoundException;
 import android.view.View;
 
@@ -17,7 +18,7 @@ public class Command {
 	Object view;
 	Object[] args;
 	int id = 0;
-	String tag = "";
+	String rid = "";
 	String viewClassName = "";
 
 	public void add(String command, Object view, Object... args) {
@@ -27,6 +28,7 @@ public class Command {
 		if (view.getClass().getName().contains("Button")) {
 			this.command = "clickbutton";
 		}
+		
 
 	}
 
@@ -40,13 +42,28 @@ public class Command {
 		} else {
 			this.viewClassName = "";
 		}
+		
 		this.id = view.getId();
+		
 		try {
-			this.tag = (String) view.getContext().getResources()
-					.getResourceName(id);
+			this.rid = getStringIdFromResource(view, id);
+			if (command.contentEquals("click")) {
+				this.command = "clickbyid";
+			}
 		} catch (NotFoundException e) {
-			this.tag = "";
+			this.rid="";
 		}
+	}
+
+	private String getStringIdFromResource(View view, int id)
+			throws NotFoundException {
+		String rid = "";
+		String tmp = (String) view.getContext().getResources()
+				.getResourceName(id);
+		if (tmp.contains(":id")) {
+			rid = tmp.substring(tmp.lastIndexOf(":id") + 4);
+		}
+		return rid;
 	}
 
 	public JSONObject getJson() {
@@ -65,7 +82,7 @@ public class Command {
 			}
 			json.put("viewClassName", this.viewClassName);
 			json.put("id", this.id);
-			json.put("tag", this.tag);
+			json.put("tag", this.rid);
 		} catch (JSONException e) {
 			e.printStackTrace();
 			return null;
@@ -80,9 +97,17 @@ public class Command {
 
 	@Override
 	public String toString() {
-		String retText = "command =" + this.command + "; view="
-				+ view.toString() + "; viewClassName=" + this.viewClassName
-				+ "; id=" + id + "; tag=" + tag + "; args=" + args;
+		String retText;
+		try {
+			retText = "command =" + this.command + "; view=" + view.toString()
+					+ "; viewClassName=" + this.viewClassName + "; id=" + id
+					+ "; rid=" + rid + "; args[0]=" + args[0].toString()
+					+ "; args[1]=" + args[1].toString();
+		} catch (ArrayIndexOutOfBoundsException e) {
+			retText = "command =" + this.command + "; view=" + view.toString()
+					+ "; viewClassName=" + this.viewClassName + "; id=" + id
+					+ "; rid=" + rid + "; args=" + args.toString();
+		}
 		return retText;
 	}
 }
