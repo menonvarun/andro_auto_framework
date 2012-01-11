@@ -63,13 +63,21 @@ public class TestCaseGenerator {
 		while (it.hasNext()) {
 			String classPath = it.next();
 			String packagePath = classPath.toLowerCase();
+
+			packagePath = packagePath.replace(" ", "");
+			packagePath = packagePath.replace("-", "");
+			packagePath = packagePath.replace("_", "");
 			String javaClassFile = new File(packagePath).getName();
 			String javaClassName = javaClassFile.substring(0, 1).toUpperCase()
 					+ javaClassFile.substring(1);
+
+			packagePath = packagePath
+					.substring(0, packagePath.lastIndexOf("/"));
 			new File("src/test/" + packagePath).mkdirs();
 			Writer output = new BufferedWriter(new FileWriter("src/test/"
 					+ packagePath + "/" + javaClassName + ".java"));
 			ArrayList<String> ar = hm.get(classPath);
+
 			classWriter(classPath, ar, output);
 			output.close();
 		}
@@ -85,7 +93,6 @@ public class TestCaseGenerator {
 						+ prop.getValueFromProperty("TESTCASE_FOLDER")), "",
 				hm1);
 
-		System.out.println(hm1);
 		try {
 			tc.classGenerator(hm1);
 		} catch (Exception e) {
@@ -95,11 +102,17 @@ public class TestCaseGenerator {
 
 	private void classWriter(String classPath, ArrayList<String> ar,
 			Writer output) {
+
 		FileInputStream fstream;
 		try {
 			String tempString = "";
-			String outputStringClass = "package test."
-					+ classPath.replace("/", ".") + ";\n";
+			String importString = classPath.replace(" ", "");
+			importString = importString.replace("-", "");
+			importString = importString.replace("_", "");
+			importString = importString.replace("/", ".");
+			importString = importString.substring(0,
+					importString.lastIndexOf("."));
+			String outputStringClass = "package test." + importString + ";\n";
 			String outputStringTestCase = "";
 			String testCase = "";
 
@@ -119,8 +132,12 @@ public class TestCaseGenerator {
 			}
 			String packagePath = classPath.toLowerCase();
 			String javaClassFile = new File(packagePath).getName();
+			javaClassFile = javaClassFile.replace(" ", "");
+			javaClassFile = javaClassFile.replace("-", "");
+			javaClassFile = javaClassFile.replace("_", "");
 			String javaClassName = javaClassFile.substring(0, 1).toUpperCase()
 					+ javaClassFile.substring(1);
+
 			outputStringClass = outputStringClass.replace("TestClassName",
 					javaClassName);
 			output.write(outputStringClass + "\n");
@@ -130,10 +147,14 @@ public class TestCaseGenerator {
 				String testfile = arrayIt.next();
 				String fileName = new File(testfile).getName();
 				fileName = fileName.substring(0, fileName.indexOf(".csv"));
-				
+
+				fileName = fileName.replace(" ", "");
+				fileName = fileName.replace("-", "");
+				fileName = fileName.replace("_", "");
+
 				testCase = outputStringTestCase.replace("testName", fileName);
 				testCase = testCase.replace("filePath", testfile);
-				
+
 				output.write(testCase + "\n");
 			}
 
