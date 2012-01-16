@@ -64,9 +64,7 @@ public class TestCaseGenerator {
 			String classPath = it.next();
 			String packagePath = classPath.toLowerCase();
 
-			packagePath = packagePath.replace(" ", "");
-			packagePath = packagePath.replace("-", "");
-			packagePath = packagePath.replace("_", "");
+			packagePath = replaceSpecialChar(packagePath);
 			String javaClassFile = new File(packagePath).getName();
 			String javaClassName = javaClassFile.substring(0, 1).toUpperCase()
 					+ javaClassFile.substring(1);
@@ -106,10 +104,8 @@ public class TestCaseGenerator {
 		FileInputStream fstream;
 		try {
 			String tempString = "";
-			String importString = classPath.replace(" ", "");
-			importString = importString.replace("-", "");
-			importString = importString.replace("_", "");
-			importString = importString.replace("/", ".");
+			String importString = classPath.replace("/", ".");
+			importString = replaceSpecialChar(importString);
 			importString = importString.substring(0,
 					importString.lastIndexOf("."));
 			String outputStringClass = "package test." + importString + ";\n";
@@ -132,9 +128,7 @@ public class TestCaseGenerator {
 			}
 			String packagePath = classPath.toLowerCase();
 			String javaClassFile = new File(packagePath).getName();
-			javaClassFile = javaClassFile.replace(" ", "");
-			javaClassFile = javaClassFile.replace("-", "");
-			javaClassFile = javaClassFile.replace("_", "");
+			javaClassFile = replaceSpecialChar(javaClassFile);
 			String javaClassName = javaClassFile.substring(0, 1).toUpperCase()
 					+ javaClassFile.substring(1);
 
@@ -148,9 +142,7 @@ public class TestCaseGenerator {
 				String fileName = new File(testfile).getName();
 				fileName = fileName.substring(0, fileName.indexOf(".csv"));
 
-				fileName = fileName.replace(" ", "");
-				fileName = fileName.replace("-", "");
-				fileName = fileName.replace("_", "");
+				fileName = replaceSpecialChar(fileName);
 
 				testCase = outputStringTestCase.replace("testName", fileName);
 				testCase = testCase.replace("filePath", testfile);
@@ -169,5 +161,12 @@ public class TestCaseGenerator {
 			// TODO Auto-generated catch block
 			Assert.fail(e.toString());
 		}
+	}
+	private String replaceSpecialChar(String fileName)
+	{
+		fileName=fileName.replace(" ", "");
+		fileName=fileName.replace("-", "");
+		fileName=fileName.replace("_", "");
+		return fileName;
 	}
 }
