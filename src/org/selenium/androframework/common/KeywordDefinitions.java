@@ -2,13 +2,13 @@ package org.selenium.androframework.common;
 
 import java.util.List;
 
-import junit.framework.Assert;
 
 import org.openqa.selenium.WebElement;
 import org.selenium.androframework.api.IdentifyByType;
 import org.selenium.androframework.api.UsefulFunctions;
 import org.sikuli.script.FindFailed;
 import org.sikuli.script.Screen;
+import org.testng.Assert;
 
 import com.google.android.testing.nativedriver.client.AndroidNativeDriver;
 import com.google.android.testing.nativedriver.client.AndroidNativeElement;
@@ -63,14 +63,13 @@ public class KeywordDefinitions {
 	public void assertlocatorpresent(AndroidNativeDriver driver, String locator) {
 		boolean result = uf.waitForElementPresent(driver,
 				IdentifyByType.getLocatorType(locator));
-		Assert.assertTrue("Test failed. Unable to find locator: " + locator,
-				result);
+		Assert.assertTrue(result, "Test failed. Unable to find locator: " + locator);
 	}
 
 	public void assertpartialtextpresent(AndroidNativeDriver driver, String text) {
 		boolean result = uf.waitForElementPresent(driver,
 				AndroidNativeBy.partialText(text));
-		Assert.assertTrue("Test failed. Unable to find text: " + text, result);
+		Assert.assertTrue(result,"Test failed. Unable to find text: " + text);
 	}
 
 	public void asserttextpresent(AndroidNativeDriver driver, String text) {
@@ -78,10 +77,9 @@ public class KeywordDefinitions {
 				AndroidNativeBy.partialText(text));
 		String elementText = driver.findElement(
 				AndroidNativeBy.partialText(text)).getText();
-		Assert.assertTrue("Test failed. Unable to find text: " + text, result);
-		Assert.assertTrue("Test failed. Text dont match expected: " + text
-				+ " but present is: " + elementText,
-				text.contentEquals(elementText));
+		Assert.assertTrue( result,"Test failed. Unable to find text: " + text);
+		Assert.assertTrue(text.contentEquals(elementText),"Test failed. Text dont match expected: " + text
+				+ " but present is: " + elementText);
 	}
 
 	public void clickback(AndroidNativeDriver driver) {
@@ -130,8 +128,7 @@ public class KeywordDefinitions {
 		try {
 			Thread.sleep(2000);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Assert.fail(e.getMessage());
 		}
 		element.click();
 		element.sendKeys(text);
@@ -139,6 +136,24 @@ public class KeywordDefinitions {
 
 	}
 
+	public void entertext(AndroidNativeDriver driver, int locator,
+			String text) {
+		List<WebElement> textFields = driver.findElementsByClassName(ClassNames.EDIT_TEXT);
+		if(textFields.size()>locator){
+			Assert.fail("Unable to find test edit box at position "+ locator);
+		}
+		WebElement textElement= textFields.get(locator-1);
+		try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {
+			Assert.fail(e.getMessage());
+		}
+		textElement.click();
+		textElement.sendKeys(text);
+		// element.click();
+
+	}
+	
 	public void verifyscreen(String imagePath) {
 		Screen s = new Screen();
 		try {

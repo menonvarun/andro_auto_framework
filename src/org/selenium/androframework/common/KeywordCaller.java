@@ -57,7 +57,11 @@ public class KeywordCaller {
 			if(args.size()!=2){
 				Assert.fail("entertext keyword take 2 arguments locator and the value.");
 			}
-			kd.entertext(driver, args.get(0), args.get(1));
+			try{
+				kd.entertext(driver, Integer.parseInt(args.get(0)), args.get(1));
+			}catch(NumberFormatException e){
+				kd.entertext(driver, args.get(0), args.get(1));
+			}
 			break;
 		case verifyscreen:
 			kd.verifyscreen(args.get(0));
