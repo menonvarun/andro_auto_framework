@@ -1,11 +1,9 @@
 package org.imaginea.botbot;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.app.AlertDialog;
 import android.content.res.Resources.NotFoundException;
 import android.view.View;
+import android.widget.Button;
 
 public class Command {
 	ViewClasses vc = new ViewClasses();
@@ -28,9 +26,22 @@ public class Command {
 		if (view.getClass().getName().contains("Button")) {
 			this.command = "clickbutton";
 		}
-		
 
 	}
+	
+	public void addalert(String command, Object[] view, Object... args) {
+		if(view[0] instanceof AlertDialog){
+			this.view=view[0];
+			Integer tmp=(Integer)view[1];
+			if((view[1] instanceof Integer)&&((tmp==-1)||(tmp==-2)||(tmp==-3))){
+				this.command="clickbutton";
+				Button bt = ((AlertDialog)view[0]).getButton(tmp);
+				this.args[0]=bt.getText();
+			}
+		}
+
+	}
+
 
 	public void add(String command, View view, Object... args) {
 		this.command = command;
@@ -66,28 +77,21 @@ public class Command {
 		return rid;
 	}
 
-	public JSONObject getJson() {
-		JSONObject json = new JSONObject();
-		try {
-			json.put("command", this.command);
-			if (this.view == null) {
-				json.put("view", "");
-			} else {
-				json.put("view", this.view);
-			}
-			if (this.args == null) {
-				json.put("args", "");
-			} else {
-				json.put("args", this.args);
-			}
-			json.put("viewClassName", this.viewClassName);
-			json.put("id", this.id);
-			json.put("tag", this.rid);
-		} catch (JSONException e) {
-			e.printStackTrace();
-			return null;
+	public String getData() {
+		String data = "";
+		data=data.concat("\"command\":\""+this.command+"\"");
+		if(!rid.contentEquals("")){
+			data=data.concat("\"rid\":\""+this.rid+"\"");
+		}else{
+			data=data.concat("\"viewClassName\":\""+this.viewClassName+"\"");
 		}
-		return json;
+		
+		for(int i=0;args.length>i;i++){
+			data=data.concat("\"args["+i+"]\":\""+this.args[i]+"\"");
+		}
+		data=data.replace("\"", "\\\"");
+		data="{".concat(data).concat("}");
+		return data;	
 	}
 
 	public void add(String command) {
