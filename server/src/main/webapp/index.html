@@ -47,7 +47,11 @@
 	}
 	
 	#body{
-	margin-top:100px;
+		margin-top:100px;
+	}
+	
+	.holderDiv{
+		overflow:auto;
 	}
   </style>
 </head>
@@ -56,17 +60,17 @@
 <div id="body">
   <div id="sessionsHolder">
 	  <h3 id="sessionsHeading">Choose a session</h3>
-	  <div style="height:500px;overflow:auto;">
+	  <div class="holderDiv">
 		<table id="DynamicGrid" width="100%" cellpadding="5"></table>
 	  </div>
   </div>
   
   <div id="recordsHolder" style="display:none">
 	  <h3>Records of session:  <span id="recordsHeading"></span></h3>
-	  <div style="height:650px;overflow:auto;">
+	  <div class="holderDiv">
 		<table width="100%" id="Records" cellpadding="5"></table>
 	  </div>
-	  <a onclick="getSessions()" href="#" style="font-weight:bold;">Back</a>
+	  <a onclick="getSessions()" href="#">Back</a>
   </div>
   
 </div>  
@@ -74,9 +78,26 @@
 <p>a product of Imaginea</p>
 </div>
 <script>
-
+	$(".holderDiv").css('height',window.innerHeight-280);
 	getSessions(); 
-		
+	
+/*	
+		$.ajax({
+			url: 'api/recordsessions/',
+			data:'{"name":"test03"}',
+			type: 'POST',
+			processData:false,
+			contentType: "application/json",
+			dataType: "json",  
+			success: function(json) {
+				console.log("::::: ");
+				console.log(json);
+			},
+			error: function(jqXHR, textStatus, errorThrown) {
+			  console.log(textStatus, errorThrown);
+			}
+		});
+*/	
 	function getSessions()
 	{
 		$("#sessionsHolder").show();
@@ -85,23 +106,41 @@
 		$.ajax({
 			url: 'api/recordsessions/',
 			type: 'GET',            
-			contentType: "application/json",
 			dataType: "json",  
 			success: function(json) { 
-				console.log(json.recordSession.length); 
+				//console.log(json.recordSession.length); 
 				var sessions = "<tr class='gradientBackground'><th>Name</th><th>View</th><th>Delete</th></tr>";
-				for(var i=0; i<json.recordSession.length; i++)
-				{
-					var sessionID = json.recordSession[i].id;
-					var sessionName = json.recordSession[i].name;
-					var linkForRecords = json.recordSession[i].recordEntries['@uri'];
-					var linkForDelete = json.recordSession[i]['@uri'];
-					
-					if(i % 2 == 0)
-					sessions = sessions +"<tr><td>"+sessionName+"</td><td><a href='#' class='viewRecords' name='"+sessionName+"' title='"+linkForRecords+"'>view Records</a></td><td><a href='#' class='deleteSession' title='"+linkForDelete+"'>Delete</a></td></li>"; 	
-					else
-					sessions = sessions +"<tr class='alt'><td>"+sessionName+"</td><td><a href='#' class='viewRecords' name='"+sessionName+"' title='"+linkForRecords+"'>view Records</a></td><td><a href='#' class='deleteSession' title='"+linkForDelete+"'>Delete</a></td></li>"; 	
+				
+				if(json.recordSession == undefined)
+				{	
+					sessions = sessions + "<tr align='center'><td colspan='3'>No sessions found</td></tr>";
 				}
+				else
+				if(json.recordSession.length == undefined)
+				{	
+					var sessionID = json.recordSession.id;
+					var sessionName = json.recordSession.name;
+					var linkForRecords = json.recordSession.recordEntries['@uri'];
+					var linkForDelete = json.recordSession['@uri'];
+					
+					sessions = sessions +"<tr><td>"+sessionName+"</td><td><a href='#' class='viewRecords' name='"+sessionName+"' title='"+linkForRecords+"'>view Records</a></td><td><a href='#' class='deleteSession' title='"+linkForDelete+"'>Delete</a></td></li>"; 	
+				}
+				else
+				{
+					for(var i=0; i<json.recordSession.length; i++)
+					{
+						var sessionID = json.recordSession[i].id;
+						var sessionName = json.recordSession[i].name;
+						var linkForRecords = json.recordSession[i].recordEntries['@uri'];
+						var linkForDelete = json.recordSession[i]['@uri'];
+						
+						if(i % 2 == 0)
+						sessions = sessions +"<tr><td>"+sessionName+"</td><td><a href='#' class='viewRecords' name='"+sessionName+"' title='"+linkForRecords+"'>view Records</a></td><td><a href='#' class='deleteSession' title='"+linkForDelete+"'>Delete</a></td></li>"; 	
+						else
+						sessions = sessions +"<tr class='alt'><td>"+sessionName+"</td><td><a href='#' class='viewRecords' name='"+sessionName+"' title='"+linkForRecords+"'>view Records</a></td><td><a href='#' class='deleteSession' title='"+linkForDelete+"'>Delete</a></td></li>"; 	
+					}
+				}	
+				//console.log("sessions: "+sessions);
 				$('#DynamicGrid').html(sessions);
 			},
 			error: function(jqXHR, textStatus, errorThrown) {
@@ -156,38 +195,46 @@
 			contentType: "application/json",
 			dataType: "json",  
 			success: function(json) { 
+				$('#Records').html("<img src='loader.gif'/>");
+				var records = "<tr class='gradientBackground'><th rowspan='2'>ID</th><th rowspan='2'>Entry No</th><th colspan='5'>Payload</th><th rowspan='2'>Edit</th></tr><tr class='gradientBackground'><th>Command</th><th>Rid</th><th>Class Name</th><th>Argument 1</th><th>Argument 2</th></tr>";
+				//var records = "<tr class='gradientBackground'><th>ID</th><th>Entry No</th><th>Payload</th><th>Edit</th></tr>";
 				if(json.record == undefined)
 				{			
-					$('#Records').html("<img src='loader.gif'/>");
-					$('#Records').html("<tr class='gradientBackground'><th>ID</th><th>Entry No</th><th>Payload</th><th>Edit</th></tr>"); 
-					$('#Records').append("<tr><td colspan='4' align='center'>No Records Found</td></tr>"); 
+					records = records + "<tr><td colspan='8' align='center'>No Records Found</td></tr>"; 
 				}
 				else
 				if(json.record.length == undefined)
 				{					
-					//console.log(json);
-					$('#Records').html("<img src='loader.gif'/>");
-					$('#Records').html("<tr class='gradientBackground'><th>ID</th><th>Entry No</th><th>Payload</th><th>Edit</th></tr>"); 
 					var recordID = json.record.id;
 					var recordEntryNo = json.record.entryNo;
-					var recordPayLoad = json.record.payload;					
-					$('#Records').append("<tr><td>"+recordID+"</td><td>"+recordEntryNo+"</td><td>"+recordPayLoad+"</td><td><a href='#' class='editRecords' title='"+recordURI+"'>Edit</a></td></tr>"); 	
+					var recordPayLoad = json.record.payload;
+					var payloadJSON = JSON.parse(recordPayLoad);
+					var recordPayLoadCommand = payloadJSON.command == undefined ?"":payloadJSON.command;
+					var recordPayLoadRid = payloadJSON.rid == undefined ?"":payloadJSON.rid;
+					var recordPayLoadViewClassName = payloadJSON.viewClassName == undefined ?"":payloadJSON.viewClassName;
+					var recordPayLoadArgs0 = payloadJSON['args[0]'] == undefined ?"":payloadJSON['args[0]']; // keyName of this attribute of object is like array notation, therefore used different notation to retrieve its value
+					var recordPayLoadArgs1 = payloadJSON['args[1]'] == undefined ?"":payloadJSON['args[1]']; // keyName of this attribute of object is like array notation, therefore used different notation to retrieve its value
+					
+					records = records + "<tr><td>"+recordID+"</td><td>"+recordEntryNo+"</td><td>"+recordPayLoadCommand+"</td><td>"+recordPayLoadRid+"</td><td>"+recordPayLoadViewClassName+"</td><td>"+recordPayLoadArgs0+"</td><td>"+recordPayLoadArgs1+"</td><td><a href='#' class='editRecords' title='"+recordURI+"'>Edit</a></td></tr>"; 	
 				}
 				else
-				{
-					//console.log(json);
-					
-					$('#Records').html("<img src='loader.gif'/>");
-					$('#Records').html("<tr class='gradientBackground'><th>ID</th><th>Entry No</th><th>Payload</th><th>Edit</th></tr>"); 	
+				{			
 					for(var i=0; i<json.record.length; i++)
 					{
 						var recordID = json.record[i].id;
 						var recordEntryNo = json.record[i].entryNo;
 						var recordPayLoad = json.record[i].payload;
+						var payloadJSON = JSON.parse(recordPayLoad);
+						var recordPayLoadCommand = payloadJSON.command == undefined ?"":payloadJSON.command;
+						var recordPayLoadRid = payloadJSON.rid == undefined ?"":payloadJSON.rid;
+						var recordPayLoadViewClassName = payloadJSON.viewClassName == undefined ?"":payloadJSON.viewClassName;
+						var recordPayLoadArgs0 = payloadJSON['args[0]'] == undefined ?"":payloadJSON['args[0]']; // keyName of this attribute of object is like array notation, therefore used different notation to retrieve its value
+						var recordPayLoadArgs1 = payloadJSON['args[1]'] == undefined ?"":payloadJSON['args[1]']; // keyName of this attribute of object is like array notation, therefore used different notation to retrieve its value
+					
 						if(i % 2 == 0)
-							$('#Records').append("<tr><td>"+recordID+"</td><td>"+recordEntryNo+"</td><td>"+recordPayLoad+"</td><td><a href='#' class='editRecords' title='"+recordURI+"'>Edit</a></td></tr>"); 	
+							records = records + "<tr><td>"+recordID+"</td><td>"+recordEntryNo+"</td><td>"+recordPayLoadCommand+"</td><td>"+recordPayLoadRid+"</td><td>"+recordPayLoadViewClassName+"</td><td>"+recordPayLoadArgs0+"</td><td>"+recordPayLoadArgs1+"</td><td><a href='#' class='editRecords' title='"+recordURI+"'>Edit</a></td></tr>"; 	
 						else
-							$('#Records').append("<tr class='alt'><td>"+recordID+"</td><td>"+recordEntryNo+"</td><td>"+recordPayLoad+"</td><td><a href='#' class='editRecords' title='"+recordURI+"'>Edit</a></td></tr>"); 	
+							records = records + "<tr class='alt'><td>"+recordID+"</td><td>"+recordEntryNo+"</td><td>"+recordPayLoadCommand+"</td><td>"+recordPayLoadRid+"</td><td>"+recordPayLoadViewClassName+"</td><td>"+recordPayLoadArgs0+"</td><td>"+recordPayLoadArgs1+"</td><td><a href='#' class='editRecords' title='"+recordURI+"'>Edit</a></td></tr>"; 								
 					}
 					/*
 					jQuery("#my-table").table2csv({
@@ -202,6 +249,7 @@
 					});
 					*/
 				}
+				$('#Records').html(records);
 			},
 			error: function(jqXHR, textStatus, errorThrown) {
 			  console.log(textStatus, errorThrown);

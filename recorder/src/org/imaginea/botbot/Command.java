@@ -80,14 +80,10 @@ public class Command {
 	public String getData() {
 		String data = "";
 		data=data.concat("\"command\":\""+this.command+"\"");
-		if(!rid.contentEquals("")){
-			data=data.concat("\"rid\":\""+this.rid+"\"");
-		}else{
-			data=data.concat("\"viewClassName\":\""+this.viewClassName+"\"");
-		}
-		
-		for(int i=0;args.length>i;i++){
-			data=data.concat("\"args["+i+"]\":\""+this.args[i]+"\"");
+		data=data.concat(",\"rid\":\""+this.rid+"\"");
+		data=data.concat(",\"viewClassName\":\""+this.viewClassName+"\"");
+		for(int i=0;i<args.length;i++){
+			data=data.concat(",\"args["+i+"]\":\""+this.args[i]+"\"");
 		}
 		data=data.replace("\"", "\\\"");
 		data="{".concat(data).concat("}");
