@@ -44,30 +44,6 @@ aspect OnCreate
     after() returning (AlertDialog d): captureCreate()
 	{
 	}    
-	
-	
-	/*
-	String firstActivity;
-
-    pointcut captureOnCreate() : (execution(* onCreate(Bundle)));
-
-    before(): captureOnCreate()
-	{
-		Object target = thisJoinPoint.getTarget();
-
-		if (firstActivity == null) firstActivity = target.getClass().getName();
-	}
-
-    after(): captureOnCreate()
-	{
-		Object target = thisJoinPoint.getTarget();
-
-
-		Activity a = (Activity) target;
-
-		ListenerAdder.processView(a.getWindow().getDecorView().getRootView());
-
-    }*/
     
 }
 

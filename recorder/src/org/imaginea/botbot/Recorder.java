@@ -1,7 +1,6 @@
 package org.imaginea.botbot;
 
 import java.util.ArrayList;
-import java.util.logging.Logger;
 
 import android.util.Log;
 import android.view.Menu;
