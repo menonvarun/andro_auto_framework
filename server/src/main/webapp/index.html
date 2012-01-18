@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>img{ height: 100px; float: left; }</style>
+  <script src="http://code.jquery.com/jquery-latest.js"></script>
+  <script type="text/javascript" src="jquery.table2csv.0.1.1.min.js"></script>
+  <style>
+    .gradientBackground{
+	background-color: #0064CD;
+    background-image: -moz-linear-gradient(center top , #049CDB, #0064CD);
+    background-repeat: repeat-x;
+    border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+    color: #FFFFFF;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+	}
+	#Records tr:first-child{
+	 border-radius: 10px;
+	}
+	tr.alt{background-color: #ccc;}
+	#header{
+		position:absolute;
+		top:0px;
+		left:0px;
+		width:100%;
+		height:70px;
+		margin-bottom:10px;
+	}
+	#header p{
+		position:relative;
+		font-size:24px; font-weight:bold; margin:20px;
+	}
+	#footer{
+		position:absolute;
+		width:100%;
+		bottom:0px;
+		left:0px;
+		height:100px;
+		background:#666;
+		color: #ccc;
+		text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+		text align:right;
+	}
+	#footer p{
+		position:relative;
+		float:right;
+		margin:50px 50px 0 50px;
+	}
+	
+	#body{
+	margin-top:100px;
+	}
+  </style>
+</head>
+<body>
+<div id="header" class="gradientBackground"><p>Bot Bot Server</p></div>
+<div id="body">
+  <div id="sessionsHolder">
+	  <h3 id="sessionsHeading">Choose a session</h3>
+	  <div style="height:500px;overflow:auto;">
+		<table id="DynamicGrid" width="100%" cellpadding="5"></table>
+	  </div>
+  </div>
+  
+  <div id="recordsHolder" style="display:none">
+	  <h3>Records of session:  <span id="recordsHeading"></span></h3>
+	  <div style="height:650px;overflow:auto;">
+		<table width="100%" id="Records" cellpadding="5"></table>
+	  </div>
+	  <a onclick="getSessions()" href="#" style="font-weight:bold;">Back</a>
+  </div>
+  
+</div>  
+<div id="footer">
+<p>a product of Imaginea</p>
+</div>
+<script>
+
+	getSessions(); 
+		
+	function getSessions()
+	{
+		$("#sessionsHolder").show();
+		$('#recordsHolder').hide();
+		
+		$.ajax({
+			url: 'api/recordsessions/',
+			type: 'GET',            
+			contentType: "application/json",
+			dataType: "json",  
+			success: function(json) { 
+				console.log(json.recordSession.length); 
+				var sessions = "<tr class='gradientBackground'><th>Name</th><th>View</th><th>Delete</th></tr>";
+				for(var i=0; i<json.recordSession.length; i++)
+				{
+					var sessionID = json.recordSession[i].id;
+					var sessionName = json.recordSession[i].name;
+					var linkForRecords = json.recordSession[i].recordEntries['@uri'];
+					var linkForDelete = json.recordSession[i]['@uri'];
+					
+					if(i % 2 == 0)
+					sessions = sessions +"<tr><td>"+sessionName+"</td><td><a href='#' class='viewRecords' name='"+sessionName+"' title='"+linkForRecords+"'>view Records</a></td><td><a href='#' class='deleteSession' title='"+linkForDelete+"'>Delete</a></td></li>"; 	
+					else
+					sessions = sessions +"<tr class='alt'><td>"+sessionName+"</td><td><a href='#' class='viewRecords' name='"+sessionName+"' title='"+linkForRecords+"'>view Records</a></td><td><a href='#' class='deleteSession' title='"+linkForDelete+"'>Delete</a></td></li>"; 	
+				}
+				$('#DynamicGrid').html(sessions);
+			},
+			error: function(jqXHR, textStatus, errorThrown) {
+			  console.log(textStatus, errorThrown);
+			}
+		});
+	}	
+			
+	$(".deleteSession").live("click", function(){	
+		var deleteURI = $(this).attr("title");
+		//alert("Delete URI::: "+deleteURI);
+		$.ajax({
+			url: deleteURI,
+			type: 'DELETE',            
+			contentType: "application/json",
+			dataType: "json",  
+			success: function(json) {
+				//alert(json);
+				getSessions(); 
+			}
+		});
+	});
+			
+	$(".editRecords").live("click", function(){	
+		//alert("make a popup here");
+		var recordURI = $(this).attr("title");
+		$.ajax({
+			url: recordURI,
+			type: 'GET',            
+			contentType: "application/json",
+			dataType: "json",  
+			success: function(json) {
+				alert(JSON.stringify(json));
+			}
+		});
+	});
+	
+	$(".viewRecords").live("click", function(){		
+		//$("#DynamicGrid>li").css('color','black');
+		var sessionName = $(this).attr('name');
+		
+		$("#recordsHeading").html("<i>"+sessionName+"</i>");
+		
+		$("#sessionsHolder").hide();
+		$('#recordsHolder').show();
+		
+		var recordURI = $(this).attr('title');
+		
+		$.ajax({
+			url: recordURI,
+			type: 'GET',            
+			contentType: "application/json",
+			dataType: "json",  
+			success: function(json) { 
+				if(json.record == undefined)
+				{			
+					$('#Records').html("<img src='loader.gif'/>");
+					$('#Records').html("<tr class='gradientBackground'><th>ID</th><th>Entry No</th><th>Payload</th><th>Edit</th></tr>"); 
+					$('#Records').append("<tr><td colspan='4' align='center'>No Records Found</td></tr>"); 
+				}
+				else
+				if(json.record.length == undefined)
+				{					
+					//console.log(json);
+					$('#Records').html("<img src='loader.gif'/>");
+					$('#Records').html("<tr class='gradientBackground'><th>ID</th><th>Entry No</th><th>Payload</th><th>Edit</th></tr>"); 
+					var recordID = json.record.id;
+					var recordEntryNo = json.record.entryNo;
+					var recordPayLoad = json.record.payload;					
+					$('#Records').append("<tr><td>"+recordID+"</td><td>"+recordEntryNo+"</td><td>"+recordPayLoad+"</td><td><a href='#' class='editRecords' title='"+recordURI+"'>Edit</a></td></tr>"); 	
+				}
+				else
+				{
+					//console.log(json);
+					
+					$('#Records').html("<img src='loader.gif'/>");
+					$('#Records').html("<tr class='gradientBackground'><th>ID</th><th>Entry No</th><th>Payload</th><th>Edit</th></tr>"); 	
+					for(var i=0; i<json.record.length; i++)
+					{
+						var recordID = json.record[i].id;
+						var recordEntryNo = json.record[i].entryNo;
+						var recordPayLoad = json.record[i].payload;
+						if(i % 2 == 0)
+							$('#Records').append("<tr><td>"+recordID+"</td><td>"+recordEntryNo+"</td><td>"+recordPayLoad+"</td><td><a href='#' class='editRecords' title='"+recordURI+"'>Edit</a></td></tr>"); 	
+						else
+							$('#Records').append("<tr class='alt'><td>"+recordID+"</td><td>"+recordEntryNo+"</td><td>"+recordPayLoad+"</td><td><a href='#' class='editRecords' title='"+recordURI+"'>Edit</a></td></tr>"); 	
+					}
+					/*
+					jQuery("#my-table").table2csv({
+						callback: function (csv, name) {
+							jQuery.post(
+								url, encodeURIComponent(csv),
+								 function (data) {
+									 location.href = "/file?csv=" + csv + "&name=" + name;
+								 }
+							);
+						}
+					});
+					*/
+				}
+			},
+			error: function(jqXHR, textStatus, errorThrown) {
+			  console.log(textStatus, errorThrown);
+			}
+		});
+	});
+  </script>
+
+</body>
+</html>
