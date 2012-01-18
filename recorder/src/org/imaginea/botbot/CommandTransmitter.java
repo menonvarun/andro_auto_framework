@@ -1,42 +1,35 @@
 package org.imaginea.botbot;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintStream;
 import java.net.HttpURLConnection;
-import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.URL;
-import java.net.UnknownHostException;
 import java.util.List;
 import java.util.Map;
 
-import junit.framework.Assert;
-
-import org.json.JSONObject;
-
-import android.widget.SeekBar;
 
 public class CommandTransmitter {
 	Socket soc = null;
 	PrintStream ps = null;
 	static String sessionID = null;
-	String desktopIP="10.0.2.2";
-	public CommandTransmitter(){
-		sessionID=createSession();
+	String desktopIP = "10.0.2.2";
+
+	public CommandTransmitter() {
+		sessionID = createSession();
 	}
+
 	public void publish(Command command) {
-			createRecord(sessionID, command.getData());
+		createRecord(sessionID, command.getData());
 	}
 
 	public boolean checkSession(String id) {
 		try {
 			URL url = null;
-			url = new URL(
-					"http://"+desktopIP+":8080/bot-bot-server/api/recordsessions/"
-							+ id);
+			url = new URL("http://" + desktopIP
+					+ ":8080/bot-bot-server/api/recordsessions/" + id);
 			HttpURLConnection connection = (HttpURLConnection) url
 					.openConnection();
 			connection.setDoInput(true);
@@ -58,8 +51,8 @@ public class CommandTransmitter {
 	public void createRecord(String sessionId, String data) {
 		try {
 			URL url = null;
-			url = new URL(
-					"http://"+desktopIP+":8080/bot-bot-server/api/recordentries");
+			url = new URL("http://" + desktopIP
+					+ ":8080/bot-bot-server/api/recordentries");
 			HttpURLConnection connection = (HttpURLConnection) url
 					.openConnection();
 			connection.setDoOutput(true);
@@ -89,15 +82,18 @@ public class CommandTransmitter {
 				System.out.println(inputLine);
 			in.close();
 		} catch (Exception e) {
-			Assert.fail("Failed to create record beacuse of :" + e.getMessage());
+			System.out.println("Unable to create record because of :"
+					+ e.getMessage());
+			System.out
+					.println("System will continue to work without recording.");
 		}
 	}
 
 	public String createSession() {
 		try {
 			URL url = null;
-			url = new URL(
-					"http://"+desktopIP+":8080/bot-bot-server/api/recordsessions");
+			url = new URL("http://" + desktopIP
+					+ ":8080/bot-bot-server/api/recordsessions");
 			HttpURLConnection connection = (HttpURLConnection) url
 					.openConnection();
 			connection.setDoOutput(true);
@@ -121,8 +117,10 @@ public class CommandTransmitter {
 				return null;
 			}
 		} catch (Exception e) {
-			Assert.fail("Failed to create session beacuse of :"
+			System.out.println("Unable to create session because of :"
 					+ e.getMessage());
+			System.out
+					.println("System will continue to work without recording.");
 			return null;
 		}
 	}
