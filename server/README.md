@@ -1,16 +1,38 @@
-# bot-bot server
+# *bot-bot* Server
 
-This server application is meant to be used with bot-bot aandroid test automation framework.
+-----------------
+##Introduction:
+**Bot-bot server** is a component of bot-bot automation framework. It is used to record, store and modify the user actions taken on the android app at the user end/system.
 
-## Build the war
-To build the war run
->
+Available functionalities:
+
+- View recorded sessions
+- View recorded entries for a particular session.
+
+------------
+##Build the war:
+
+To build the bot-bot-server war you need to have maven isntalled in your system. Maven can be downloaded from the ths [link](http://maven.apache.org/download.html).
+
+Once done run the following command at the root of the bot-bot/server folder
+> 
 > $mvn dist
 >
 
+------------
 ## Deploy the war
-The war is self contaained including the database. So just deploy the war in your servlet contaainer aand you are ready to go.
+The war is self contained including the database. So it can be deployed to any of the servlet container like *Apache Tomcat*, *Jboss*, etc.
 
+To deploy the war do the following:
+
+- Create the war as mentioned in the *Build the war* section.
+- Copy the war from the target folder under the bot-bot/server to the webapps folder of your serrvlet container.
+- Start your server.
+- Access the server using the following URL
+	
+	http://&lt;localhost or systemip&gt;:&lt;port&gt;/bot-bot-server/index.html
+
+------------
 ## Available URLs
 
 ### /api/*
@@ -32,3 +54,4 @@ This URL will open the H2 Web Console. You can connect to the databse here using
 
 Feel free to log any issues or feature requests, I'll try to get to them asap!
 
+------------
