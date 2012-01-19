@@ -103,7 +103,7 @@ public class RecordEntry implements Serializable {
 
     @Override
     public String toString() {
-        return "com.imaginea.botbot.server.Record[ id=" + id + " ]";
+        return "com.imaginea.botbot.server.RecordEntry[ id=" + id + " ]";
     }
     
 }
