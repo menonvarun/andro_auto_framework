@@ -8,6 +8,9 @@ import java.io.PrintStream;
 import java.net.HttpURLConnection;
 import java.net.Socket;
 import java.net.URL;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
@@ -73,7 +76,7 @@ public class CommandTransmitter {
 	
 
 	class CreateSessionTask extends AsyncTask<Void, Void, Void> {
-
+		int recordID=1;
 		/**
 		 * This method is called when CreateSessionTask.execute() is invoked.
 		 * This method performs two actions, first it creates a session and then it waits for population of
@@ -86,6 +89,7 @@ public class CommandTransmitter {
 			// creating session
 			try {
 				System.out.println("In background");
+				recordID=1;
 				URL url = null;
 				url = new URL("http://" + CommandTransmitter.this.desktopIP
 						+ ":8080/bot-bot-server/api/recordsessions");
@@ -143,6 +147,8 @@ public class CommandTransmitter {
 		void postRecord(String data) {
 			// TODO Auto-generated method stub
 			try {
+				DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				String currentDateTime = df.format(new Date());
 				System.out.println("In create record Async task"
 						+ CommandTransmitter.sessionID + data);
 				Log.i("Async DAta", data);
@@ -157,12 +163,12 @@ public class CommandTransmitter {
 						"application/json; charset=UTF-8");
 				OutputStreamWriter out = new OutputStreamWriter(
 						connection.getOutputStream());
-				out.write("{\"entryNo\":\"6\",\"recordSession\":{\"id\":\""
+				out.write("{\"entryNo\":\""+recordID+"\",\"recordSession\":{\"id\":\""
 						+ CommandTransmitter.sessionID
-						+ "\"},\"entryTime\":\"2011-02-02 11:11:11\",\"payload\":\""
+						+ "\"},\"entryTime\":\""+currentDateTime+"\",\"payload\":\""
 						+ data + "\"");
 				out.close();
-
+				recordID++;
 				Map<String, List<String>> respHeaders = connection
 						.getHeaderFields();
 
