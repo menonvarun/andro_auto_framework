@@ -26,7 +26,10 @@ public class CommandTransmitter {
 	Socket soc = null;
 	PrintStream ps = null;
 	static String sessionID = null;
-	String desktopIP = "10.0.2.2";
+	static String serverIP = IServerProperties.serverIP;
+	static String port=IServerProperties.port;
+	static String sessionName=IServerProperties.sessionName;
+	static String serverName=IServerProperties.serverName;
 	BlockingQueue<String> queue = new LinkedBlockingQueue<String>();
 
 	public CommandTransmitter() {
@@ -44,8 +47,8 @@ public class CommandTransmitter {
 	public boolean checkSession(String id) {
 		try {
 			URL url = null;
-			url = new URL("http://" + desktopIP
-					+ ":8080/bot-bot-server/api/recordsessions/" + id);
+			url = new URL("http://" + CommandTransmitter.serverIP
+					+ ":"+port+"/"+serverName+"/api/recordsessions/" + id);
 			HttpURLConnection connection = (HttpURLConnection) url
 					.openConnection();
 			connection.setDoInput(true);
@@ -91,8 +94,8 @@ public class CommandTransmitter {
 				System.out.println("In background");
 				recordID=1;
 				URL url = null;
-				url = new URL("http://" + CommandTransmitter.this.desktopIP
-						+ ":8080/bot-bot-server/api/recordsessions");
+				url = new URL("http://" + CommandTransmitter.serverIP
+						+ ":"+port+"/"+serverName+"/api/recordsessions");
 				HttpURLConnection connection = (HttpURLConnection) url
 						.openConnection();
 				connection.setDoOutput(true);
@@ -101,7 +104,7 @@ public class CommandTransmitter {
 						"application/json; charset=UTF-8");
 				OutputStreamWriter out = new OutputStreamWriter(
 						connection.getOutputStream());
-				out.write("{\n\"name\":\"bot-bot record\"\n}");
+				out.write("{\n\"name\":\""+sessionName+"\"\n}");
 				out.close();
 
 				Map<String, List<String>> respHeaders = connection
@@ -153,8 +156,8 @@ public class CommandTransmitter {
 						+ CommandTransmitter.sessionID + data);
 				Log.i("Async DAta", data);
 				URL url = null;
-				url = new URL("http://" + CommandTransmitter.this.desktopIP
-						+ ":8080/bot-bot-server/api/recordentries");
+				url = new URL("http://" + CommandTransmitter.serverIP
+						+ ":"+port+"/"+serverName+"/api/recordentries");
 				HttpURLConnection connection = (HttpURLConnection) url
 						.openConnection();
 				connection.setDoOutput(true);
