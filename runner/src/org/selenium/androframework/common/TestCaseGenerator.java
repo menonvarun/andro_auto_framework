@@ -68,9 +68,14 @@ public class TestCaseGenerator {
 			String javaClassFile = new File(packagePath).getName();
 			String javaClassName = javaClassFile.substring(0, 1).toUpperCase()
 					+ javaClassFile.substring(1);
-
+			try{
 			packagePath = packagePath
-					.substring(0, packagePath.lastIndexOf("/"));
+					.substring(0, packagePath.lastIndexOf("/"));}
+			catch(StringIndexOutOfBoundsException e)
+			{
+				System.out.println("Exception out of bounds");
+				packagePath="";
+			}
 			new File("src/test/" + packagePath).mkdirs();
 			Writer output = new BufferedWriter(new FileWriter("src/test/"
 					+ packagePath + "/" + javaClassName + ".java"));
@@ -105,10 +110,20 @@ public class TestCaseGenerator {
 		try {
 			String tempString = "";
 			String importString = classPath.replace("/", ".");
+			String outputStringClass="";
 			importString = replaceSpecialChar(importString);
+			try{
 			importString = importString.substring(0,
 					importString.lastIndexOf("."));
-			String outputStringClass = "package test." + importString + ";\n";
+			}
+			catch(StringIndexOutOfBoundsException e)
+			{
+				System.out.println("Exception out of bounds");
+				outputStringClass = "package test;\n";
+			}
+			if(outputStringClass==""){
+			outputStringClass = "package test." + importString + ";\n";
+			}
 			String outputStringTestCase = "";
 			String testCase = "";
 
