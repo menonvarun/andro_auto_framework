@@ -2,7 +2,7 @@ package org.selenium.androframework.common;
 
 import java.util.List;
 
-
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 import org.selenium.androframework.api.IdentifyByType;
 import org.selenium.androframework.api.UsefulFunctions;
@@ -63,13 +63,14 @@ public class KeywordDefinitions {
 	public void assertlocatorpresent(AndroidNativeDriver driver, String locator) {
 		boolean result = uf.waitForElementPresent(driver,
 				IdentifyByType.getLocatorType(locator));
-		Assert.assertTrue(result, "Test failed. Unable to find locator: " + locator);
+		Assert.assertTrue(result, "Test failed. Unable to find locator: "
+				+ locator);
 	}
 
 	public void assertpartialtextpresent(AndroidNativeDriver driver, String text) {
 		boolean result = uf.waitForElementPresent(driver,
 				AndroidNativeBy.partialText(text));
-		Assert.assertTrue(result,"Test failed. Unable to find text: " + text);
+		Assert.assertTrue(result, "Test failed. Unable to find text: " + text);
 	}
 
 	public void asserttextpresent(AndroidNativeDriver driver, String text) {
@@ -77,9 +78,10 @@ public class KeywordDefinitions {
 				AndroidNativeBy.partialText(text));
 		String elementText = driver.findElement(
 				AndroidNativeBy.partialText(text)).getText();
-		Assert.assertTrue( result,"Test failed. Unable to find text: " + text);
-		Assert.assertTrue(text.contentEquals(elementText),"Test failed. Text dont match expected: " + text
-				+ " but present is: " + elementText);
+		Assert.assertTrue(result, "Test failed. Unable to find text: " + text);
+		Assert.assertTrue(text.contentEquals(elementText),
+				"Test failed. Text dont match expected: " + text
+						+ " but present is: " + elementText);
 	}
 
 	public void clickback(AndroidNativeDriver driver) {
@@ -94,8 +96,19 @@ public class KeywordDefinitions {
 		clickElementByText(driver, ClassNames.RADIO_BUTTON, buttonText);
 	}
 
-	public void clickspinner(AndroidNativeDriver driver, String buttonText) {
-		clickElementByText(driver, "android.widget.Spinner", buttonText);
+	public void clickspinner(AndroidNativeDriver driver, String rid,
+			String value) {
+		clickbyid(driver, rid);
+		/*
+		 * Doing this becoz some time the spinner is not clicked so calling it
+		 * 2nd time and handling exception in case it has already been clicked.
+		 */
+		try {
+			clickbyid(driver, rid);
+		} catch (NoSuchElementException e) {
+
+		}
+		clicktext(driver, value);
 	}
 
 	public void clicktext(AndroidNativeDriver driver, String text) {
@@ -136,13 +149,13 @@ public class KeywordDefinitions {
 
 	}
 
-	public void entertext(AndroidNativeDriver driver, int locator,
-			String text) {
-		List<WebElement> textFields = driver.findElementsByClassName(ClassNames.EDIT_TEXT);
-		if(textFields.size()>locator){
-			Assert.fail("Unable to find test edit box at position "+ locator);
+	public void entertext(AndroidNativeDriver driver, int locator, String text) {
+		List<WebElement> textFields = driver
+				.findElementsByClassName(ClassNames.EDIT_TEXT);
+		if (textFields.size() > locator) {
+			Assert.fail("Unable to find test edit box at position " + locator);
 		}
-		WebElement textElement= textFields.get(locator-1);
+		WebElement textElement = textFields.get(locator - 1);
 		try {
 			Thread.sleep(2000);
 		} catch (InterruptedException e) {
@@ -153,7 +166,7 @@ public class KeywordDefinitions {
 		// element.click();
 
 	}
-	
+
 	public void verifyscreen(String imagePath) {
 		Screen s = new Screen();
 		try {
