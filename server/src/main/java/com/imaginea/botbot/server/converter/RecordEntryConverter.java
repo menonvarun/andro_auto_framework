@@ -80,7 +80,7 @@ public class RecordEntryConverter {
      * @return value for entryNo
      */
     @XmlElement
-    public Long getEntryNo() {
+    public String getEntryNo() {
         return (expandLevel > 0) ? entity.getEntryNo() : null;
     }
 
@@ -89,7 +89,7 @@ public class RecordEntryConverter {
      *
      * @param value the value to set
      */
-    public void setEntryNo(Long value) {
+    public void setEntryNo(String value) {
         entity.setEntryNo(value);
     }
 
@@ -99,7 +99,7 @@ public class RecordEntryConverter {
      * @return value for entryNo
      */
     @XmlElement
-    public Long getPrevEntryNo() {
+    public String getPrevEntryNo() {
         return (expandLevel > 0) ? entity.getPrevEntryNo() : null;
     }
 
@@ -108,7 +108,7 @@ public class RecordEntryConverter {
      *
      * @param value the value to set
      */
-    public void setPrevEntryNo(Long value) {
+    public void setPrevEntryNo(String value) {
         entity.setPrevEntryNo(value);
     }    
     
@@ -118,7 +118,7 @@ public class RecordEntryConverter {
      * @return value for timestamp
      */
     @XmlElement
-    public Calendar getTimestamp() {
+    public Calendar getEntryTime() {
         return (expandLevel > 0) ? entity.getEntryTime() : null;
     }
 
@@ -127,7 +127,7 @@ public class RecordEntryConverter {
      *
      * @param value the value to set
      */
-    public void setTimestamp(Calendar value) {
+    public void setEntryTime(Calendar value) {
         entity.setEntryTime(value);
     }
 

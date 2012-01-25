@@ -48,7 +48,7 @@ public class RecordEntriesResource {
     @Produces({"application/xml", "application/json"})
     public RecordEntriesConverter get(@QueryParam("start")
             @DefaultValue("0") int start, @QueryParam("max")
-            @DefaultValue("10") int max, @QueryParam("expandLevel")
+            @DefaultValue("100") int max, @QueryParam("expandLevel")
             @DefaultValue("1") int expandLevel, @QueryParam("query")
             @DefaultValue("SELECT e FROM RecordEntry e") String query) {
         PersistenceService persistenceSvc = PersistenceService.getInstance();
