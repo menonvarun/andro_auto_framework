@@ -27,7 +27,9 @@ public class RecordEntry implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     
-    private Float entryNo;
+    private Long entryNo;
+    
+    private Long prevEntryNo;
     
     @Temporal(TemporalType.TIMESTAMP)
     private Calendar entryTime;
@@ -57,12 +59,20 @@ public class RecordEntry implements Serializable {
         this.recordSession = recordSession;
     }
 
-    public Float getEntryNo() {
+    public Long getEntryNo() {
         return entryNo;
     }
 
-    public void setEntryNo(Float entryNo) {
+    public void setEntryNo(Long entryNo) {
         this.entryNo = entryNo;
+    }
+
+    public Long getPrevEntryNo() {
+        return prevEntryNo;
+    }
+
+    public void setPrevEntryNo(Long prevEntryNo) {
+        this.prevEntryNo = prevEntryNo;
     }
 
     public String getPayload() {

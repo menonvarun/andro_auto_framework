@@ -80,7 +80,7 @@ public class RecordEntryConverter {
      * @return value for entryNo
      */
     @XmlElement
-    public Float getEntryNo() {
+    public Long getEntryNo() {
         return (expandLevel > 0) ? entity.getEntryNo() : null;
     }
 
@@ -89,10 +89,29 @@ public class RecordEntryConverter {
      *
      * @param value the value to set
      */
-    public void setEntryNo(Float value) {
+    public void setEntryNo(Long value) {
         entity.setEntryNo(value);
     }
 
+    /**
+     * Getter for entryNo.
+     *
+     * @return value for entryNo
+     */
+    @XmlElement
+    public Long getPrevEntryNo() {
+        return (expandLevel > 0) ? entity.getPrevEntryNo() : null;
+    }
+
+    /**
+     * Setter for entryNo.
+     *
+     * @param value the value to set
+     */
+    public void setPrevEntryNo(Long value) {
+        entity.setPrevEntryNo(value);
+    }    
+    
     /**
      * Getter for timestamp.
      *
