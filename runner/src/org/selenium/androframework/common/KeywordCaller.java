@@ -14,7 +14,7 @@ public class KeywordCaller {
 		this.driver = driver;
 	}
 
-	public void methodCaller(String key, ArrayList<String> args) {
+	public void methodCaller(String key,ArrayList<String> args) {
 		Keywords keyValue = null;
 		try {
 			keyValue = Keywords.valueOf(key);
@@ -86,7 +86,7 @@ public class KeywordCaller {
 			kd.assertspinnerpresent(driver, args.get(0));
 			break;
 		case clickspinner:
-			kd.clickspinner(driver,  args.get(0));
+			kd.clickspinner(driver, args.get(0),args.get(1));
 			break;
 		case clickradiobutton:
 			kd.clickradiobutton(driver,  args.get(0));

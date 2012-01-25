@@ -27,7 +27,7 @@ public class OnItemSelectedListenerTest implements
 			View view = (View) v;
 			int rowNum = (Integer) aPosition;
 			long rowID = (Long) arg3;
-			Recorder.record("click", parent1, view, rowNum, rowID);
+			Recorder.record("clickspinner", parent1, view, rowNum, rowID);
 			lastposition=aPosition;
 		}
 

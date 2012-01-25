@@ -14,6 +14,7 @@ public class ViewClasses {
 		supportedViews.put("TextView", "android.widget.TextView");
 		supportedViews.put("ToggleButton", "android.widget.ToggleButton");
 		supportedViews.put("WebView", "android.webkit.WebView");
+		supportedViews.put("Spinner", "android.widget.Spinner");
 	}
 
 	public boolean isSupportedClass(String className) {

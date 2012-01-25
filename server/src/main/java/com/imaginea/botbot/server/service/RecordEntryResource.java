@@ -108,7 +108,7 @@ public class RecordEntryResource {
     protected RecordEntry getEntity() {
         EntityManager em = PersistenceService.getInstance().getEntityManager();
         try {
-            return (RecordEntry) em.createQuery("SELECT e FROM Record e where e.id = :id").setParameter("id", id).getSingleResult();
+            return (RecordEntry) em.createQuery("SELECT e FROM RecordEntry e where e.id = :id").setParameter("id", id).getSingleResult();
         } catch (NoResultException ex) {
             throw new WebApplicationException(new Throwable("Resource for " + uriInfo.getAbsolutePath().resolve(URI.create("")) + " does not exist."), 404);
         }

@@ -50,7 +50,7 @@ public class RecordEntriesResource {
             @DefaultValue("0") int start, @QueryParam("max")
             @DefaultValue("10") int max, @QueryParam("expandLevel")
             @DefaultValue("1") int expandLevel, @QueryParam("query")
-            @DefaultValue("SELECT e FROM Record e") String query) {
+            @DefaultValue("SELECT e FROM RecordEntry e") String query) {
         PersistenceService persistenceSvc = PersistenceService.getInstance();
         try {
             persistenceSvc.beginTx();
