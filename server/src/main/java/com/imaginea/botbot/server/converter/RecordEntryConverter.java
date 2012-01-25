@@ -80,7 +80,7 @@ public class RecordEntryConverter {
      * @return value for entryNo
      */
     @XmlElement
-    public Long getEntryNo() {
+    public Float getEntryNo() {
         return (expandLevel > 0) ? entity.getEntryNo() : null;
     }
 
@@ -89,7 +89,7 @@ public class RecordEntryConverter {
      *
      * @param value the value to set
      */
-    public void setEntryNo(Long value) {
+    public void setEntryNo(Float value) {
         entity.setEntryNo(value);
     }
 

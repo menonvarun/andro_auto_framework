@@ -27,7 +27,7 @@ public class RecordEntry implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     
-    private Long entryNo;
+    private Float entryNo;
     
     @Temporal(TemporalType.TIMESTAMP)
     private Calendar entryTime;
@@ -57,11 +57,11 @@ public class RecordEntry implements Serializable {
         this.recordSession = recordSession;
     }
 
-    public Long getEntryNo() {
+    public Float getEntryNo() {
         return entryNo;
     }
 
-    public void setEntryNo(Long entryNo) {
+    public void setEntryNo(Float entryNo) {
         this.entryNo = entryNo;
     }
 
