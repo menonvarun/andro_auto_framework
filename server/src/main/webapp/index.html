@@ -1,76 +1,27 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <style>img{ height: 100px; float: left; }</style>
-  <script src="http://code.jquery.com/jquery-latest.js"></script>
-  <script type="text/javascript" src="jquery.table2csv.0.1.1.min.js"></script>
-  <style>
-    .gradientBackground{
-	background-color: #0064CD;
-    background-image: -moz-linear-gradient(center top , #049CDB, #0064CD);
-    background-repeat: repeat-x;
-    border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
-    color: #FFFFFF;
-    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
-	}
-	#Records tr:first-child{
-	 border-radius: 10px;
-	}
-	tr.alt{background-color: #ccc;}
-	#header{
-		position:absolute;
-		top:0px;
-		left:0px;
-		width:100%;
-		height:70px;
-		margin-bottom:10px;
-	}
-	#header p{
-		position:relative;
-		font-size:24px; font-weight:bold; margin:20px;
-	}
-	#footer{
-		position:absolute;
-		width:100%;
-		bottom:0px;
-		left:0px;
-		height:100px;
-		background:#666;
-		color: #ccc;
-		text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
-		text align:right;
-	}
-	#footer p{
-		position:relative;
-		float:right;
-		margin:50px 50px 0 50px;
-	}
-	
-	#body{
-		margin-top:100px;
-	}
-	
-	.holderDiv{
-		overflow:auto;
-	}
-  </style>
-</head>
+  <script src="js/jquery-1.7.1.min.js"></script>
+  <link href="css/style.css" rel="stylesheet" type="text/css"/>
+</head>  
 <body>
 <div id="header" class="gradientBackground"><p>Bot Bot Server</p></div>
 <div id="body">
   <div id="sessionsHolder">
+	  <font size="6" class="add" id="addSession">+</font>
 	  <h3 id="sessionsHeading">Choose a session</h3>
 	  <div class="holderDiv">
-		<table id="DynamicGrid" width="100%" cellpadding="5"></table>
+		<table id="Sessions" width="100%" cellpadding="5"><!--<img src='loader.gif' width="50px"/>--></table>
 	  </div>
   </div>
   
-  <div id="recordsHolder" style="display:none">
+  <div id="recordsHolder" style="display:none;">
+	  <font size="6" class="add" id="addRecord">+</font>
 	  <h3>Records of session:  <span id="recordsHeading"></span></h3>
 	  <div class="holderDiv">
 		<table width="100%" id="Records" cellpadding="5"></table>
 	  </div>
-	  <a onclick="getSessions()" href="#">Back</a>
+	  <a class="back" href="#">Back</a>
   </div>
   
 </div>  
@@ -78,44 +29,19 @@
 <p>a product of Imaginea</p>
 </div>
 <script>
-	$(".holderDiv").css('height',window.innerHeight-280);
-	getSessions(); 
-	
-/*	
-		$.ajax({
-			url: 'api/recordsessions/',
-			data:'{"name":"test03"}',
-			type: 'POST',
-			processData:false,
-			contentType: "application/json",
-			dataType: "json",  
-			success: function(json) {
-				console.log("::::: ");
-				console.log(json);
-			},
-			error: function(jqXHR, textStatus, errorThrown) {
-			  console.log(textStatus, errorThrown);
-			}
-		});
-*/	
-	function getSessions()
-	{
+	$(".holderDiv").css('height', window.innerHeight - 280);
+	function getSessions() {
 		$("#sessionsHolder").show();
 		$('#recordsHolder').hide();
-		
 		$.ajax({
 			url: 'api/recordsessions/',
-			type: 'GET',            
-			dataType: "json",  
-			success: function(json) { 
-				//console.log(json.recordSession.length); 
-				var sessions = "<tr class='gradientBackground'><th>Name</th><th>View</th><th>Delete</th></tr>";
-				
-				if(json.recordSession == undefined)
-				{	
-					sessions = sessions + "<tr align='center'><td colspan='3'>No sessions found</td></tr>";
-				}
-				else
+			type: 'GET',           
+			dataType: "json", 
+			success: function (json) {
+				var sessions = "<tr class='gradientBackground'><th>ID</th><th>Name</th><th>View</th><th>Delete</th></tr>";
+				if (json.recordSession == undefined) {
+					sessions = sessions + "<tr align='center'><td colspan='4'>No sessions found</td></tr>";
+				} else
 				if(json.recordSession.length == undefined)
 				{	
 					var sessionID = json.recordSession.id;
@@ -123,7 +49,7 @@
 					var linkForRecords = json.recordSession.recordEntries['@uri'];
 					var linkForDelete = json.recordSession['@uri'];
 					
-					sessions = sessions +"<tr><td>"+sessionName+"</td><td><a href='#' class='viewRecords' name='"+sessionName+"' title='"+linkForRecords+"'>view Records</a></td><td><a href='#' class='deleteSession' title='"+linkForDelete+"'>Delete</a></td></li>"; 	
+					sessions = sessions +"<tr><td class='sessionID'>"+sessionID+"</td><td class='sessionName'>"+sessionName+"</td><td><a href='#' class='viewRecords' title='"+linkForRecords+"'>view Records</a></td><td><a href='#' class='deleteSession' title='"+linkForDelete+"'>Delete</a></td></tr>"; 	
 				}
 				else
 				{
@@ -135,59 +61,188 @@
 						var linkForDelete = json.recordSession[i]['@uri'];
 						
 						if(i % 2 == 0)
-						sessions = sessions +"<tr><td>"+sessionName+"</td><td><a href='#' class='viewRecords' name='"+sessionName+"' title='"+linkForRecords+"'>view Records</a></td><td><a href='#' class='deleteSession' title='"+linkForDelete+"'>Delete</a></td></li>"; 	
+						sessions = sessions +"<tr><td class='sessionID'>"+sessionID+"</td><td class='sessionName'>"+sessionName+"</td><td><a href='#' class='viewRecords' title='"+linkForRecords+"'>view Records</a></td><td><a href='#' class='deleteSession' title='"+linkForDelete+"'>Delete</a></td></tr>"; 	
 						else
-						sessions = sessions +"<tr class='alt'><td>"+sessionName+"</td><td><a href='#' class='viewRecords' name='"+sessionName+"' title='"+linkForRecords+"'>view Records</a></td><td><a href='#' class='deleteSession' title='"+linkForDelete+"'>Delete</a></td></li>"; 	
+						sessions = sessions +"<tr class='alt'><td class='sessionID'>"+sessionID+"</td><td class='sessionName'>"+sessionName+"</td><td><a href='#' class='viewRecords' title='"+linkForRecords+"'>view Records</a></td><td><a href='#' class='deleteSession' title='"+linkForDelete+"'>Delete</a></td></tr>"; 	
 					}
 				}	
-				//console.log("sessions: "+sessions);
-				$('#DynamicGrid').html(sessions);
+				$('#Sessions').html(sessions);
 			},
 			error: function(jqXHR, textStatus, errorThrown) {
 			  console.log(textStatus, errorThrown);
 			}
 		});
 	}	
+	
+	
+	getSessions(); 
+
+	
+	function addSession(sessionName)
+	{
+		var sessionData = '{"name":"'+sessionName+'"}';
+		$.ajax({
+			url: 'api/recordsessions/',
+			data: sessionData,
+			type: 'POST',
+			processData:false,
+			contentType: "application/json",
+			dataType: "json",  
+			success: function(json) {
+				getSessions(); 
+			},
+			error: function(jqXHR, textStatus, errorThrown) {
+			  console.log(textStatus, errorThrown);
+			}
+		});
+	}
+		
+	function addRecord(data)
+	{
+		var recordData = '{"entryNo":"1","recordSession":{"id":"'+data.sessionID+'"},"payload":"{\\\"command\\\":\\\"'+data.command+'\\\",\\\"rid\\\":\\\"'+data.rid+'\\\",\\\"viewClassName\\\":\\\"'+data.className+'\\\",\\\"args[0]\\\":\\\"'+data.args0+'\\\",\\\"args[1]\\\":\\\"'+data.args1+'\\\"}"}';
+		console.log(recordData);
+		
+		$.ajax({
+			url: 'api/recordentries/',
+			data: recordData,
+			type: 'POST',
+			processData:false,
+			contentType: "application/json",
+			dataType: "json",  
+			success: function(res) {
+				getRecords(data.recordURI);
+			},
+			error: function(jqXHR, textStatus, errorThrown) {
+			  console.log(textStatus, errorThrown);
+			}
+		});
+		
+	}
+	
+	$("#addRecord").click(function(){
+		$("#Records").append("<tr class='newRow'><td></td><td></td><td class='command'><input type='text'/></td><td class='rid'><input type='text'/></td><td class='className'><input type='text'/></td><td class='args0'><input type='text'/></td><td class='args1'><input type='text'/></td><td><a href='#' id='saveNewRecord'>Save</a>&nbsp;|&nbsp;<a href='#' id='cancelNewRecord'>Cancel</a></td></tr>");
+	});
+	
+	$(".back").click(function(){
+		getSessions();
+	});
+	
+	$("#saveNewRecord").live("click", function(){
+		var command = $(this).parent().siblings('.command').find('input').val();	
+		var rid = $(this).parent().siblings('.rid').children('input').val();
+		var className = $(this).parent().siblings('.className').children('input').val();
+		var args0 = $(this).parent().siblings('.args0').children('input').val();
+		var args1 = $(this).parent().siblings('.args1').children('input').val();
+		var recordURI = $("#Records").attr("recordURI");
+		var sessionID = $("#Records").attr("sessionID");
+		
+		addRecord({recordURI:recordURI,sessionID:sessionID,command:command,rid:rid,className:className,args0:args0,args1:args1});
+	});
+	
+	$("#cancelNewRecord").live("click", function(){
+		$(this).parent().parent().remove();
+	});
+	
+	
+	$("#addSession").click(function(){
+		$("#Sessions").append("<tr class='newRow'><td></td><td><input type='text'/></td><td><a href='#' id='saveNewSession'>Save</a></td><td><a href='#'  id='cancelNewSession'>Cancel</a></td></tr>");
+	});
+	
+	$("#saveNewSession").live("click", function(){
+		var sessionName = $(this).parent().parent().find("input").val();
+		addSession(sessionName);
+	});
+	
+	$("#cancelNewSession").live("click", function(){
+		$(this).parent().parent().remove();
+	});
 			
 	$(".deleteSession").live("click", function(){	
 		var deleteURI = $(this).attr("title");
-		//alert("Delete URI::: "+deleteURI);
 		$.ajax({
 			url: deleteURI,
 			type: 'DELETE',            
 			contentType: "application/json",
 			dataType: "json",  
 			success: function(json) {
-				//alert(json);
 				getSessions(); 
 			}
 		});
 	});
 			
 	$(".editRecords").live("click", function(){	
-		//alert("make a popup here");
+		var htmlContent = $(this).html();
 		var recordURI = $(this).attr("title");
-		$.ajax({
-			url: recordURI,
-			type: 'GET',            
-			contentType: "application/json",
-			dataType: "json",  
-			success: function(json) {
-				alert(JSON.stringify(json));
-			}
-		});
+		var recordSession = $(this).parent().parent().attr("title");
+		var recordID = $(this).parent().siblings('.recordID').html();
+		var entryNo = $(this).parent().siblings('.entryNo').html();
+		
+		if(htmlContent == "Edit")
+		{	
+			var command = $(this).parent().siblings('.command').html();	
+			var rid = $(this).parent().siblings('.rid').html();
+			var className = $(this).parent().siblings('.className').html();
+			var args0 = $(this).parent().siblings('.args0').html();
+			var args1 = $(this).parent().siblings('.args1').html();	
+			
+			$(this).parent().siblings('.command').html("<input type='text' value='"+command+"'/>");			
+			$(this).parent().siblings('.rid').html("<input type='text' value='"+rid+"'/>");			
+			$(this).parent().siblings('.className').html("<input type='text' value='"+className+"'/>");			
+			$(this).parent().siblings('.args0').html("<input type='text' value='"+args0+"'/>");			
+			$(this).parent().siblings('.args1').html("<input type='text' value='"+args1+"'/>");
+			
+			$(this).html("Save");
+		}
+		else
+		{
+			var eventSourceElem = $(this);
+			var command = $(this).parent().siblings('.command').find('input').val();	
+			var rid = $(this).parent().siblings('.rid').children('input').val();
+			var className = $(this).parent().siblings('.className').children('input').val();
+			var args0 = $(this).parent().siblings('.args0').children('input').val();
+			var args1 = $(this).parent().siblings('.args1').children('input').val();
+			
+			var data = '{"entryNo":"'+entryNo+'","id":"'+recordID+'","payload":"{\\\"command\\\":\\\"'+command+'\\\",\\\"rid\\\":\\\"'+rid+'\\\",\\\"viewClassName\\\":\\\"'+className+'\\\",\\\"args[0]\\\":\\\"'+args0+'\\\",\\\"args[1]\\\":\\\"'+args1+'\\\"}","recordSession":{"@uri":"'+recordSession+'"}}';
+			var endPoint = recordURI;
+			
+			$.ajax({
+				url: endPoint,
+				data: data,
+				type: 'PUT',            
+				processData:false,
+				contentType: "application/json",
+				dataType: "json",  
+				success: function(json, textStatus, jqXHR) {
+					eventSourceElem.parent().siblings('.command').html(command);			
+					eventSourceElem.parent().siblings('.rid').html(rid);			
+					eventSourceElem.parent().siblings('.className').html(className);			
+					eventSourceElem.parent().siblings('.args0').html(args0);			
+					eventSourceElem.parent().siblings('.args1').html(args1);
+					eventSourceElem.html("Edit");
+				}
+			});			
+		}
 	});
 	
-	$(".viewRecords").live("click", function(){		
-		//$("#DynamicGrid>li").css('color','black');
-		var sessionName = $(this).attr('name');
+	$(".viewRecords").live("click", function(){	
+		var sessionName = $(this).parent().siblings('.sessionName').html();
+		var sessionID = $(this).parent().siblings('.sessionID').html();
 		
 		$("#recordsHeading").html("<i>"+sessionName+"</i>");
 		
 		$("#sessionsHolder").hide();
 		$('#recordsHolder').show();
 		
-		var recordURI = $(this).attr('title');
+		var recordURI = $(this).attr('title');		
+		
+		$("#Records").attr("recordURI",recordURI);
+		$("#Records").attr("sessionID",sessionID);
+		
+		getRecords(recordURI);
+	});
+	
+	function getRecords(recordURI)
+	{
 		
 		$.ajax({
 			url: recordURI,
@@ -195,9 +250,9 @@
 			contentType: "application/json",
 			dataType: "json",  
 			success: function(json) { 
-				$('#Records').html("<img src='loader.gif'/>");
+				//$('#Records').html("<img src='loader.gif'/>");
+				
 				var records = "<tr class='gradientBackground'><th rowspan='2'>ID</th><th rowspan='2'>Entry No</th><th colspan='5'>Payload</th><th rowspan='2'>Edit</th></tr><tr class='gradientBackground'><th>Command</th><th>Rid</th><th>Class Name</th><th>Argument 1</th><th>Argument 2</th></tr>";
-				//var records = "<tr class='gradientBackground'><th>ID</th><th>Entry No</th><th>Payload</th><th>Edit</th></tr>";
 				if(json.record == undefined)
 				{			
 					records = records + "<tr><td colspan='8' align='center'>No Records Found</td></tr>"; 
@@ -205,6 +260,7 @@
 				else
 				if(json.record.length == undefined)
 				{					
+					var recordURI = json.record['@uri'];	
 					var recordID = json.record.id;
 					var recordEntryNo = json.record.entryNo;
 					var recordPayLoad = json.record.payload;
@@ -214,13 +270,16 @@
 					var recordPayLoadViewClassName = payloadJSON.viewClassName == undefined ?"":payloadJSON.viewClassName;
 					var recordPayLoadArgs0 = payloadJSON['args[0]'] == undefined ?"":payloadJSON['args[0]']; // keyName of this attribute of object is like array notation, therefore used different notation to retrieve its value
 					var recordPayLoadArgs1 = payloadJSON['args[1]'] == undefined ?"":payloadJSON['args[1]']; // keyName of this attribute of object is like array notation, therefore used different notation to retrieve its value
+					var recordSession = json.record.recordSession['@uri'];
+					recordSession = recordSession.substr(0,recordSession.indexOf('recordentries/'));
 					
-					records = records + "<tr><td>"+recordID+"</td><td>"+recordEntryNo+"</td><td>"+recordPayLoadCommand+"</td><td>"+recordPayLoadRid+"</td><td>"+recordPayLoadViewClassName+"</td><td>"+recordPayLoadArgs0+"</td><td>"+recordPayLoadArgs1+"</td><td><a href='#' class='editRecords' title='"+recordURI+"'>Edit</a></td></tr>"; 	
+					records = records + "<tr id='"+recordURI+"' title='"+recordSession+"'><td class='recordID'>"+recordID+"</td><td class='entryNo'>"+recordEntryNo+"</td><td class='command'>"+recordPayLoadCommand+"</td><td class='rid'>"+recordPayLoadRid+"</td><td class='className'>"+recordPayLoadViewClassName+"</td><td class='args0'>"+recordPayLoadArgs0+"</td><td class='args1'>"+recordPayLoadArgs1+"</td><td><a href='#' class='editRecords' title='"+recordURI+"'>Edit</a></td></tr>"; 	
 				}
 				else
 				{			
 					for(var i=0; i<json.record.length; i++)
 					{
+						var recordURI = json.record[i]['@uri'];		
 						var recordID = json.record[i].id;
 						var recordEntryNo = json.record[i].entryNo;
 						var recordPayLoad = json.record[i].payload;
@@ -230,11 +289,13 @@
 						var recordPayLoadViewClassName = payloadJSON.viewClassName == undefined ?"":payloadJSON.viewClassName;
 						var recordPayLoadArgs0 = payloadJSON['args[0]'] == undefined ?"":payloadJSON['args[0]']; // keyName of this attribute of object is like array notation, therefore used different notation to retrieve its value
 						var recordPayLoadArgs1 = payloadJSON['args[1]'] == undefined ?"":payloadJSON['args[1]']; // keyName of this attribute of object is like array notation, therefore used different notation to retrieve its value
+						var recordSession = json.record[i].recordSession['@uri'];
+						recordSession = recordSession.substr(0,recordSession.indexOf('recordentries/'));
 					
 						if(i % 2 == 0)
-							records = records + "<tr><td>"+recordID+"</td><td>"+recordEntryNo+"</td><td>"+recordPayLoadCommand+"</td><td>"+recordPayLoadRid+"</td><td>"+recordPayLoadViewClassName+"</td><td>"+recordPayLoadArgs0+"</td><td>"+recordPayLoadArgs1+"</td><td><a href='#' class='editRecords' title='"+recordURI+"'>Edit</a></td></tr>"; 	
+							records = records + "<tr id='"+recordURI+"' title='"+recordSession+"'><td class='recordID'>"+recordID+"</td><td class='entryNo'>"+recordEntryNo+"</td><td class='command'>"+recordPayLoadCommand+"</td><td class='rid'>"+recordPayLoadRid+"</td><td class='className'>"+recordPayLoadViewClassName+"</td><td class='args0'>"+recordPayLoadArgs0+"</td><td class='args1'>"+recordPayLoadArgs1+"</td><td><a href='#' class='editRecords' title='"+recordURI+"'>Edit</a></td></tr>"; 	
 						else
-							records = records + "<tr class='alt'><td>"+recordID+"</td><td>"+recordEntryNo+"</td><td>"+recordPayLoadCommand+"</td><td>"+recordPayLoadRid+"</td><td>"+recordPayLoadViewClassName+"</td><td>"+recordPayLoadArgs0+"</td><td>"+recordPayLoadArgs1+"</td><td><a href='#' class='editRecords' title='"+recordURI+"'>Edit</a></td></tr>"; 								
+							records = records + "<tr id='"+recordURI+"' title='"+recordSession+"' class='alt'><td class='recordID'>"+recordID+"</td><td class='entryNo'>"+recordEntryNo+"</td><td class='command'>"+recordPayLoadCommand+"</td><td class='rid'>"+recordPayLoadRid+"</td><td class='className'>"+recordPayLoadViewClassName+"</td><td class='args0'>"+recordPayLoadArgs0+"</td><td class='args1'>"+recordPayLoadArgs1+"</td><td><a href='#' class='editRecords' title='"+recordURI+"'>Edit</a></td></tr>"; 	
 					}
 					/*
 					jQuery("#my-table").table2csv({
@@ -254,8 +315,8 @@
 			error: function(jqXHR, textStatus, errorThrown) {
 			  console.log(textStatus, errorThrown);
 			}
-		});
-	});
+		});	
+	}
   </script>
 
 </body>
