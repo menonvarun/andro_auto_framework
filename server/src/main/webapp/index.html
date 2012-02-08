@@ -16,12 +16,21 @@
   </div>
   
   <div id="recordsHolder" style="display:none;">
-	  <font size="6" class="add" id="addRecord">+</font>
-	  <h3>Records of session:  <span id="recordsHeading"></span></h3>
-	  <div class="holderDiv">
+	<font size="6" class="add" id="addFirstRecord">+</font>
+	<h3>Records of session:  <span id="recordsHeading"></span></h3>
+	<div class="holderDiv">
 		<table width="100%" id="Records" cellpadding="5"></table>
-	  </div>
-	  <a class="back" href="#">Back</a>
+	</div>
+	<a class="back" href="#">Back</a>
+	<span id="addRecordDiv" class="rightFloater">
+		Add a new record after &nbsp;
+		<input class="afterBeforeRadio" type="radio" name="addPlaceLocator" value="after" checked/> After &nbsp;
+		<input class="afterBeforeRadio" type="radio" name="addPlaceLocator" value="before"/> Before &nbsp;
+		Entry No.&nbsp;
+		<select id="recordsCombo"></select> &nbsp;
+		<b><a id="addRecord">Go</a></b> &nbsp;
+	</span>
+	
   </div>
   
 </div>  
@@ -29,6 +38,9 @@
 <p>a product of Imaginea</p>
 </div>
 <script>
+	var maxEntryNo = 0;
+	var prevEntryNo = -1;
+	
 	$(".holderDiv").css('height', window.innerHeight - 280);
 	function getSessions() {
 		$("#sessionsHolder").show();
@@ -99,8 +111,29 @@
 		
 	function addRecord(data)
 	{
-		var recordData = '{"entryNo":"1","recordSession":{"id":"'+data.sessionID+'"},"payload":"{\\\"command\\\":\\\"'+data.command+'\\\",\\\"rid\\\":\\\"'+data.rid+'\\\",\\\"viewClassName\\\":\\\"'+data.className+'\\\",\\\"args[0]\\\":\\\"'+data.args0+'\\\",\\\"args[1]\\\":\\\"'+data.args1+'\\\"}"}';
+		var newRecodEntryNo = parseInt(maxEntryNo)+1;
+		var recordData = '{"entryNo":"'+newRecodEntryNo+'","prevEntryNo":"'+prevEntryNo+'","recordSession":{"id":"'+data.sessionID+'"},"payload":"{\\\"command\\\":\\\"'+data.command+'\\\",\\\"rid\\\":\\\"'+data.rid+'\\\",\\\"viewClassName\\\":\\\"'+data.className+'\\\",\\\"args[0]\\\":\\\"'+data.args0+'\\\",\\\"args[1]\\\":\\\"'+data.args1+'\\\"}"}';
 		console.log(recordData);
+		
+					
+				
+				var $nxt = $(".newRow").next();
+				//updating record that is already pointing the prevEntry
+				var recordURI = $nxt.attr("id");
+				var recordSession = $nxt.attr("title");
+				//console.log(recordSession);
+				
+				var command = $nxt.find('.command').html();	
+				var rid = $nxt.find('.rid').html();
+				var className = $nxt.find('.className').html();
+				var args0 = $nxt.find('.args0').html();
+				var args1 = $nxt.find('.args1').html();		
+				var recordID = $nxt.find('.recordID').html();
+				var entryNo = $nxt.find('.entryNo').html();
+
+				var sibblingData = '{"entryNo":"'+entryNo+'","prevEntryNo":"'+newRecodEntryNo+'","id":"'+recordID+'","payload":"{\\\"command\\\":\\\"'+command+'\\\",\\\"rid\\\":\\\"'+rid+'\\\",\\\"viewClassName\\\":\\\"'+className+'\\\",\\\"args[0]\\\":\\\"'+args0+'\\\",\\\"args[1]\\\":\\\"'+args1+'\\\"}","recordSession":{"@uri":"'+recordSession+'"}}';
+				console.log(recordURI+" -- "+sibblingData);
+				
 		
 		$.ajax({
 			url: 'api/recordentries/',
@@ -110,7 +143,24 @@
 			contentType: "application/json",
 			dataType: "json",  
 			success: function(res) {
-				getRecords(data.recordURI);
+				getRecords(data.recordURI);	
+					
+				
+				//updating record that is already pointing the prevEntry
+				
+				$.ajax({
+					url: recordURI,
+					data: sibblingData,
+					type: 'PUT',            
+					processData:false,
+					contentType: "application/json",
+					dataType: "json",  
+					success: function(json, textStatus, jqXHR) {
+						getRecords(data.recordURI);
+					}
+				});		
+				
+				
 			},
 			error: function(jqXHR, textStatus, errorThrown) {
 			  console.log(textStatus, errorThrown);
@@ -119,9 +169,28 @@
 		
 	}
 	
-	$("#addRecord").click(function(){
+	$("#addFirstRecord").click(function(){
+		prevEntryNo = -1;
 		$("#Records").append("<tr class='newRow'><td></td><td></td><td class='command'><input type='text'/></td><td class='rid'><input type='text'/></td><td class='className'><input type='text'/></td><td class='args0'><input type='text'/></td><td class='args1'><input type='text'/></td><td><a href='#' id='saveNewRecord'>Save</a>&nbsp;|&nbsp;<a href='#' id='cancelNewRecord'>Cancel</a></td></tr>");
 	});
+	
+	$("#addRecord").click(function(){
+		$(".newRow").remove();
+		var addPlaceLocator = $("input:radio[name=addPlaceLocator]:checked").val();
+		var record = ".row";
+		record = record + $("#recordsCombo option:selected").text();
+		
+		if(addPlaceLocator == "after")
+		{
+			prevEntryNo = $("#recordsCombo option:selected").text();
+			$(record).after("<tr class='newRow'><td></td><td></td><td class='command'><input type='text'/></td><td class='rid'><input type='text'/></td><td class='className'><input type='text'/></td><td class='args0'><input type='text'/></td><td class='args1'><input type='text'/></td><td><a href='#' id='saveNewRecord'>Save</a>&nbsp;|&nbsp;<a href='#' id='cancelNewRecord'>Cancel</a></td></tr>");
+		}
+		else
+		{	
+			prevEntryNo = $("#recordsCombo option:selected").val();
+			$(record).before("<tr class='newRow'><td></td><td></td><td class='command'><input type='text'/></td><td class='rid'><input type='text'/></td><td class='className'><input type='text'/></td><td class='args0'><input type='text'/></td><td class='args1'><input type='text'/></td><td><a href='#' id='saveNewRecord'>Save</a>&nbsp;|&nbsp;<a href='#' id='cancelNewRecord'>Cancel</a></td></tr>");
+		}			
+	});	
 	
 	$(".back").click(function(){
 		getSessions();
@@ -241,6 +310,11 @@
 		getRecords(recordURI);
 	});
 	
+	// a and be are object elements of your array
+	function mycomparator(a,b) {
+	  return parseInt(a.prevEntryNo) - parseInt(b.prevEntryNo);
+	}
+	
 	function getRecords(recordURI)
 	{
 		
@@ -251,6 +325,7 @@
 			dataType: "json",  
 			success: function(json) { 
 				//$('#Records').html("<img src='loader.gif'/>");
+				maxEntryNo = 0;
 				
 				var records = "<tr class='gradientBackground'><th rowspan='2'>ID</th><th rowspan='2'>Entry No</th><th colspan='5'>Payload</th><th rowspan='2'>Edit</th></tr><tr class='gradientBackground'><th>Command</th><th>Rid</th><th>Class Name</th><th>Argument 1</th><th>Argument 2</th></tr>";
 				if(json.record == undefined)
@@ -260,6 +335,8 @@
 				else
 				if(json.record.length == undefined)
 				{					
+					var recordEns = [];
+					
 					var recordURI = json.record['@uri'];	
 					var recordID = json.record.id;
 					var recordEntryNo = json.record.entryNo;
@@ -273,11 +350,19 @@
 					var recordSession = json.record.recordSession['@uri'];
 					recordSession = recordSession.substr(0,recordSession.indexOf('recordentries/'));
 					
-					records = records + "<tr id='"+recordURI+"' title='"+recordSession+"'><td class='recordID'>"+recordID+"</td><td class='entryNo'>"+recordEntryNo+"</td><td class='command'>"+recordPayLoadCommand+"</td><td class='rid'>"+recordPayLoadRid+"</td><td class='className'>"+recordPayLoadViewClassName+"</td><td class='args0'>"+recordPayLoadArgs0+"</td><td class='args1'>"+recordPayLoadArgs1+"</td><td><a href='#' class='editRecords' title='"+recordURI+"'>Edit</a></td></tr>"; 	
+					recordEns[0] = recordEntryNo;
+					
+					if(recordEntryNo > maxEntryNo)
+						maxEntryNo = recordEntryNo;
+					
+					records = records + "<tr class='row"+recordEntryNo+"' id='"+recordURI+"' title='"+recordSession+"'><td class='recordID'>"+recordID+"</td><td class='entryNo'>"+recordEntryNo+"</td><td class='command'>"+recordPayLoadCommand+"</td><td class='rid'>"+recordPayLoadRid+"</td><td class='className'>"+recordPayLoadViewClassName+"</td><td class='args0'>"+recordPayLoadArgs0+"</td><td class='args1'>"+recordPayLoadArgs1+"</td><td><a href='#' class='editRecords' title='"+recordURI+"'>Edit</a></td></tr>"; 	
 				}
 				else
-				{			
-					for(var i=0; i<json.record.length; i++)
+				{		
+					var jsonArray = json.record.sort(mycomparator);
+					var recordEns = [];
+					
+					for(var i=0; i<jsonArray.length; i++)
 					{
 						var recordURI = json.record[i]['@uri'];		
 						var recordID = json.record[i].id;
@@ -291,11 +376,17 @@
 						var recordPayLoadArgs1 = payloadJSON['args[1]'] == undefined ?"":payloadJSON['args[1]']; // keyName of this attribute of object is like array notation, therefore used different notation to retrieve its value
 						var recordSession = json.record[i].recordSession['@uri'];
 						recordSession = recordSession.substr(0,recordSession.indexOf('recordentries/'));
+						
+						//filling recordEns array for combo box
+						recordEns[i] = recordEntryNo;
+						
+						if(recordEntryNo > maxEntryNo)
+							maxEntryNo = recordEntryNo;
 					
 						if(i % 2 == 0)
-							records = records + "<tr id='"+recordURI+"' title='"+recordSession+"'><td class='recordID'>"+recordID+"</td><td class='entryNo'>"+recordEntryNo+"</td><td class='command'>"+recordPayLoadCommand+"</td><td class='rid'>"+recordPayLoadRid+"</td><td class='className'>"+recordPayLoadViewClassName+"</td><td class='args0'>"+recordPayLoadArgs0+"</td><td class='args1'>"+recordPayLoadArgs1+"</td><td><a href='#' class='editRecords' title='"+recordURI+"'>Edit</a></td></tr>"; 	
+							records = records + "<tr class='row"+recordEntryNo+"' id='"+recordURI+"' title='"+recordSession+"'><td class='recordID'>"+recordID+"</td><td class='entryNo'>"+recordEntryNo+"</td><td class='command'>"+recordPayLoadCommand+"</td><td class='rid'>"+recordPayLoadRid+"</td><td class='className'>"+recordPayLoadViewClassName+"</td><td class='args0'>"+recordPayLoadArgs0+"</td><td class='args1'>"+recordPayLoadArgs1+"</td><td><a href='#' class='editRecords' title='"+recordURI+"'>Edit</a></td></tr>"; 	
 						else
-							records = records + "<tr id='"+recordURI+"' title='"+recordSession+"' class='alt'><td class='recordID'>"+recordID+"</td><td class='entryNo'>"+recordEntryNo+"</td><td class='command'>"+recordPayLoadCommand+"</td><td class='rid'>"+recordPayLoadRid+"</td><td class='className'>"+recordPayLoadViewClassName+"</td><td class='args0'>"+recordPayLoadArgs0+"</td><td class='args1'>"+recordPayLoadArgs1+"</td><td><a href='#' class='editRecords' title='"+recordURI+"'>Edit</a></td></tr>"; 	
+							records = records + "<tr class='alt row"+recordEntryNo+"' id='"+recordURI+"' title='"+recordSession+"' class='alt'><td class='recordID'>"+recordID+"</td><td class='entryNo'>"+recordEntryNo+"</td><td class='command'>"+recordPayLoadCommand+"</td><td class='rid'>"+recordPayLoadRid+"</td><td class='className'>"+recordPayLoadViewClassName+"</td><td class='args0'>"+recordPayLoadArgs0+"</td><td class='args1'>"+recordPayLoadArgs1+"</td><td><a href='#' class='editRecords' title='"+recordURI+"'>Edit</a></td></tr>"; 	
 					}
 					/*
 					jQuery("#my-table").table2csv({
@@ -311,11 +402,25 @@
 					*/
 				}
 				$('#Records').html(records);
+				fillRecordsCombo(recordEns);
 			},
 			error: function(jqXHR, textStatus, errorThrown) {
 			  console.log(textStatus, errorThrown);
 			}
 		});	
+	}
+	
+	function fillRecordsCombo(recordEns)
+	{
+		var comboInnerHTML = "";
+		for(var i=0; i<recordEns.length; i++)
+		{
+			if(i == 0)
+				comboInnerHTML = comboInnerHTML + "<option value='-1'>"+recordEns[i]+"</option>";
+			else
+				comboInnerHTML = comboInnerHTML + "<option value='"+recordEns[i-1]+"'>"+recordEns[i]+"</options>";
+		}
+		$('#recordsCombo').html(comboInnerHTML);
 	}
   </script>
 
