@@ -16,7 +16,7 @@ To build the bot-bot-server war you need to have maven isntalled in your system.
 
 Once done run the following command at the root of the bot-bot/server folder
 > 
-> $mvn dist
+> $mvn clean install
 >
 
 ------------
