@@ -80,6 +80,7 @@ public class CommandTransmitter {
 
 	class CreateSessionTask extends AsyncTask<Void, Void, Void> {
 		int recordID=1;
+		int prevRecord=1;
 		/**
 		 * This method is called when CreateSessionTask.execute() is invoked.
 		 * This method performs two actions, first it creates a session and then it waits for population of
@@ -93,6 +94,7 @@ public class CommandTransmitter {
 			try {
 				System.out.println("In background");
 				recordID=1;
+				prevRecord=0;
 				URL url = null;
 				url = new URL("http://" + CommandTransmitter.serverIP
 						+ ":"+port+"/"+serverName+"/api/recordsessions");
@@ -166,11 +168,12 @@ public class CommandTransmitter {
 						"application/json; charset=UTF-8");
 				OutputStreamWriter out = new OutputStreamWriter(
 						connection.getOutputStream());
-				out.write("{\"entryNo\":\""+recordID+"\",\"recordSession\":{\"id\":\""
+				out.write("{\"entryNo\":\""+recordID+"\""+"\"prevEntryNo\":\""+prevRecord+"\",\"recordSession\":{\"id\":\""
 						+ CommandTransmitter.sessionID
 						+ "\"},\"entryTime\":\""+currentDateTime+"\",\"payload\":\""
 						+ data + "\"");
 				out.close();
+				prevRecord=recordID;
 				recordID++;
 				Map<String, List<String>> respHeaders = connection
 						.getHeaderFields();
