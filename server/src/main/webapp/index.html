@@ -17,7 +17,8 @@
   </div>
   
   <div id="recordsHolder" style="display:none;">
-	<a class="exportcsv" href="#" style="position:absolute;right:10px;">Export as CSV</a>	
+	<a class="exportcsv" href="#" style="position:absolute;right:80px;">Export as CSV</a>	
+	<font size="6" class="add" id="addFirstRecord">+</font>
 	<h3>Records of session:  <span id="recordsHeading"></span></h3>
 	<div class="holderDiv">
 		<table width="100%" id="Records" cellpadding="5"></table>
@@ -113,7 +114,7 @@
 	function addRecord(data)
 	{
 		var newRecodEntryNo = parseInt(maxEntryNo)+1;
-		var recordData = '{"entryNo":"'+newRecodEntryNo+'","prevEntryNo":"'+prevEntryNo+'","recordSession":{"id":"'+data.sessionID+'"},"payload":"{\\\"command\\\":\\\"'+data.command+'\\\",\\\"rid\\\":\\\"'+data.rid+'\\\",\\\"viewClassName\\\":\\\"'+data.className+'\\\",\\\"args[0]\\\":\\\"'+data.args0+'\\\",\\\"args[1]\\\":\\\"'+data.args1+'\\\"}"}';
+		var recordData = '{"entryNo":"a'+newRecodEntryNo+'","prevEntryNo":"'+prevEntryNo+'","recordSession":{"id":"'+data.sessionID+'"},"payload":"{\\\"command\\\":\\\"'+data.command+'\\\",\\\"rid\\\":\\\"'+data.rid+'\\\",\\\"viewClassName\\\":\\\"'+data.className+'\\\",\\\"args[0]\\\":\\\"'+data.args0+'\\\",\\\"args[1]\\\":\\\"'+data.args1+'\\\"}"}';
 		console.log(recordData);
 		
 					
