@@ -14,8 +14,26 @@ public class KeywordCaller {
 		this.driver = driver;
 	}
 
-	public void methodCaller(String key,ArrayList<String> args) {
+	public void methodCaller(String key, ArrayList<String> args) {
 		Keywords keyValue = null;
+		String locator, argument1, argument2;
+		try {
+			locator = args.get(0);
+		} catch (IndexOutOfBoundsException e) {
+			locator = "";
+		}
+		try {
+			argument1=args.get(1);
+		} catch (IndexOutOfBoundsException e) {
+			argument1 = "";
+		}
+		try {
+			argument2=args.get(2);
+		} catch (IndexOutOfBoundsException e) {
+			argument2 = "";
+		}
+		
+		
 		try {
 			keyValue = Keywords.valueOf(key);
 		} catch (IllegalArgumentException e) {
@@ -24,97 +42,97 @@ public class KeywordCaller {
 		switch (keyValue) {
 		case openapp:
 		case checktextpresent:
-			kd.checktextpresent(driver, args.get(0));
+			kd.checktextpresent(driver, argument1);
 			break;
 		case checkbuttonpresent:
-			kd.checkbuttonpresent(driver, args.get(0));
+			kd.checkbuttonpresent(driver, argument1);
 			break;
 		case checklocatorpresent:
-			kd.checklocatorpresent(driver, args.get(0));
+			kd.checklocatorpresent(driver, locator);
 			break;
 		case assertbuttonpresent:
-			kd.assertbuttonpresent(driver, args.get(0));
+			kd.assertbuttonpresent(driver, argument1);
 			break;
 		case assertlocatorpresent:
-			kd.assertlocatorpresent(driver, args.get(0));
+			kd.assertlocatorpresent(driver, locator);
 			break;
 		case assertpartialtextpresent:
-			kd.assertpartialtextpresent(driver, args.get(0));
+			kd.assertpartialtextpresent(driver, argument1);
 			break;
 		case asserttextpresent:
-			kd.asserttextpresent(driver, args.get(0));
+			kd.asserttextpresent(driver, argument1);
 			break;
 		case clickback:
 			kd.clickback(driver);
 			break;
 		case clickbutton:
-			kd.clickbutton(driver, args.get(0));
+			kd.clickbutton(driver, argument1);
 			break;
 		case clickmenu:
 			kd.clickmenu(driver);
 			break;
 		case entertext:
-			if(args.size()!=2){
-				Assert.fail("entertext keyword take 2 arguments locator and the value.");
+			if (locator=="" || argument1=="") {
+				Assert.fail("entertext keyword take 2 arguments locator and the value in argument1.");
 			}
-			try{
-				kd.entertext(driver, Integer.parseInt(args.get(0)), args.get(1));
-			}catch(NumberFormatException e){
-				kd.entertext(driver, args.get(0), args.get(1));
+			try {
+				kd.entertext(driver, Integer.parseInt(locator), argument1);
+			} catch (NumberFormatException e) {
+				kd.entertext(driver, locator, argument1);
 			}
 			break;
 		case verifyscreen:
-			kd.verifyscreen(args.get(0));
+			kd.verifyscreen(argument1);
 			break;
 		case waitforscreen:
-			if (args.get(1) == "") {
-				kd.waitForScreen(args.get(0), null);
+			if (argument2 == "") {
+				kd.waitForScreen(argument1, null);
 			} else {
-				kd.waitForScreen(args.get(0), Double.parseDouble(args.get(1)));
+				kd.waitForScreen(argument1, Double.parseDouble(argument2));
 			}
 			break;
 		case assertmenuitem:
-			kd.assertMenuItem(driver, args.get(0));
+			kd.assertMenuItem(driver, argument1);
 			break;
 		case assertradiobuttonpresent:
-			kd.assertradiobuttonpresent(driver, args.get(0));
+			kd.assertradiobuttonpresent(driver, argument1);
 			break;
 		case checkradiobuttonpresent:
-			kd.checkradiobuttonpresent(driver, args.get(0));
+			kd.checkradiobuttonpresent(driver, argument1);
 			break;
 		case assertspinnerpresent:
-			kd.assertspinnerpresent(driver, args.get(0));
+			kd.assertspinnerpresent(driver, argument1);
 			break;
 		case clickspinner:
-			kd.clickspinner(driver, args.get(0),args.get(1));
+			kd.clickspinner(driver, locator, argument1);
 			break;
 		case clickradiobutton:
-			kd.clickradiobutton(driver,  args.get(0));
+			kd.clickradiobutton(driver, argument1);
 			break;
 		case clickbyid:
-			kd.clickbyid(driver, args.get(0));
+			kd.clickbyid(driver, locator);
 			break;
 		case clicktext:
-			kd.clicktext(driver, args.get(0));
+			kd.clicktext(driver, argument1);
 			break;
 		case scrollup:
 			int noOfTimes;
-			if(args.get(0)=="" || args ==null){
-				noOfTimes=1;
-			}else
-				noOfTimes=Integer.parseInt(args.get(0));
+			if (argument1 == "" || args == null) {
+				noOfTimes = 1;
+			} else
+				noOfTimes = Integer.parseInt(argument1);
 			kd.scrollup(driver, noOfTimes);
 			break;
 		case scrolldown:
 			int noOfTimesDown;
-			if(args.get(0)=="" || args ==null){
-				noOfTimesDown=1;
-			}else
-				noOfTimesDown=Integer.parseInt(args.get(0));
+			if (argument1 == "" || args == null) {
+				noOfTimesDown = 1;
+			} else
+				noOfTimesDown = Integer.parseInt(argument1);
 			kd.scrollup(driver, noOfTimesDown);
 			break;
 		default:
-			Assert.fail("Mentioned keyword not supported: "+key);
+			Assert.fail("Mentioned keyword not supported: " + key);
 		}
 	}
 }

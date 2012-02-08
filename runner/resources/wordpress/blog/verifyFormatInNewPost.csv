@@ -1,8 +1,8 @@
 ,,
-checktextpresent,New Post
-clicktext,New Post
+checklocatorpresent,dashboard_newpost_btn
+clickbyid,dashboard_newpost_btn
 clickbyid,postFormat
 clickbyid,postFormat
-scrollup,10
-asserttextpresent,Audio
-asserttextpresent,Chat
+scrollup,,10
+asserttextpresent,,Audio
+asserttextpresent,,Chat
