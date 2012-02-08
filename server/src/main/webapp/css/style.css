@@ -1,0 +1,77 @@
+a{text-decoration:none; color:#0064CD; cursor:pointer;}
+a:hover{color:#F60100;}
+
+.gradientBackground{
+	background-color: #0064CD;
+	background-image: -moz-linear-gradient(center top , #049CDB, #0064CD);
+	background-repeat: repeat-x;
+	border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+	color: #FFFFFF;
+	text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+}
+#Records tr:first-child{
+	border-radius: 10px;
+}
+tr.alt{background-color: #F2F2F2;}
+
+tr.newRow{background-color: #FFFF91;}
+
+#header{
+	position:absolute;
+	top:0px;
+	left:0px;
+	width:100%;
+	height:70px;
+	margin-bottom:10px;
+}
+#header p{
+	position:relative;
+	font-size:24px; font-weight:bold; margin:20px;
+}
+#footer{
+	position:absolute;
+	width:100%;
+	bottom:0px;
+	left:0px;
+	height:100px;
+	background:#666;
+	color: #ccc;
+	text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+	text align:right;
+}
+#footer p{
+	position:relative;
+	float:right;
+	margin:50px 50px 0 50px;
+}
+
+#body{
+	margin-top:100px;
+}
+
+.holderDiv{
+	overflow:auto;
+}
+
+.add{
+	font-weight:bold;
+	color:#0064CD;
+	right:30px;
+	position:absolute;
+	cursor:pointer;
+}
+
+#popup {
+   width: 500px;
+   height: 300px;
+   position: absolute;
+   left: 50%;
+   top: 50%;
+   margin-left: -250px;
+   margin-top: -150px;
+   background: #f2f2f2; 
+}
+
+.rightFloater{
+	float:right;
+}

@@ -1,8 +1,0 @@
-,,
-checktextpresent,New Post
-clicktext,New Post
-clickbyid,postFormat
-clickbyid,postFormat
-scrollup,10
-asserttextpresent,Audio
-asserttextpresent,Chat

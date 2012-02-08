@@ -1,0 +1,10 @@
+,,
+checktextpresent,,New Post
+clickbyid,dashboard_newpost_btn
+clickbyid,status
+clickbyid,status
+asserttextpresent,,Publish
+asserttextpresent,,Draft
+asserttextpresent,,Pending Review
+asserttextpresent,,Private
+asserttextpresent,,Local Draft
