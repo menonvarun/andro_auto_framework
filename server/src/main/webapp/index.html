@@ -2,6 +2,7 @@
 <html>
 <head>
   <script src="js/jquery-1.7.1.min.js"></script>
+  <script src="js/table2CSV.js"></script>
   <link href="css/style.css" rel="stylesheet" type="text/css"/>
 </head>  
 <body>
@@ -16,7 +17,7 @@
   </div>
   
   <div id="recordsHolder" style="display:none;">
-	<font size="6" class="add" id="addFirstRecord">+</font>
+	<a class="exportcsv" href="#" style="position:absolute;right:10px;">Export as CSV</a>	
 	<h3>Records of session:  <span id="recordsHeading"></span></h3>
 	<div class="holderDiv">
 		<table width="100%" id="Records" cellpadding="5"></table>
@@ -195,6 +196,9 @@
 	$(".back").click(function(){
 		getSessions();
 	});
+	$(".exportcsv").click(function(){
+		$('#Records').table2CSV();
+	});
 	
 	$("#saveNewRecord").live("click", function(){
 		var command = $(this).parent().siblings('.command').find('input').val();	
@@ -327,7 +331,7 @@
 				//$('#Records').html("<img src='loader.gif'/>");
 				maxEntryNo = 0;
 				
-				var records = "<tr class='gradientBackground'><th rowspan='2'>ID</th><th rowspan='2'>Entry No</th><th colspan='5'>Payload</th><th rowspan='2'>Edit</th></tr><tr class='gradientBackground'><th>Command</th><th>Rid</th><th>Class Name</th><th>Argument 1</th><th>Argument 2</th></tr>";
+				var records = "<tr class='gradientBackground'><th rowspan='2'>ID</th><th rowspan='2'>Entry No</th><th colspan='4'>Payload</th><th rowspan='2'>Edit</th></tr><tr class='gradientBackground'><th>Command</th><th>Rid</th><th>Argument 1</th><th>Argument 2</th></tr>";
 				if(json.record == undefined)
 				{			
 					records = records + "<tr><td colspan='8' align='center'>No Records Found</td></tr>"; 
@@ -355,7 +359,7 @@
 					if(recordEntryNo > maxEntryNo)
 						maxEntryNo = recordEntryNo;
 					
-					records = records + "<tr class='row"+recordEntryNo+"' id='"+recordURI+"' title='"+recordSession+"'><td class='recordID'>"+recordID+"</td><td class='entryNo'>"+recordEntryNo+"</td><td class='command'>"+recordPayLoadCommand+"</td><td class='rid'>"+recordPayLoadRid+"</td><td class='className'>"+recordPayLoadViewClassName+"</td><td class='args0'>"+recordPayLoadArgs0+"</td><td class='args1'>"+recordPayLoadArgs1+"</td><td><a href='#' class='editRecords' title='"+recordURI+"'>Edit</a></td></tr>"; 	
+					records = records + "<tr class='row"+recordEntryNo+"' id='"+recordURI+"' title='"+recordSession+"'><td class='recordID'>"+recordID+"</td><td class='entryNo'>"+recordEntryNo+"</td><td class='command'>"+recordPayLoadCommand+"</td><td class='rid'>"+recordPayLoadRid+"</td><td class='args0'>"+recordPayLoadArgs0+"</td><td class='args1'>"+recordPayLoadArgs1+"</td><td><a href='#' class='editRecords' title='"+recordURI+"'>Edit</a></td></tr>"; 	
 				}
 				else
 				{		
@@ -384,9 +388,9 @@
 							maxEntryNo = recordEntryNo;
 					
 						if(i % 2 == 0)
-							records = records + "<tr class='row"+recordEntryNo+"' id='"+recordURI+"' title='"+recordSession+"'><td class='recordID'>"+recordID+"</td><td class='entryNo'>"+recordEntryNo+"</td><td class='command'>"+recordPayLoadCommand+"</td><td class='rid'>"+recordPayLoadRid+"</td><td class='className'>"+recordPayLoadViewClassName+"</td><td class='args0'>"+recordPayLoadArgs0+"</td><td class='args1'>"+recordPayLoadArgs1+"</td><td><a href='#' class='editRecords' title='"+recordURI+"'>Edit</a></td></tr>"; 	
+							records = records + "<tr class='row"+recordEntryNo+"' id='"+recordURI+"' title='"+recordSession+"'><td class='recordID'>"+recordID+"</td><td class='entryNo'>"+recordEntryNo+"</td><td class='command'>"+recordPayLoadCommand+"</td><td class='rid'>"+recordPayLoadRid+"</td><td class='args0'>"+recordPayLoadArgs0+"</td><td class='args1'>"+recordPayLoadArgs1+"</td><td><a href='#' class='editRecords' title='"+recordURI+"'>Edit</a></td></tr>"; 	
 						else
-							records = records + "<tr class='alt row"+recordEntryNo+"' id='"+recordURI+"' title='"+recordSession+"' class='alt'><td class='recordID'>"+recordID+"</td><td class='entryNo'>"+recordEntryNo+"</td><td class='command'>"+recordPayLoadCommand+"</td><td class='rid'>"+recordPayLoadRid+"</td><td class='className'>"+recordPayLoadViewClassName+"</td><td class='args0'>"+recordPayLoadArgs0+"</td><td class='args1'>"+recordPayLoadArgs1+"</td><td><a href='#' class='editRecords' title='"+recordURI+"'>Edit</a></td></tr>"; 	
+							records = records + "<tr class='alt row"+recordEntryNo+"' id='"+recordURI+"' title='"+recordSession+"' class='alt'><td class='recordID'>"+recordID+"</td><td class='entryNo'>"+recordEntryNo+"</td><td class='command'>"+recordPayLoadCommand+"</td><td class='rid'>"+recordPayLoadRid+"</td><td class='args0'>"+recordPayLoadArgs0+"</td><td class='args1'>"+recordPayLoadArgs1+"</td><td><a href='#' class='editRecords' title='"+recordURI+"'>Edit</a></td></tr>"; 	
 					}
 					/*
 					jQuery("#my-table").table2csv({
