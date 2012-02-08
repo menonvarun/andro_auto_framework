@@ -1,4 +1,6 @@
-a{text-decoration:none;}
+a{text-decoration:none; color:#0064CD; cursor:pointer;}
+a:hover{color:#F60100;}
+
 .gradientBackground{
 	background-color: #0064CD;
 	background-image: -moz-linear-gradient(center top , #049CDB, #0064CD);
@@ -68,5 +70,8 @@ tr.newRow{background-color: #FFFF91;}
    margin-left: -250px;
    margin-top: -150px;
    background: #f2f2f2; 
-   
+}
+
+.rightFloater{
+	float:right;
 }
