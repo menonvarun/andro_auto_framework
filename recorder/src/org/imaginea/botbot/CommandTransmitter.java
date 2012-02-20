@@ -25,15 +25,21 @@ import android.util.Log;
 public class CommandTransmitter {
 	Socket soc = null;
 	PrintStream ps = null;
+	static ServerProperties sp = new ServerProperties();
 	static String sessionID = null;
-	static String serverIP = IServerProperties.serverIP;
-	static String port=IServerProperties.port;
-	static String sessionName=IServerProperties.sessionName;
-	static String serverName=IServerProperties.serverName;
+	String serverIP = sp.serverIP;
+	String port=sp.port;
+	String sessionName=sp.sessionName;
+	String serverName=sp.serverName;
 	BlockingQueue<String> queue = new LinkedBlockingQueue<String>();
-
+	static String sUrl="";
+	
 	public CommandTransmitter() {
-
+		if(!serverName.equalsIgnoreCase("")){
+			sUrl="http://" + serverIP +":"+port+"/"+serverName;
+		}else{
+			sUrl="http://" + serverIP +":"+port;
+		}
 		System.out.println("Creating session....");
 		new CreateSessionTask().execute();
 
@@ -47,8 +53,7 @@ public class CommandTransmitter {
 	public boolean checkSession(String id) {
 		try {
 			URL url = null;
-			url = new URL("http://" + CommandTransmitter.serverIP
-					+ ":"+port+"/"+serverName+"/api/recordsessions/" + id);
+			url = new URL(sUrl+"/api/recordsessions/" + id);
 			HttpURLConnection connection = (HttpURLConnection) url
 					.openConnection();
 			connection.setDoInput(true);
@@ -96,8 +101,7 @@ public class CommandTransmitter {
 				recordID=1;
 				prevRecord=0;
 				URL url = null;
-				url = new URL("http://" + CommandTransmitter.serverIP
-						+ ":"+port+"/"+serverName+"/api/recordsessions");
+				url = new URL(sUrl+"/api/recordsessions");
 				HttpURLConnection connection = (HttpURLConnection) url
 						.openConnection();
 				connection.setDoOutput(true);
@@ -157,9 +161,13 @@ public class CommandTransmitter {
 				System.out.println("In create record Async task"
 						+ CommandTransmitter.sessionID + data);
 				Log.i("Async DAta", data);
+				String postData="{\"entryNo\":\""+recordID+"\","+"\"prevEntryNo\":\""+prevRecord+"\",\"recordSession\":{\"id\":\""
+						+ CommandTransmitter.sessionID
+						+ "\"},\"entryTime\":\""+currentDateTime+"\",\"payload\":\""
+						+ data + "\"}";	
+				Log.i("postdata",postData);
 				URL url = null;
-				url = new URL("http://" + CommandTransmitter.serverIP
-						+ ":"+port+"/"+serverName+"/api/recordentries");
+				url = new URL(sUrl+"/api/recordentries");
 				HttpURLConnection connection = (HttpURLConnection) url
 						.openConnection();
 				connection.setDoOutput(true);
@@ -168,10 +176,8 @@ public class CommandTransmitter {
 						"application/json; charset=UTF-8");
 				OutputStreamWriter out = new OutputStreamWriter(
 						connection.getOutputStream());
-				out.write("{\"entryNo\":\""+recordID+"\""+"\"prevEntryNo\":\""+prevRecord+"\",\"recordSession\":{\"id\":\""
-						+ CommandTransmitter.sessionID
-						+ "\"},\"entryTime\":\""+currentDateTime+"\",\"payload\":\""
-						+ data + "\"");
+				
+				out.write(postData);
 				out.close();
 				prevRecord=recordID;
 				recordID++;
