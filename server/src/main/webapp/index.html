@@ -182,7 +182,7 @@
 	}
 	
 	$("#addFirstRecord").click(function(){
-		prevEntryNo = 1;
+		prevEntryNo = 0;
 		$("#Records").append("<tr class='newRow'><td></td><td class='command'><input type='text'/></td><td class='rid'><input type='text'/></td><td class='args0'><input type='text'/></td><td class='args1'><input type='text'/></td><td><a href='#' id='saveNewRecord'>Save</a>&nbsp;|&nbsp;<a href='#' id='cancelNewRecord'>Cancel</a></td></tr>");
 	});
 	
@@ -387,7 +387,7 @@
 				{		
 					//var jsonArray = json.record.sort(mycomparator);
 					var recordEns = [];
-					var prevsorted= sortJsonArray(json.record);
+					var prevsorted= rearrangeJSONArray(json.record);
 					for(var i=0; i<prevsorted.length; i++)
 					{
 						var recordURI = prevsorted[i]['@uri'];		
@@ -448,15 +448,28 @@
 		}
 		$('#recordsCombo').html(comboInnerHTML);
 	}
-function sortJsonArray(jsonArray) {
-    var sorted = jsonArray.sort(function sortPrev(a, b) {
-        return b.prevEntryNo < a.prevEntryNo ?  1 // if b should come earlier, push a to end
-             : b.prevEntryNo > a.prevEntryNo ? -1 // if b should come later, push a to begin
-             : 0;                   // a and b are equal
-        });
-    //console.log(sorted);
-return sorted;
-} 
+
+
+function rearrangeJSONArray(srcArray) {	  
+		var resultArray = [] ;
+		
+		var desiredArray = getDesiredArray(srcArray,"0");
+		while(desiredArray != undefined)
+		{
+			resultArray.push(desiredArray);
+			desiredArray = getDesiredArray(srcArray,desiredArray['entryNo']);
+		}
+		return resultArray;
+						
+	}
+	
+	function getDesiredArray(arr,key) {
+		for(var arrEntry in arr) {
+			if (arr[arrEntry]['prevEntryNo'] == key) {
+				return arr[arrEntry];
+			}
+		}			
+	}
 
 function getEntryNoArray(){
 var entryNoArray = new Array();
