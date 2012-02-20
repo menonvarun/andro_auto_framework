@@ -21,37 +21,48 @@ Once done run the following command at the root of the bot-bot/server folder
 
 ------------
 ## Deploy the war
-The war is self contained including the database. So it can be deployed to any of the servlet container like *Apache Tomcat*, *Jboss*, etc.
+The war is self contained including the database. 
 
-To deploy the war do the following:
+The war can be deployed in two ways:
 
-- Create the war as mentioned in the *Build the war* section.
-- Copy the war from the target folder under the bot-bot/server to the webapps folder of your serrvlet container.
-- Start your server.
-- Access the server using the following URL
+1. As a standalone server.
+
+	To deploy the bot-bot server as a standalone server, go to the target folder under the root after running "mvn clean install".
+	You will find a file with name "bot-bot-server-standalone.jar". Run the following command in the command prompt after going to the said folder.
+
+	<pre style="font-family: Helvetica, Arial, FreeSans, san-serif; color: #000000; background-color: #eee;font-size: 15px;border: 1px dashed #999999;line-height: 15px;padding: 5px; overflow: auto; width: 100%"><code>
+java -jar bot-bot-server-standalone.jar
+</code></pre>
+
+	This will start the standalone bot-bot server. The server can be accessed using the url "http://localhost:8080/index.html".
+
+2. On an servlet supported webserver:
+
+	Bot-bot server can be deployed to any of the servlet container like *Apache Tomcat*, *Jboss*, etc.To deploy the war do the following:
+
+	- Create the war as mentioned in the *Build the war* section.
+	- Copy the war from the target folder under the bot-bot/server to the webapps folder of your serrvlet container.
+	- Start your server.
+	- Access the server using the following URL
 	
 	http://&lt;localhost or systemip&gt;:&lt;port&gt;/bot-bot-server/index.html
 
+
+	Note: In case you are deploying the war on a servlet container server. You need update the "SERVER_NAME" under the recorder.properties file in the "recorder" section. The recorder is currently configured to record on the standalone bot-bot server deployment.
+
 ------------
-## Available URLs
+##Usage
 
-### /api/*
-This is the url base where the REST services for CRUD on RecordSession and RecordEntries are exposed. Please look into /src/test/RetClient/ files to understand the services.
+Once recording starts the user can access the sessions on the server:
+Following features are supported:
 
-The flow is -
-Create Record Session and then Create Record Entries for that Session.
+- Viewing the recorded seesions. The server shows all the recorded session on the server. Once user clicks on particular session, the recorded data that particular session will be shown.
+- Viewing the recorded records for a session.
+- Refresh the session page for a new recorded entries.
+- Export as CSV -> Once clicked on "Export as CSV" link. A pop up showing the csv data of all the scripts will be shown. User have to copy the said data and then paste into a txt file and save it as .csv. This file can then be used as a testcase file.
+- Edit of an existing record. You can edit any existing recorde to change the command or update any other values.
+- Add a new command row. You can add new command row before or after any existing rows to modify your test-case.
 
-//TODO: Document the services further
-
-### /h2/
-This URL will open the H2 Web Console. You can connect to the databse here using, 
->
->	Driver - H2 Network, 
->	DB URL - jdbc:h2:tcp://localhost/~/botbot
->	User - sa
->	Password - 12345678
->
-
-Feel free to log any issues or feature requests, I'll try to get to them asap!
+----------------
 
 ------------
