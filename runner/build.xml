@@ -7,10 +7,10 @@
 	<property name="TESTPACKAGE" value="${SRC}/test" />
 	<property name="REPORT" value="${RELEASE_ROOT}/test-report" />
 	<path id="test.classpath">
-		<pathelement location="${BIN}" />
 		<fileset dir="${LIB}">
 			<include name="**/*.jar" />
 		</fileset>
+		<pathelement path="${BIN}"/>
 	</path>
 	<target name="init">
 		<delete dir="${BIN}" />
@@ -36,7 +36,7 @@
 	<taskdef resource="testngtasks" classpath="${LIB}/testng-6.1.1.jar" />
 	<path id="master-classpath">
 		<fileset dir="${LIB}">
-			<include name="*.jar">
+			<include name="**/*.jar">
 			</include>
 		</fileset>
 		<pathelement path="${BIN}">
@@ -64,15 +64,20 @@
 		</junitreport>
 		<antcall target="testng-xslt-report" />
 	</target>
-	<target name="testng-xslt-report">
+	<target name="testng-xslt-report" >
 		<delete dir="${basedir}/testng-xslt" />
 		<mkdir dir="${basedir}/testng-xslt" />
-		<xslt in="${REPORT}/TestNG-report/testng-results.xml" style="${basedir}/testng-results.xsl" out="${basedir}/testng-xslt/index.html" processor="SaxonLiaison">
+		<path id="xslt-classpath">
+				<fileset dir="${LIB}">
+					<include name="SaxonLiaison.jar"/>
+					<include name="saxon-8.7.jar"/>
+				</fileset>
+		</path>		
+		<xslt in="${REPORT}/TestNG-report/testng-results.xml" style="${basedir}/testng-results.xsl" out="${basedir}/testng-xslt/index.html" classpathref="xslt-classpath" processor="SaxonLiaison">
 			<param name="testNgXslt.outputDir" expression="${basedir}/testng-xslt/" />
 			<param name="testNgXslt.sortTestCaseLinks" expression="true" />
 			<param name="testNgXslt.testDetailsFilter" expression="FAIL,SKIP,PASS,CONF,BY_CLASS" />
 			<param name="testNgXslt.showRuntimeTotals" expression="true" />
-			<classpath refid="master-classpath" />
 		</xslt>
 
 		<mkdir dir="${REPORT}/TestNG-XSLT-report" />
