@@ -13,7 +13,7 @@ Bot-bot have following three components:
 - __Recorder__ - Recorder is used to record user actions at the android app side and then send them to the server.
 - __Runner__ - This is the main part of bot-bot. The runner allows user to run their test-cases on the actual android application
 
-For further information on each component, please go to the respective folders **server**,**recorder** & **runner** in the source code.
+For further information on each component, please go to the respective folders [**server**](https://github.com/Imaginea/bot-bot/tree/master/server),[**recorder**](https://github.com/Imaginea/bot-bot/tree/master/recorder) & [**runner**](https://github.com/Imaginea/bot-bot/tree/master/runner) in the source code.
 
 ------------
 ##Download
