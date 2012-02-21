@@ -10,14 +10,28 @@ Available functionalities:
 - View recorded entries for a particular session.
 
 ------------
+
+##Download
+
+You can download the latest release Server from the download section mentioned below:
+
+https://github.com/Imaginea/bot-bot/downloads
+
+The server zip contains two files one is a "bot-bot-server.war" and another is "bot-bot-server-standalone.jar". You can read read the "Deploy the war" section below on how to deploy the server using these files.
+
+
+------------
 ##Build the war:
 
 To build the bot-bot-server war you need to have maven isntalled in your system. Maven can be downloaded from the ths [link](http://maven.apache.org/download.html).
 
 Once done run the following command at the root of the bot-bot/server folder
-> 
-> $mvn clean install
->
+
+<pre style="font-family: Helvetica, Arial, FreeSans, san-serif; color: #000000; background-color: #eee;font-size: 15px;border: 1px dashed #999999;line-height: 15px;padding: 5px; overflow: auto; width: 100%"><code>
+$mvn clean install
+</code></pre>
+
+
 
 ------------
 ## Deploy the war
@@ -64,5 +78,3 @@ Following features are supported:
 - Add a new command row. You can add new command row before or after any existing rows to modify your test-case.
 
 ----------------
-
-------------

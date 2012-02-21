@@ -16,6 +16,13 @@ It uses following open-source tools:
 **Note:** This tool requires source code of the app that is being automated to be available.
 Apps that internally call WebView or load webpages may be able to use this tool.(Not tested)
 
+-----------
+##Download
+
+You can download the latest release recorder from the download section mentioned below:
+
+https://github.com/Imaginea/bot-bot/downloads
+
 ---------
 ##Pre-conditions:
 

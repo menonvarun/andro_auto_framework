@@ -7,6 +7,13 @@ As said earlier **bot-bot** is an native android automation tool. One of the com
 **Recorder** is used to record user actions on the android app under test and send these actions to the **bot-bot server**.
 Recorder uses AspectJ for recording user actions.
 
+-----------
+##Download
+
+You can download the latest release recorder from the download section mentioned below:
+
+https://github.com/Imaginea/bot-bot/downloads
+
 ----------
 ##Pre-conditions:
 
@@ -37,5 +44,6 @@ Following are the available configuration:
 - SERVER_PORT -> Port on which the server is running. Default is 8080.
 - SESSION_NAME -> Session name that the recroder uses to create the session on the server.
 - SERVER_NAME -> Server name . Used in case the server is deployed on a servelet container server like Apache,Jboss. Default its not set and assumes that the user is using the standalone mode of the server.
+
 -----------------
 
