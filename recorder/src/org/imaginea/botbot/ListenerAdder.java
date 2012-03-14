@@ -7,6 +7,7 @@ import java.util.Set;
 import org.imaginea.botbot.OnClickListenerTest;
 
 import android.content.Context;
+import android.text.InputType;
 import android.util.Log;
 import android.view.*;
 import android.widget.AdapterView;
@@ -97,6 +98,7 @@ public class ListenerAdder {
 			}
 			view.setOnClickListener(new OnClickListenerTest());
 			if (view instanceof EditText) {
+				((EditText) view).setInputType(InputType.TYPE_NULL);
 				((TextView) view).addTextChangedListener(new TextListner(
 						(TextView) view));
 				processedView.add(view);

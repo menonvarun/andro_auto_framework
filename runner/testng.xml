@@ -1,6 +1,6 @@
-<suite name="Android automation framework" verbose="3"
+<suite name="bot-bot suite" verbose="3"
 	thread-count="1">
-	<test name="Android automation framework - 1">
+	<test name="bot-bot test">
 		<packages>
 			<package name="test.*" />
 		</packages>

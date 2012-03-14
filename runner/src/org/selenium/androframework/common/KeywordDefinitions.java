@@ -99,15 +99,7 @@ public class KeywordDefinitions {
 	public void clickspinner(AndroidNativeDriver driver, String rid,
 			String value) {
 		clickbyid(driver, rid);
-		/*
-		 * Doing this becoz some time the spinner is not clicked so calling it
-		 * 2nd time and handling exception in case it has already been clicked.
-		 */
-		try {
-			clickbyid(driver, rid);
-		} catch (NoSuchElementException e) {
-
-		}
+		asserttextpresent(driver, value);
 		clicktext(driver, value);
 	}
 
@@ -144,6 +136,7 @@ public class KeywordDefinitions {
 			Assert.fail(e.getMessage());
 		}
 		element.click();
+		element.clear();
 		element.sendKeys(text);
 		// element.click();
 
@@ -157,11 +150,12 @@ public class KeywordDefinitions {
 		}
 		WebElement textElement = textFields.get(locator - 1);
 		try {
-			Thread.sleep(2000);
+			Thread.sleep(1000);
 		} catch (InterruptedException e) {
 			Assert.fail(e.getMessage());
 		}
 		textElement.click();
+		textElement.clear();
 		textElement.sendKeys(text);
 		// element.click();
 
@@ -260,6 +254,17 @@ public class KeywordDefinitions {
 	}
 
 	public void clickbyid(AndroidNativeDriver driver, String id) {
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			Assert.fail(e.getMessage());
+		}
+		boolean result = uf.waitForElementPresent(driver,
+				IdentifyByType.getLocatorType(id));
+		if (!result) {
+			Assert.fail("Unable to find element with id: "
+					+ id);
+		}
 		AndroidNativeElement element = driver.findElement(AndroidNativeBy
 				.id(id));
 		element.click();
