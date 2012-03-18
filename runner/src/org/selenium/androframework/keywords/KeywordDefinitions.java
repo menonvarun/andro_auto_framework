@@ -1,4 +1,4 @@
-package org.selenium.androframework.common;
+package org.selenium.androframework.keywords;
 
 import java.util.List;
 

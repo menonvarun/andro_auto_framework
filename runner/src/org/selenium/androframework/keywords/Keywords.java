@@ -1,4 +1,4 @@
-package org.selenium.androframework.common;
+package org.selenium.androframework.keywords;
 
 public enum Keywords {
 	openapp, checkbuttonpresent, clickbutton, clickmenu, checktextpresent, assertbuttonpresent,
