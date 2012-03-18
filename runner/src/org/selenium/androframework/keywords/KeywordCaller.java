@@ -1,16 +1,43 @@
 package org.selenium.androframework.keywords;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import org.selenium.androframework.api.DefaultProperties;
 import org.testng.Assert;
 import com.google.android.testing.nativedriver.client.AndroidNativeDriver;
 
 
 public class KeywordCaller {
 	AndroidNativeDriver driver = null;
-	NativeDriverKeywordDefinitions kd = new NativeDriverKeywordDefinitions();
+	private List<IKeywords> keywordDefinitions = new ArrayList<IKeywords>();
+	IKeywords kd;
+	private String framework;
+
+	private KeywordCaller() {
+		framework = DefaultProperties.getDefaultProperty()
+				.getValueFromProperty("FRAMEWORK");
+		keywordDefinitions.add(new NativeDriverKeywordDefinitions());
+
+	}
 
 	public KeywordCaller(AndroidNativeDriver driver) {
+		this();
 		this.driver = driver;
+		for (IKeywords keywordDefinition : keywordDefinitions) {
+			if (keywordDefinition.isSupported(framework)) {
+				kd = keywordDefinition;
+				break;
+			}
+		}
+		if (kd == null) {
+			if (framework.equalsIgnoreCase(""))
+				Assert.fail("Either you havent defined the variable \"FRAMEWORK\" under default.properties or you had done this intentionally to test me.");
+			else
+				Assert.fail("Sorry the framework that you entered \""
+						+ framework
+						+ "\" is not currently supported by us at this moment.");
+		}
 	}
 	
 	private enum Keywords {
@@ -48,6 +75,7 @@ public class KeywordCaller {
 		}
 		switch (keyValue) {
 		case openapp:
+			break;
 		case checktextpresent:
 			kd.checktextpresent(driver, argument1);
 			break;

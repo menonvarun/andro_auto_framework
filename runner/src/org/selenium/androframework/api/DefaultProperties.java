@@ -8,9 +8,10 @@ import java.util.Properties;
 import org.testng.Assert;
 
 public class DefaultProperties {
-	Properties prop = new Properties();
+	static Properties prop = new Properties();
+	static DefaultProperties instance = null;
 
-	public DefaultProperties() {
+	private DefaultProperties() {
 		try {
 			prop.load(new FileInputStream("resources/default.properties"));
 		} catch (FileNotFoundException e1) {
@@ -19,13 +20,17 @@ public class DefaultProperties {
 			Assert.fail("Unable to load file due to error :" + e1.toString());
 		}
 	}
-	
-	public Properties getDefaultProperty(){
-		return prop;
+
+	public static DefaultProperties getDefaultProperty() {
+		if (instance == null) {
+			instance = new DefaultProperties();
+			return instance;
+		} else
+			return instance;
 	}
-	
-	public String getValueFromProperty(String locator){
-		String value= prop.getProperty(locator, "");
+
+	public String getValueFromProperty(String locator) {
+		String value = prop.getProperty(locator, "");
 		return value;
 	}
 }

@@ -2,7 +2,6 @@ package org.selenium.androframework.keywords;
 
 import java.util.List;
 
-import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebElement;
 import org.selenium.androframework.api.IdentifyByType;
 import org.selenium.androframework.api.UsefulFunctions;
@@ -16,9 +15,16 @@ import com.google.android.testing.nativedriver.client.ClassNames;
 import com.google.android.testing.nativedriver.common.AndroidKeys;
 import com.google.android.testing.nativedriver.common.AndroidNativeBy;
 
-public class NativeDriverKeywordDefinitions {
+public class NativeDriverKeywordDefinitions implements IKeywords{
 	UsefulFunctions uf = new UsefulFunctions();
-
+	
+	public boolean isSupported(String type){
+		if(type.equalsIgnoreCase("nativedriver"))
+			return true;
+		
+		return false;
+	}
+	
 	public void openapp() {
 
 	}

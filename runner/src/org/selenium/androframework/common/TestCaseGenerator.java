@@ -90,7 +90,7 @@ public class TestCaseGenerator {
 	public static void main(String[] args) {
 		TestCaseGenerator tc = new TestCaseGenerator();
 		HashMap<String, ArrayList<String>> hm1 = new HashMap<String, ArrayList<String>>();
-		DefaultProperties prop = new DefaultProperties();
+		DefaultProperties prop = DefaultProperties.getDefaultProperty();
 		tc.listDirectory(
 				new File("resources/"
 						+ prop.getValueFromProperty("TESTCASE_FOLDER")), "",
