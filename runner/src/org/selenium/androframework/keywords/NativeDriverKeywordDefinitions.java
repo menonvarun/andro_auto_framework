@@ -16,7 +16,7 @@ import com.google.android.testing.nativedriver.client.ClassNames;
 import com.google.android.testing.nativedriver.common.AndroidKeys;
 import com.google.android.testing.nativedriver.common.AndroidNativeBy;
 
-public class KeywordDefinitions {
+public class NativeDriverKeywordDefinitions {
 	UsefulFunctions uf = new UsefulFunctions();
 
 	public void openapp() {

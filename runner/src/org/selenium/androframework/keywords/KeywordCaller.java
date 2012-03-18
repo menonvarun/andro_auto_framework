@@ -1,17 +1,24 @@
 package org.selenium.androframework.keywords;
 
 import java.util.ArrayList;
-
 import org.testng.Assert;
-
 import com.google.android.testing.nativedriver.client.AndroidNativeDriver;
+
 
 public class KeywordCaller {
 	AndroidNativeDriver driver = null;
-	KeywordDefinitions kd = new KeywordDefinitions();
+	NativeDriverKeywordDefinitions kd = new NativeDriverKeywordDefinitions();
 
 	public KeywordCaller(AndroidNativeDriver driver) {
 		this.driver = driver;
+	}
+	
+	private enum Keywords {
+		openapp, checkbuttonpresent, clickbutton, clickmenu, checktextpresent, assertbuttonpresent,
+		asserttextpresent,assertpartialtextpresent,checklocatorpresent,assertlocatorpresent,entertext,clickback,
+		verifyscreen,waitforscreen,assertmenuitem,assertradiobuttonpresent,checkradiobuttonpresent,
+		assertspinnerpresent,clickspinner,clickradiobutton,clickbyid,clicktext,scrollup,scrolldown
+
 	}
 
 	public void methodCaller(String key, ArrayList<String> args) {
