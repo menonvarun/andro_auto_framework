@@ -35,7 +35,7 @@ https://github.com/Imaginea/bot-bot/downloads
 
 1. Export the bot-bot from git to your local system.
 2. Import the source code of the android app that needs to be installed into your eclipse IDE.
-3. Copy the "server-standalone.jar" from the bot-bot/runner/lib folder to the root of the Android project inside Eclipse IDE.
+3. Copy the "server-standalone.jar" from the bot-bot/runner/lib folder to the root of the Android project inside Eclipse IDE and add it to build path.
 4. Open the AndroidManifest.xml file of your Android app and paste the following to it:
 
 	<pre style="font-family: Helvetica, Arial, FreeSans, san-serif; color: #000000; background-color: #eee;font-size: 15px;border: 1px dashed #999999;line-height: 15px;padding: 5px; overflow: auto; width: 100%"><code>&lt;instrumentation android:targetPackage=&quot;{app package name}&quot;
