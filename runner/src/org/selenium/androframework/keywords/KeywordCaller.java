@@ -6,24 +6,22 @@ import java.util.List;
 import org.selenium.androframework.api.DefaultProperties;
 import org.testng.Assert;
 import com.google.android.testing.nativedriver.client.AndroidNativeDriver;
+import com.jayway.android.robotium.solo.Solo;
 
 
 public class KeywordCaller {
-	AndroidNativeDriver driver = null;
+	private AndroidNativeDriver driver = null;
+	private Solo solo =null;
 	private List<IKeywords> keywordDefinitions = new ArrayList<IKeywords>();
 	IKeywords kd;
 	private String framework;
 
-	private KeywordCaller() {
+	private void initializeFrameworks() {
 		framework = DefaultProperties.getDefaultProperty()
 				.getValueFromProperty("FRAMEWORK");
-		keywordDefinitions.add(new NativeDriverKeywordDefinitions());
-
-	}
-
-	public KeywordCaller(AndroidNativeDriver driver) {
-		this();
-		this.driver = driver;
+		keywordDefinitions.add(new NativeDriverKeywordDefinitions(this.driver));
+		keywordDefinitions.add(new RobotiumKeywordDefinition(this.solo));
+		
 		for (IKeywords keywordDefinition : keywordDefinitions) {
 			if (keywordDefinition.isSupported(framework)) {
 				kd = keywordDefinition;
@@ -38,6 +36,16 @@ public class KeywordCaller {
 						+ framework
 						+ "\" is not currently supported by us at this moment.");
 		}
+	}
+
+	public KeywordCaller(AndroidNativeDriver driver) {
+		this.driver = driver;
+		this.initializeFrameworks();
+	}
+	
+	public KeywordCaller(Solo solo) {
+		this.solo = solo;
+		this.initializeFrameworks();
 	}
 	
 	private enum Keywords {
@@ -77,43 +85,43 @@ public class KeywordCaller {
 		case openapp:
 			break;
 		case checktextpresent:
-			kd.checktextpresent(driver, argument1);
+			kd.checktextpresent(argument1);
 			break;
 		case checkbuttonpresent:
-			kd.checkbuttonpresent(driver, argument1);
+			kd.checkbuttonpresent(argument1);
 			break;
 		case checklocatorpresent:
-			kd.checklocatorpresent(driver, locator);
+			kd.checklocatorpresent(locator);
 			break;
 		case assertbuttonpresent:
-			kd.assertbuttonpresent(driver, argument1);
+			kd.assertbuttonpresent(argument1);
 			break;
 		case assertlocatorpresent:
-			kd.assertlocatorpresent(driver, locator);
+			kd.assertlocatorpresent(locator);
 			break;
 		case assertpartialtextpresent:
-			kd.assertpartialtextpresent(driver, argument1);
+			kd.assertpartialtextpresent(argument1);
 			break;
 		case asserttextpresent:
-			kd.asserttextpresent(driver, argument1);
+			kd.asserttextpresent(argument1);
 			break;
 		case clickback:
-			kd.clickback(driver);
+			kd.clickback();
 			break;
 		case clickbutton:
-			kd.clickbutton(driver, argument1);
+			kd.clickbutton(argument1);
 			break;
 		case clickmenu:
-			kd.clickmenu(driver);
+			kd.clickmenu();
 			break;
 		case entertext:
 			if (locator=="" || argument1=="") {
 				Assert.fail("entertext keyword take 2 arguments locator and the value in argument1.");
 			}
 			try {
-				kd.entertext(driver, Integer.parseInt(locator), argument1);
+				kd.entertext(Integer.parseInt(locator), argument1);
 			} catch (NumberFormatException e) {
-				kd.entertext(driver, locator, argument1);
+				kd.entertext(locator, argument1);
 			}
 			break;
 		case verifyscreen:
@@ -127,28 +135,28 @@ public class KeywordCaller {
 			}
 			break;
 		case assertmenuitem:
-			kd.assertMenuItem(driver, argument1);
+			kd.assertMenuItem(argument1);
 			break;
 		case assertradiobuttonpresent:
-			kd.assertradiobuttonpresent(driver, argument1);
+			kd.assertradiobuttonpresent(argument1);
 			break;
 		case checkradiobuttonpresent:
-			kd.checkradiobuttonpresent(driver, argument1);
+			kd.checkradiobuttonpresent(argument1);
 			break;
 		case assertspinnerpresent:
-			kd.assertspinnerpresent(driver, argument1);
+			kd.assertspinnerpresent(argument1);
 			break;
 		case clickspinner:
-			kd.clickspinner(driver, locator, argument1);
+			kd.clickspinner(locator, argument1);
 			break;
 		case clickradiobutton:
-			kd.clickradiobutton(driver, argument1);
+			kd.clickradiobutton(argument1);
 			break;
 		case clickbyid:
-			kd.clickbyid(driver, locator);
+			kd.clickbyid(locator);
 			break;
 		case clicktext:
-			kd.clicktext(driver, argument1);
+			kd.clicktext(argument1);
 			break;
 		case scrollup:
 			int noOfTimes;
@@ -156,7 +164,7 @@ public class KeywordCaller {
 				noOfTimes = 1;
 			} else
 				noOfTimes = Integer.parseInt(argument1);
-			kd.scrollup(driver, noOfTimes);
+			kd.scrollup(noOfTimes);
 			break;
 		case scrolldown:
 			int noOfTimesDown;
@@ -164,7 +172,7 @@ public class KeywordCaller {
 				noOfTimesDown = 1;
 			} else
 				noOfTimesDown = Integer.parseInt(argument1);
-			kd.scrollup(driver, noOfTimesDown);
+			kd.scrollup(noOfTimesDown);
 			break;
 		default:
 			Assert.fail("Mentioned keyword not supported: " + key);

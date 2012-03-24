@@ -7,11 +7,21 @@ import org.selenium.androframework.keywords.KeywordCaller;
 
 import com.google.android.testing.nativedriver.client.AndroidNativeDriver;
 import com.google.android.testing.nativedriver.client.AndroidNativeDriverBuilder;
+import com.jayway.android.robotium.solo.Solo;
 
 public class AndroFrameworkExecutor {
 	TestCSVReader reader = null;
 	AndroidNativeDriver driver = null;
+	Solo solo = null;
 	KeywordCaller kc = null;
+	
+	public AndroFrameworkExecutor(AndroidNativeDriver driver){
+		this.driver=driver;
+	}
+	
+	public AndroFrameworkExecutor(Solo solo){
+		this.solo=solo;
+	}
 
 	public void androExecutor(String filePath) {
 		driver=this.getDriver();
@@ -37,6 +47,16 @@ public class AndroFrameworkExecutor {
 	}
 	public void androExecutor(AndroidNativeDriver driver,String filePath) {
 		kc = new KeywordCaller(driver);
+		this.executor(kc, filePath);
+	}
+	
+	public void androExecutor(Solo solo,String filePath) {
+		kc = new KeywordCaller(solo);
+		this.executor(kc, filePath);
+	}
+	
+	
+	private void executor(KeywordCaller kc,String filePath){
 		try {
 			reader = new TestCSVReader(filePath);
 		} catch (Exception e) {
@@ -53,8 +73,8 @@ public class AndroFrameworkExecutor {
 			kc.methodCaller(keyword, arg);
 			
 		}
-	}
 
+	}
 	protected AndroidNativeDriver getDriver() {
 		return new AndroidNativeDriverBuilder().withDefaultServer().build();
 	}

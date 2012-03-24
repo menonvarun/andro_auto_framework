@@ -2,6 +2,7 @@ package org.selenium.androframework.keywords;
 
 import java.util.List;
 
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.selenium.androframework.api.IdentifyByType;
 import org.selenium.androframework.api.UsefulFunctions;
@@ -17,7 +18,10 @@ import com.google.android.testing.nativedriver.common.AndroidNativeBy;
 
 public class NativeDriverKeywordDefinitions implements IKeywords{
 	UsefulFunctions uf = new UsefulFunctions();
-	
+	AndroidNativeDriver driver =null;
+	public NativeDriverKeywordDefinitions(AndroidNativeDriver driver){
+		this.driver=driver;
+	}
 	public boolean isSupported(String type){
 		if(type.equalsIgnoreCase("nativedriver"))
 			return true;
@@ -29,7 +33,7 @@ public class NativeDriverKeywordDefinitions implements IKeywords{
 
 	}
 
-	public void checktextpresent(AndroidNativeDriver driver, String text) {
+	public void checktextpresent( String text) {
 		boolean result = uf.waitForElementPresent(driver,
 				AndroidNativeBy.partialText(text));
 		if (!result) {
@@ -38,8 +42,8 @@ public class NativeDriverKeywordDefinitions implements IKeywords{
 		}
 	}
 
-	public void checkbuttonpresent(AndroidNativeDriver driver, String buttonText) {
-		boolean found = verifyElementTextByClassName(driver, ClassNames.BUTTON,
+	public void checkbuttonpresent( String buttonText) {
+		boolean found = verifyElementTextByClassName(ClassNames.BUTTON,
 				buttonText);
 		if (!found) {
 			System.out.println("Unable to find the button with said text: "
@@ -47,7 +51,7 @@ public class NativeDriverKeywordDefinitions implements IKeywords{
 		}
 	}
 
-	public void checklocatorpresent(AndroidNativeDriver driver, String locator) {
+	public void checklocatorpresent( String locator) {
 		boolean result = uf.waitForElementPresent(driver,
 				IdentifyByType.getLocatorType(locator));
 		if (!result) {
@@ -56,9 +60,9 @@ public class NativeDriverKeywordDefinitions implements IKeywords{
 		}
 	}
 
-	public void assertbuttonpresent(AndroidNativeDriver driver,
+	public void assertbuttonpresent(
 			String buttonText) {
-		boolean found = verifyElementTextByClassName(driver, ClassNames.BUTTON,
+		boolean found = verifyElementTextByClassName(ClassNames.BUTTON,
 				buttonText);
 		if (!found) {
 			Assert.fail("Unable to find button with text :" + buttonText);
@@ -66,20 +70,20 @@ public class NativeDriverKeywordDefinitions implements IKeywords{
 
 	}
 
-	public void assertlocatorpresent(AndroidNativeDriver driver, String locator) {
+	public void assertlocatorpresent( String locator) {
 		boolean result = uf.waitForElementPresent(driver,
 				IdentifyByType.getLocatorType(locator));
 		Assert.assertTrue(result, "Test failed. Unable to find locator: "
 				+ locator);
 	}
 
-	public void assertpartialtextpresent(AndroidNativeDriver driver, String text) {
+	public void assertpartialtextpresent( String text) {
 		boolean result = uf.waitForElementPresent(driver,
 				AndroidNativeBy.partialText(text));
 		Assert.assertTrue(result, "Test failed. Unable to find text: " + text);
 	}
 
-	public void asserttextpresent(AndroidNativeDriver driver, String text) {
+	public void asserttextpresent( String text) {
 		boolean result = uf.waitForElementPresent(driver,
 				AndroidNativeBy.partialText(text));
 		String elementText = driver.findElement(
@@ -90,44 +94,44 @@ public class NativeDriverKeywordDefinitions implements IKeywords{
 						+ " but present is: " + elementText);
 	}
 
-	public void clickback(AndroidNativeDriver driver) {
+	public void clickback() {
 		driver.getKeyboard().sendKeys(AndroidKeys.BACK);
 	}
 
-	public void clickbutton(AndroidNativeDriver driver, String buttonText) {
-		clickElementByText(driver, ClassNames.BUTTON, buttonText);
+	public void clickbutton( String buttonText) {
+		clickElementByText(ClassNames.BUTTON, buttonText);
 	}
 
-	public void clickradiobutton(AndroidNativeDriver driver, String buttonText) {
-		clickElementByText(driver, ClassNames.RADIO_BUTTON, buttonText);
+	public void clickradiobutton( String buttonText) {
+		clickElementByText(ClassNames.RADIO_BUTTON, buttonText);
 	}
 
-	public void clickspinner(AndroidNativeDriver driver, String rid,
+	public void clickspinner( String rid,
 			String value) {
-		clickbyid(driver, rid);
-		asserttextpresent(driver, value);
-		clicktext(driver, value);
+		clickbyid(rid);
+		asserttextpresent(value);
+		clicktext(value);
 	}
 
-	public void clicktext(AndroidNativeDriver driver, String text) {
+	public void clicktext( String text) {
 		WebElement element = driver.findElementByPartialText(text);
 		element.click();
 	}
 
-	public void assertspinnerpresent(AndroidNativeDriver driver,
+	public void assertspinnerpresent(
 			String spinnerText) {
-		boolean found = verifyElementTextByClassName(driver,
+		boolean found = verifyElementTextByClassName(
 				"android.widget.Spinner", spinnerText);
 		if (!found) {
 			Assert.fail("Unable to find spinner with text :" + spinnerText);
 		}
 	}
 
-	public void clickmenu(AndroidNativeDriver driver) {
+	public void clickmenu() {
 		driver.getKeyboard().sendKeys(AndroidKeys.MENU);
 	}
 
-	public void entertext(AndroidNativeDriver driver, String locator,
+	public void entertext( String locator,
 			String text) {
 		boolean result = uf.waitForElementPresent(driver,
 				IdentifyByType.getLocatorType(locator));
@@ -148,7 +152,7 @@ public class NativeDriverKeywordDefinitions implements IKeywords{
 
 	}
 
-	public void entertext(AndroidNativeDriver driver, int locator, String text) {
+	public void entertext( int locator, String text) {
 		List<WebElement> textFields = driver
 				.findElementsByClassName(ClassNames.EDIT_TEXT);
 		if (textFields.size() > locator) {
@@ -190,7 +194,7 @@ public class NativeDriverKeywordDefinitions implements IKeywords{
 		}
 	}
 
-	public void assertMenuItem(AndroidNativeDriver driver, String menuText) {
+	public void assertMenuItem( String menuText) {
 		List<WebElement> menuItems = driver
 				.findElementsByClassName("android.view.ContextMenu");
 		boolean found = false;
@@ -207,27 +211,25 @@ public class NativeDriverKeywordDefinitions implements IKeywords{
 
 	}
 
-	public void assertradiobuttonpresent(AndroidNativeDriver driver,
+	public void assertradiobuttonpresent(
 			String buttonText) {
-		boolean found = verifyElementTextByClassName(driver,
-				ClassNames.RADIO_BUTTON, buttonText);
+		boolean found = verifyElementTextByClassName(ClassNames.RADIO_BUTTON, buttonText);
 		if (!found) {
 			Assert.fail("Unable to find radio button with text :" + buttonText);
 		}
 
 	}
 
-	public void checkradiobuttonpresent(AndroidNativeDriver driver,
+	public void checkradiobuttonpresent(
 			String buttonText) {
-		boolean found = verifyElementTextByClassName(driver,
-				ClassNames.RADIO_BUTTON, buttonText);
+		boolean found = verifyElementTextByClassName(ClassNames.RADIO_BUTTON, buttonText);
 		if (!found) {
 			System.out.println("Unable to find radio button with said text: "
 					+ buttonText + ". Continuing with the execution.");
 		}
 	}
 
-	public boolean verifyElementTextByClassName(AndroidNativeDriver driver,
+	public boolean verifyElementTextByClassName(
 			String className, String buttonText) {
 		List<WebElement> buttons = driver.findElementsByClassName(className);
 		boolean found = false;
@@ -241,7 +243,7 @@ public class NativeDriverKeywordDefinitions implements IKeywords{
 		return found;
 	}
 
-	public void clickElementByText(AndroidNativeDriver driver,
+	public void clickElementByText(
 			String className, String elementText) {
 		List<WebElement> elements = driver.findElementsByClassName(className);
 		boolean found = false;
@@ -259,7 +261,7 @@ public class NativeDriverKeywordDefinitions implements IKeywords{
 		}
 	}
 
-	public void clickbyid(AndroidNativeDriver driver, String id) {
+	public void clickbyid( String id) {
 		try {
 			Thread.sleep(1000);
 		} catch (InterruptedException e) {
@@ -276,14 +278,14 @@ public class NativeDriverKeywordDefinitions implements IKeywords{
 		element.click();
 	}
 
-	public void scrollup(AndroidNativeDriver driver, int noOfTimes) {
+	public void scrollup( int noOfTimes) {
 		for (int i = 1; i <= noOfTimes; i++) {
 			driver.getKeyboard().sendKeys(AndroidKeys.DPAD_UP);
 		}
 
 	}
 
-	public void scrollDown(AndroidNativeDriver driver, int noOfTimes) {
+	public void scrollDown( int noOfTimes) {
 		for (int i = 1; i <= noOfTimes; i++) {
 			driver.getKeyboard().sendKeys(AndroidKeys.DPAD_DOWN);
 		}
