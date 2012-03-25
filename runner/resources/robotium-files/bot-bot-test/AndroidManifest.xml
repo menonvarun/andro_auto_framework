@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="#TESTED_APP_PACKAGE#.test"
+    android:versionCode="1"
+    android:versionName="1.0" >
+
+    <uses-sdk android:minSdkVersion="8" />
+
+    <instrumentation
+        android:name="android.test.InstrumentationTestRunner"
+        android:targetPackage="#TESTED_APP_PACKAGE#" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <application
+        android:label="bot-bot" >
+        <uses-library android:name="android.test.runner" />
+    </application>
+
+</manifest>
