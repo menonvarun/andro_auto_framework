@@ -1,5 +1,6 @@
 package org.selenium.androframework.common;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 
 import org.selenium.androframework.api.TestCSVReader;
@@ -50,7 +51,7 @@ public class AndroFrameworkExecutor {
 		this.executor(kc, filePath);
 	}
 	
-	public void androExecutor(Solo solo,String filePath) {
+	public void androExecutor(Solo solo,InputStream filePath) {
 		kc = new KeywordCaller(solo);
 		this.executor(kc, filePath);
 	}
@@ -59,6 +60,26 @@ public class AndroFrameworkExecutor {
 	private void executor(KeywordCaller kc,String filePath){
 		try {
 			reader = new TestCSVReader(filePath);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		int rows = reader.getLines();
+		for (int i = 1; i < rows; i++) {
+			String keyword = reader.getData(i, 0);
+			ArrayList<String> arg = new ArrayList<String>();
+			arg.add(reader.getData(i, 1));
+			arg.add(reader.getData(i, 2));
+			kc.methodCaller(keyword, arg);
+			
+		}
+
+	}
+	
+	private void executor(KeywordCaller kc,InputStream ipPath){
+		try {
+			reader = new TestCSVReader(ipPath);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

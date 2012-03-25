@@ -17,10 +17,10 @@ public class TestCaseGenerator {
 
 		File[] listOfFiles = f.listFiles();
 		if (directoryName.equalsIgnoreCase("") && f.isDirectory()) {
-			directoryName = f.getPath().split("resources/")[1];
+			directoryName = f.getPath().split("testcases/")[1];
 		} else if (directoryName.equalsIgnoreCase("") && f.isFile()) {
 			directoryName = new File(f.getParent()).getPath().split(
-					"resources/")[1];
+					"testcases/")[1];
 		}
 		for (int i = 0; i < listOfFiles.length; i++) {
 			if (listOfFiles[i].isFile()
@@ -37,12 +37,44 @@ public class TestCaseGenerator {
 			} else if (listOfFiles[i].isDirectory()) {
 
 				listDirectory(listOfFiles[i],
-						listOfFiles[i].getPath().split("resources/")[1],
+						listOfFiles[i].getPath().split("testcases/")[1],
 						fileList);
 			}
 		}
 	}
 
+	public void listAbsoluteDirectory(File f, String directoryName,
+			HashMap<String, ArrayList<String>> fileList) {
+
+		File[] listOfFiles = f.listFiles();
+		if (directoryName.equalsIgnoreCase("") && f.isDirectory()) {
+			directoryName = f.getPath().split("testcases/")[1];
+		} else if (directoryName.equalsIgnoreCase("") && f.isFile()) {
+			directoryName = new File(f.getParent()).getPath().split(
+					"testcases/")[1];
+		}
+		for (int i = 0; i < listOfFiles.length; i++) {
+			if (listOfFiles[i].isFile()
+					&& listOfFiles[i].getName().endsWith(".csv")
+					&& !listOfFiles[i].getName().startsWith(".")) {
+				if (fileList.containsKey(directoryName)) {
+					fileList.get(directoryName).add(
+							listOfFiles[i].getPath());
+				} else {
+					ArrayList<String> ar = new ArrayList<String>();
+					ar.add(listOfFiles[i].getPath());
+					fileList.put(directoryName, ar);
+				}
+			} else if (listOfFiles[i].isDirectory()) {
+
+				listAbsoluteDirectory(listOfFiles[i],
+						listOfFiles[i].getPath().split("testcases/")[1],
+						fileList);
+			}
+		}
+	}
+
+	
 	public void listDirectory1(File f, ArrayList<File> fileList) {
 		File[] listOfFiles = f.listFiles();
 
@@ -91,8 +123,12 @@ public class TestCaseGenerator {
 		TestCaseGenerator tc = new TestCaseGenerator();
 		HashMap<String, ArrayList<String>> hm1 = new HashMap<String, ArrayList<String>>();
 		DefaultProperties prop = DefaultProperties.getDefaultProperty();
-		tc.listDirectory(
-				new File("resources/"
+		tc.listAbsoluteDirectory(new File("testcases/"
+						+ prop.getValueFromProperty("TESTCASE_FOLDER")), "",
+				hm1);
+		System.out.println(hm1);
+		/*tc.listDirectory(
+				new File("testcases/"
 						+ prop.getValueFromProperty("TESTCASE_FOLDER")), "",
 				hm1);
 
@@ -100,7 +136,7 @@ public class TestCaseGenerator {
 			tc.classGenerator(hm1);
 		} catch (Exception e) {
 			e.printStackTrace();
-		}
+		}*/
 	}
 
 	private void classWriter(String classPath, ArrayList<String> ar,

@@ -55,8 +55,8 @@
 
     <target name="-init">
       <uptodate property="test.app.upto.date" targetfile="${test.app.signed}" >
-        <srcfiles dir= "instrumentation_backend/" includes="**/*"/>
-        <srcfiles file="build.properties"/>
+        <srcfiles dir= "${staging.dir}" includes="**/*"/>
+        <srcfiles file="resources/default.properties"/>
       </uptodate>
     </target>
     
@@ -76,6 +76,9 @@
     	<copy todir="${staging.dir}/src">
     	    	    <fileset dir="${main.dir}/src"/>
     	</copy>
+    	<copydir dest="${staging.dir}/assets"
+    	    	    	    src="${main.dir}/testcases"/>
+    	
     	<copy todir="${staging.dir}/libs">
     	    	    	    <fileset dir="${main.dir}/lib"/>
     	</copy>

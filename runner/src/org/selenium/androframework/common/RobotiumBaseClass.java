@@ -1,13 +1,18 @@
 package org.selenium.androframework.common;
 
+import java.io.InputStream;
+
 import com.jayway.android.robotium.solo.Solo;
 
 import junit.framework.Assert;
+import android.content.Context;
+import android.content.res.Resources;
 import android.test.ActivityInstrumentationTestCase2;
 
 public class RobotiumBaseClass extends ActivityInstrumentationTestCase2 {
 	public static final String APP_TEST_PACKAGE = "#APP_TEST_PACKAGE#";
 	public static final String APP_MAIN_ACTIVITY_CLASS = "#APP_MAIN_ACTIVITY_CLASS#";
+	protected Resources resources;
 	protected Solo solo;
 	
 	public RobotiumBaseClass(String pkg, Class activityClass) {
@@ -28,6 +33,8 @@ public class RobotiumBaseClass extends ActivityInstrumentationTestCase2 {
 	protected void setUp() throws Exception {
 		super.setUp();
 		solo = new Solo(getInstrumentation(), getActivity());
+		Context context=getInstrumentation().getContext();
+		resources =context.getResources();
 	}
 
 	@Override
