@@ -1,21 +1,23 @@
 package org.selenium.androframework.common;
 
+import java.io.IOException;
 import java.io.InputStream;
 
 import com.jayway.android.robotium.solo.Solo;
 
 import junit.framework.Assert;
 import android.content.Context;
+import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.test.ActivityInstrumentationTestCase2;
 
 public class RobotiumBaseClass extends ActivityInstrumentationTestCase2 {
 	public static final String APP_TEST_PACKAGE = "#APP_TEST_PACKAGE#";
 	public static final String APP_MAIN_ACTIVITY_CLASS = "#APP_MAIN_ACTIVITY_CLASS#";
-	protected Resources resources;
+	protected AssetManager assetManager;
 	protected Solo solo;
 	
-	public RobotiumBaseClass(String pkg, Class activityClass) {
+	public RobotiumBaseClass() {
 		super(APP_TEST_PACKAGE, getActivityClass());
 	}
 
@@ -28,13 +30,24 @@ public class RobotiumBaseClass extends ActivityInstrumentationTestCase2 {
 			return null;
 		}
 	}
+	
+	protected InputStream getFile(String filepath){
+		try{
+			return assetManager.open(filepath);
+			
+		}catch (IOException e) {
+			Assert.fail("Unable to open file: "+filepath);
+			return null;
+		}
+	}
 
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
 		solo = new Solo(getInstrumentation(), getActivity());
 		Context context=getInstrumentation().getContext();
-		resources =context.getResources();
+		Resources resources =context.getResources();
+		assetManager = resources.getAssets();
 	}
 
 	@Override

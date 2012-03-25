@@ -1,0 +1,14 @@
+import org.selenium.androframework.common.AndroFrameworkExecutor;
+import org.selenium.androframework.common.RobotiumBaseClass;
+
+public class TestClassName extends RobotiumBaseClass{
+	
+	public TestClassName(){
+		super();
+	}
+	
+	public void testName(){
+		
+		AndroFrameworkExecutor afe = new AndroFrameworkExecutor(solo);
+		afe.androExecutor(solo,getFile("filePath"));
+	}

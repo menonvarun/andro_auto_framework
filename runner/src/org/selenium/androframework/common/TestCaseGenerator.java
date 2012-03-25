@@ -87,7 +87,7 @@ public class TestCaseGenerator {
 		}
 	}
 
-	public void classGenerator(HashMap<String, ArrayList<String>> hm)
+	public void classGenerator(HashMap<String, ArrayList<String>> hm,String template)
 			throws Exception {
 
 		Iterator<String> it = hm.keySet().iterator();
@@ -113,7 +113,7 @@ public class TestCaseGenerator {
 					+ packagePath + "/" + javaClassName + ".java"));
 			ArrayList<String> ar = hm.get(classPath);
 
-			classWriter(classPath, ar, output);
+			classWriter(classPath, ar, output,template);
 			output.close();
 		}
 
@@ -123,26 +123,39 @@ public class TestCaseGenerator {
 		TestCaseGenerator tc = new TestCaseGenerator();
 		HashMap<String, ArrayList<String>> hm1 = new HashMap<String, ArrayList<String>>();
 		DefaultProperties prop = DefaultProperties.getDefaultProperty();
-		tc.listAbsoluteDirectory(new File("testcases/"
-						+ prop.getValueFromProperty("TESTCASE_FOLDER")), "",
-				hm1);
+		boolean isRobotium=false;
+		String template ="Template";
+		if(prop.getValueFromProperty("FRAMEWORK").equalsIgnoreCase("robotium")){
+			isRobotium=true;
+			template="RobotiumTemplate";
+		}
+		if(isRobotium){
+			tc.listAbsoluteDirectory(new File("testcases/"
+					+ prop.getValueFromProperty("TESTCASE_FOLDER")), "",
+			hm1);
+		}
+		else{
+			tc.listDirectory(
+					new File("testcases/"
+							+ prop.getValueFromProperty("TESTCASE_FOLDER")), "",
+					hm1);
+				
+		}
 		System.out.println(hm1);
-		/*tc.listDirectory(
-				new File("testcases/"
-						+ prop.getValueFromProperty("TESTCASE_FOLDER")), "",
-				hm1);
-
 		try {
-			tc.classGenerator(hm1);
+			tc.classGenerator(hm1,template);
 		} catch (Exception e) {
 			e.printStackTrace();
-		}*/
+		}
 	}
 
 	private void classWriter(String classPath, ArrayList<String> ar,
-			Writer output) {
-
+			Writer output,String template) {
+		boolean isRobotium=false;
 		FileInputStream fstream;
+		if(template.contentEquals("RobotiumTemplate")){
+			isRobotium=true;
+		}
 		try {
 			String tempString = "";
 			String importString = classPath.replace("/", ".");
@@ -163,12 +176,12 @@ public class TestCaseGenerator {
 			String outputStringTestCase = "";
 			String testCase = "";
 
-			fstream = new FileInputStream("resources/Template");
+			fstream = new FileInputStream("resources/"+template);
 			DataInputStream in = new DataInputStream(fstream);
 			BufferedReader br = new BufferedReader(new InputStreamReader(in));
 			boolean flag = false;
 			while ((tempString = br.readLine()) != null) {
-				if (tempString.equalsIgnoreCase("@Test"))
+				if (tempString.equalsIgnoreCase("@Test") || (isRobotium && tempString.contains("testName")))
 					flag = true;
 
 				if (!flag)
@@ -194,6 +207,10 @@ public class TestCaseGenerator {
 				fileName = fileName.substring(0, fileName.indexOf(".csv"));
 
 				fileName = replaceSpecialChar(fileName);
+				if(isRobotium){
+					fileName="test"+fileName.substring(0, 1).toUpperCase()
+							+ fileName.substring(1);
+				}
 
 				testCase = outputStringTestCase.replace("testName", fileName);
 				testCase = testCase.replace("filePath", testfile);
