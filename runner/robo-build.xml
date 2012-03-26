@@ -95,6 +95,7 @@
 		<replace file="${staging.dir}/src/org/selenium/androframework/common/RobotiumBaseClass.java" token="#APP_TEST_PACKAGE#" value="${tested.package_name}"/>
 
 		<replace file="${staging.dir}/src/org/selenium/androframework/common/RobotiumBaseClass.java" token="#APP_MAIN_ACTIVITY_CLASS#" value="${tested.main_activity}"/>
+		<replace file="${staging.dir}/src/org/selenium/androframework/keywords/KeywordCaller.java" token="#FRAMEWORK#" value="${FRAMEWORK}"/>
 		<exec executable="${env.ANDROID_HOME}/platform-tools/aapt" failonerror="true" output="${staging.dir}/assets/ids.txt">
 			<arg value="dump" />
 			<arg value="resources" />

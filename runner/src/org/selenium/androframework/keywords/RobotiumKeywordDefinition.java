@@ -2,9 +2,10 @@ package org.selenium.androframework.keywords;
 
 import java.util.ArrayList;
 
+import junit.framework.Assert;
+
 import org.sikuli.script.FindFailed;
 import org.sikuli.script.Screen;
-import org.testng.Assert;
 
 import android.widget.RadioButton;
 
@@ -28,7 +29,7 @@ public class RobotiumKeywordDefinition implements IKeywords {
 	@Override
 	public void assertbuttonpresent(String buttonText) {
 		boolean found = solo.searchButton(buttonText);
-		Assert.assertTrue(found, "Unable to find button with the said text.");
+		Assert.assertTrue("Unable to find button with the said text.",found);
 	}
 
 	@Override
@@ -46,7 +47,7 @@ public class RobotiumKeywordDefinition implements IKeywords {
 	@Override
 	public void assertpartialtextpresent(String text) {
 		boolean found = solo.searchText(text);
-		Assert.assertTrue(found, "Unable to find button with the said text.");
+		Assert.assertTrue("Unable to find button with the said text.",found);
 	}
 
 	@Override
@@ -59,19 +60,19 @@ public class RobotiumKeywordDefinition implements IKeywords {
 				break;
 			}
 		}
-		Assert.assertTrue(found, "Not able to find the radio button withe text: "+buttonText);
+		Assert.assertTrue("Not able to find the radio button withe text: "+buttonText,found);
 	}
 
 	@Override
 	public void assertspinnerpresent(String spinnerText) {
 		boolean found =solo.isSpinnerTextSelected(spinnerText);
-		Assert.assertTrue(found, "Unable to find a spinner with the said text: "+spinnerText);
+		Assert.assertTrue("Unable to find a spinner with the said text: "+spinnerText,found);
 	}
 
 	@Override
 	public void asserttextpresent(String text) {
 		boolean found =solo.searchText(text);
-		Assert.assertTrue(found, "Unable to find said text: "+text);
+		Assert.assertTrue("Unable to find said text: "+text,found);
 	}
 
 	@Override
@@ -146,8 +147,8 @@ public class RobotiumKeywordDefinition implements IKeywords {
 			}
 			i++;
 		}
-		Assert.assertTrue(found, "Unable to find radio button with said text: "
-					+ buttonText);
+		Assert.assertTrue("Unable to find radio button with said text: "
+					+ buttonText,found);
 	}
 
 	@Override

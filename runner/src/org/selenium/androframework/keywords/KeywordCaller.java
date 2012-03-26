@@ -17,8 +17,7 @@ public class KeywordCaller {
 	private String framework;
 
 	private void initializeFrameworks() {
-		framework = DefaultProperties.getDefaultProperty()
-				.getValueFromProperty("FRAMEWORK");
+		framework = "#FRAMEWORK#";
 		keywordDefinitions.add(new NativeDriverKeywordDefinitions(this.driver));
 		keywordDefinitions.add(new RobotiumKeywordDefinition(this.solo));
 		
