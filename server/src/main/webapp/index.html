@@ -17,7 +17,7 @@
   </div>
   
   <div id="recordsHolder" style="display:none;">
-	<a class="exportcsv" href="#" style="position:absolute;right:80px;">Export as CSV</a>	
+	<a id="exportcsv" target="_blank" href="#" style="position:absolute;right:80px;">Export as CSV</a>	
 	<font size="6" class="add" id="addFirstRecord">+</font>
 	<h3>Records of session:  <span id="recordsHeading"></span></h3>
 	<div class="holderDiv">
@@ -328,6 +328,7 @@
 		
 		$("#sessionsHolder").hide();
 		$('#recordsHolder').show();
+                $("#exportcsv").attr("href","/DownloadCsv?id="+sessionID)
 		
 		var recordURI = $(this).attr('title');		
 		
