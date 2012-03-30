@@ -277,7 +277,7 @@
 		if(htmlContent == "Edit")
 		{	
 			var command = $(this).parent().siblings('.command').html();	
-			//var rid = $(this).parent().siblings('.rid').html();
+			var rid = $(this).parent().siblings('.rid').html();
 			var className = '';
 			var args0 = $(this).parent().siblings('.args0').html();
 			var args1 = $(this).parent().siblings('.args1').html();	
@@ -293,7 +293,7 @@
 		{
 			var eventSourceElem = $(this);
 			var command = $(this).parent().siblings('.command').find('input').val();	
-			//var rid = $(this).parent().siblings('.rid').children('input').val();
+			var rid = $(this).parent().siblings('.rid').children('input').val();
 			var className = '';
 			var args0 = $(this).parent().siblings('.args0').children('input').val();
 			var args1 = $(this).parent().siblings('.args1').children('input').val();
