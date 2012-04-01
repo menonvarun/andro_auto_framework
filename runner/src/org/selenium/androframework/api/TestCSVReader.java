@@ -37,6 +37,13 @@ public class TestCSVReader {
 		return data;
 	}
 	
+	public String[] getRow(int row){
+		if(row < 0 && row > rows.size()){
+			return new String[0];
+		}
+		return rows.get(row);
+	}
+	
 	public int getLines(){
 		return rows.size();
 	}

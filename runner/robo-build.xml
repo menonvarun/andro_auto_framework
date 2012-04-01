@@ -19,6 +19,9 @@
 	<property name="dex.file" location="${bin.dir}/classes.dex"/>
 	<property name="test.app.unsigned" location="${bin.dir}/bot-bot_unsigned.apk"/>
 	<property name="test.app.signed" location="${bin.dir}/bot-bot.apk"/>
+	<property name="resign.folder" location="${bin.dir}/resignapk"/>
+	<property name="app.unsigned" location="${resign.folder}/app_unsigned.apk"/>
+	<property name="app.signed" location="${resign.folder}/app_signed.apk"/>
 	
 	<!-- Tells adb which device to target. You can change this from the command line
 	         by invoking "ant -Dadb.device.arg=-d" for device "ant -Dadb.device.arg=-e" for
@@ -65,7 +68,17 @@
 			<srcfiles file="resources/default.properties"/>
 		</uptodate>
 	</target>
-
+	<target name="-resign-apk">
+		<delete dir="${resign.folder}"/>
+		<mkdir dir="${resign.folder}"/>
+		<copy file="${tested.project.apk}" tofile="${resign.folder}/testapp.zip"/>
+		<unzip src="${resign.folder}/testapp.zip" dest="resignapk/testapp"/>
+		<delete dir="resignapk/testapp/META-INF"/>
+		<zip destfile="${app.unsigned}"
+		       basedir="resignapk/testapp"
+		  />
+		<antcall target="-signapp"/>
+	</target>
 	<target name="-stage">
 		<mkdir dir="${staging.dir}"/>
 		<mkdir dir="${bin.dir}"/>
@@ -115,24 +128,38 @@
 	       classpathref="jar.libs.ref">
 		</javac>
 	</target>
-
-
+	<target name="installapp" description="Resigns and install the original app under test.">
+		<antcall target="-resign-apk" />
+		<antcall target="-installappapk" />
+		<delete dir="${resign.folder}"/>
+	</target>
 	<target name="package" depends="-init" unless="test.app.upto.date">
+		<antcall target="installapp" />
 		<antcall target="-compile" />
 		<antcall target="-aapt" />
 		<antcall target="-dex" />
 		<antcall target="-apk" />
 		<antcall target="-sign" />
-		<antcall target="-install" />
+		<antcall target="-installtestapk" />
 	</target>
 
-	<target name="-install" description="Install the test apk file onto the device or simulator">
+	<target name="-installtestapk" description="Install the test apk file onto the device or simulator">
 		<echo>Installing ${out.final.file} onto default emulator or device...</echo>
 		<exec executable="${env.ANDROID_HOME}/platform-tools/adb" failonerror="true">
 			<arg line="${adb.device.arg}" />
 			<arg value="install" />
 			<arg value="-r" />
 			<arg path="${test.app.signed}" />
+		</exec>
+
+	</target>
+	<target name="-installappapk" description="Install the original app apk file onto the device or simulator">
+		<echo>Installing ${out.final.file} onto default emulator or device...</echo>
+		<exec executable="${env.ANDROID_HOME}/platform-tools/adb" failonerror="true">
+			<arg line="${adb.device.arg}" />
+			<arg value="install" />
+			<arg value="-r" />
+			<arg path="${app.signed}" />
 		</exec>
 
 	</target>
@@ -173,6 +200,7 @@
 		<copy file="${staging.dir}/libs/robotium-solo-3.1.jar" todir="${bin.dir}/libs"/>
 		<copy file="${staging.dir}/libs/opencsv-2.3.jar" todir="${bin.dir}/libs"/>
 		<copy file="${staging.dir}/libs/testng-6.1.1.jar" todir="${bin.dir}/libs"/>
+		<copy file="${staging.dir}/libs/client-standalone.jar" todir="${bin.dir}/libs"/>
 		<!--<copy todir="${bin.dir}/libs">
 			<fileset dir="${staging.dir}/libs"/>
 		</copy>-->
@@ -188,7 +216,16 @@
 			<arg file="${dex.file}" />
 		</exec>
 	</target>
-
+	<target name ="-signapp" description="Signs the app under test">
+			<signjar
+		  jar="${app.unsigned}"
+		  signedjar="${app.signed}"
+		  keystore="${key.store}"
+		  storepass="${key.store.password}"
+		  alias="${key.alias}"
+		  keypass="${key.alias.password}"
+		  verbose="false"/>
+	</target>
 
 	<target name ="-sign">
 		<signjar

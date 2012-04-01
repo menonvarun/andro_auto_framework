@@ -16,6 +16,7 @@ public class RobotiumBaseClass extends ActivityInstrumentationTestCase2 {
 	public static final String APP_MAIN_ACTIVITY_CLASS = "#APP_MAIN_ACTIVITY_CLASS#";
 	protected AssetManager assetManager;
 	protected Solo solo;
+	protected Prefrences prefrences=new Prefrences();
 	
 	public RobotiumBaseClass() {
 		super(APP_TEST_PACKAGE, getActivityClass());
@@ -48,6 +49,7 @@ public class RobotiumBaseClass extends ActivityInstrumentationTestCase2 {
 		Context context=getInstrumentation().getContext();
 		Resources resources =context.getResources();
 		assetManager = resources.getAssets();
+		prefrences.setExecutionContext(solo);
 	}
 
 	@Override

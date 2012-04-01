@@ -15,6 +15,7 @@ public class AndroFrameworkExecutor {
 	AndroidNativeDriver driver = null;
 	Solo solo = null;
 	KeywordCaller kc = null;
+	Prefrences prefrences=null;
 	
 	public AndroFrameworkExecutor(AndroidNativeDriver driver){
 		this.driver=driver;
@@ -23,8 +24,12 @@ public class AndroFrameworkExecutor {
 	public AndroFrameworkExecutor(Solo solo){
 		this.solo=solo;
 	}
+	
+	public AndroFrameworkExecutor(Prefrences prefrences){
+		this.prefrences=prefrences;
+	}
 
-	public void androExecutor(String filePath) {
+	/*public void androExecutor(String filePath) {
 		driver=this.getDriver();
 		kc = new KeywordCaller(driver);
 		this.startActivity();
@@ -45,46 +50,54 @@ public class AndroFrameworkExecutor {
 			
 		}
 		driver.quit();
-	}
-	public void androExecutor(AndroidNativeDriver driver,String filePath) {
-		kc = new KeywordCaller(driver);
-		this.executor(kc, filePath);
-	}
+	}*/
 	
-	public void androExecutor(Solo solo,InputStream filePath) {
-		kc = new KeywordCaller(solo);
-		this.executor(kc, filePath);
-	}
-	
-	
-	private void executor(KeywordCaller kc,String filePath){
+	public void androExecutor(String filePath) {
+		kc = new KeywordCaller(prefrences);
 		try {
 			reader = new TestCSVReader(filePath);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-		int rows = reader.getLines();
-		for (int i = 1; i < rows; i++) {
-			String keyword = reader.getData(i, 0);
-			ArrayList<String> arg = new ArrayList<String>();
-			arg.add(reader.getData(i, 1));
-			arg.add(reader.getData(i, 2));
-			kc.methodCaller(keyword, arg);
-			
-		}
-
+		this.executor();
 	}
 	
-	private void executor(KeywordCaller kc,InputStream ipPath){
+	public void androExecutor(InputStream filePath) {
+		kc = new KeywordCaller(prefrences);
 		try {
-			reader = new TestCSVReader(ipPath);
+			reader = new TestCSVReader(filePath);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
+		this.execute();
+	}
+	
+	public void androExecutor(AndroidNativeDriver driver,String filePath) {
+		kc = new KeywordCaller(driver);
+		try {
+			reader = new TestCSVReader(filePath);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		this.execute();
+	}
+	
+	public void androExecutor(Solo solo,InputStream filePath) {
+		kc = new KeywordCaller(solo);
+		try {
+			reader = new TestCSVReader(filePath);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		this.executor();
+	}
+	
+	
+	private void executor(){
 		int rows = reader.getLines();
 		for (int i = 1; i < rows; i++) {
 			String keyword = reader.getData(i, 0);
@@ -92,10 +105,23 @@ public class AndroFrameworkExecutor {
 			arg.add(reader.getData(i, 1));
 			arg.add(reader.getData(i, 2));
 			kc.methodCaller(keyword, arg);
-			
 		}
 
 	}
+	private void execute(){
+		int rows = reader.getLines();
+		for (int i = 1; i < rows; i++) {
+			Command command = new Command();
+			String[] row =reader.getRow(i);
+			String[] parameters=new String[row.length-1];
+			command.setName(row[0]);
+			System.arraycopy(row, 1, parameters, 0, row.length-1);
+			command.setParameters(parameters);
+			kc.execute(command);
+		}
+
+	}
+	
 	protected AndroidNativeDriver getDriver() {
 		return new AndroidNativeDriverBuilder().withDefaultServer().build();
 	}

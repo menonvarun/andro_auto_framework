@@ -1,13 +1,16 @@
 package org.selenium.androframework.keywords;
 
+import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.List;
 
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.selenium.androframework.api.IdentifyByType;
 import org.selenium.androframework.api.UsefulFunctions;
-import org.sikuli.script.FindFailed;
-import org.sikuli.script.Screen;
+import org.selenium.androframework.common.Command;
+import org.selenium.androframework.common.Prefrences;
+//import org.sikuli.script.FindFailed;
+//import org.sikuli.script.Screen;
 import org.testng.Assert;
 
 import com.google.android.testing.nativedriver.client.AndroidNativeDriver;
@@ -16,12 +19,23 @@ import com.google.android.testing.nativedriver.client.ClassNames;
 import com.google.android.testing.nativedriver.common.AndroidKeys;
 import com.google.android.testing.nativedriver.common.AndroidNativeBy;
 
-public class NativeDriverKeywordDefinitions implements IKeywords{
+public class NativeDriverKeywordDefinitions extends BaseKeywordDefinitions implements IKeywords{
 	UsefulFunctions uf = new UsefulFunctions();
 	AndroidNativeDriver driver =null;
 	public NativeDriverKeywordDefinitions(AndroidNativeDriver driver){
 		this.driver=driver;
 	}
+	
+	public NativeDriverKeywordDefinitions(Prefrences prefrences){
+		Object executionContext=prefrences.getExecutionContext();
+		if(executionContext instanceof AndroidNativeDriver){
+			this.driver=(AndroidNativeDriver) executionContext;
+		}else{
+			this.driver=null;
+		}
+		collectSupportedMethods(this.getClass());
+	}
+	
 	public boolean isSupported(String type){
 		if(type.equalsIgnoreCase("nativedriver"))
 			return true;
@@ -172,17 +186,17 @@ public class NativeDriverKeywordDefinitions implements IKeywords{
 	}
 
 	public void verifyscreen(String imagePath) {
-		Screen s = new Screen();
+		/*Screen s = new Screen();
 		try {
 			s.wait(imagePath, 30);
 		} catch (FindFailed e) {
 			System.out.println(e);
 			Assert.fail("Unable to verify the screen");
-		}
+		}*/
 	}
 
 	public void waitForScreen(String imagePath, Double time) {
-		Screen s = new Screen();
+		/*Screen s = new Screen();
 		if (time == null) {
 			time = (double) 30;
 		}
@@ -191,7 +205,7 @@ public class NativeDriverKeywordDefinitions implements IKeywords{
 		} catch (FindFailed e) {
 			System.out.println(e);
 			Assert.fail("Unable to verify the screen");
-		}
+		}*/
 	}
 
 	public void assertMenuItem( String menuText) {
@@ -291,4 +305,19 @@ public class NativeDriverKeywordDefinitions implements IKeywords{
 		}
 
 	}
+
+	@Override
+	public boolean methodSUpported(Command command) {
+		boolean supported =false;
+		if (this.driver != null && methodMap.containsKey(command.getName())) {
+			supported = true;
+		}
+		return supported;
+	}
+	
+	@Override
+	public void execute(Command command) {
+		invoker(this, command.getName(), Arrays.asList(command.getParameters()));
+	}
+
 }

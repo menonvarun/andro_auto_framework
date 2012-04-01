@@ -1,23 +1,38 @@
 package org.selenium.androframework.keywords;
 
+import java.lang.reflect.Array;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
 
 import junit.framework.Assert;
 
-import org.sikuli.script.FindFailed;
-import org.sikuli.script.Screen;
+import org.selenium.androframework.common.Command;
+import org.selenium.androframework.common.Prefrences;
 
 import android.widget.RadioButton;
 
+import com.google.android.testing.nativedriver.client.AndroidNativeDriver;
 import com.jayway.android.robotium.solo.Solo;
 
-public class RobotiumKeywordDefinition implements IKeywords {
+public class RobotiumKeywordDefinition extends BaseKeywordDefinitions implements IKeywords {
 	private Solo solo;
-
 	public RobotiumKeywordDefinition(Solo solo) {
 		this.solo = solo;
 	}
-
+	
+	public RobotiumKeywordDefinition(Prefrences prefrences) {
+		Object executionContext=prefrences.getExecutionContext();
+		if(executionContext instanceof Solo){
+			this.solo=(Solo) executionContext;
+		}else{
+			this.solo=null;
+		}
+		collectSupportedMethods(this.getClass());
+	}
+	
 	@Override
 	public boolean isSupported(String type) {
 		if (type.equalsIgnoreCase("robotium"))
@@ -193,27 +208,27 @@ public class RobotiumKeywordDefinition implements IKeywords {
 	
 	@Override
 	public void verifyscreen(String imagePath) {
-		Screen s = new Screen();
-		try {
-			s.wait(imagePath, 30);
-		} catch (FindFailed e) {
-			System.out.println(e);
-			Assert.fail("Unable to verify the screen");
-		}
+		
 	}
 	
 	@Override
 	public void waitForScreen(String imagePath, Double time) {
-		Screen s = new Screen();
-		if (time == null) {
-			time = (double) 30;
+		
+	}
+
+	@Override
+	public boolean methodSUpported(Command command) {
+		boolean supported = false;
+		if (this.solo != null && methodMap.containsKey(command.getName())) {
+			supported = true;
 		}
-		try {
-			s.wait(imagePath, time);
-		} catch (FindFailed e) {
-			System.out.println(e);
-			Assert.fail("Unable to verify the screen");
-		}
+		return supported;
+	
+	}
+	
+	@Override
+	public void execute(Command command) {
+		invoker(this, command.getName(), Arrays.asList(command.getParameters()));
 	}
 
 }
