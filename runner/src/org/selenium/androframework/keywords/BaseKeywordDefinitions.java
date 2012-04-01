@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import junit.framework.Assert;
+import junit.framework.AssertionFailedError;
 
 import org.selenium.androframework.common.Command;
 
@@ -47,20 +48,29 @@ public abstract class BaseKeywordDefinitions {
 		return false;
 	}
 
-	protected void invoker(Object obj,
-			String methodName, List<String> s) {
+	protected void invoker(Object obj, String methodName, List<String> s) {
 		if (s.size() == 0) {
 			try {
 				Method method = obj.getClass().getMethod(methodName,
 						(Class<?>) null);
 				method.invoke(obj, (Class<?>) null);
 			} catch (NoSuchMethodException e) {
-				System.out.println("nosuch method exception thrown: " + e);
+				Assert.fail("nosuch method exception thrown: " + e);
 			} catch (Exception e) {
-				System.out.println("exception thrown: " + e);
+				if (e instanceof InvocationTargetException) {
+					InvocationTargetException invocationTargetException = (InvocationTargetException) e;
+					Throwable targetException = invocationTargetException
+							.getTargetException();
+					if (targetException instanceof AssertionFailedError) {
+						Assert.fail(targetException.getMessage());
+					} else {
+						Assert.fail(targetException.getMessage());
+					}
+				} else {
+					Assert.fail(e.toString());
+				}
 			}
-		}
-		else if (s.size() == 1) {
+		} else if (s.size() == 1) {
 			int tempVal = 0;
 			boolean isInteger = false;
 			try {
@@ -75,9 +85,20 @@ public abstract class BaseKeywordDefinitions {
 							int.class);
 					method.invoke(obj, tempVal);
 				} catch (NoSuchMethodException e) {
-					System.out.println("nosuch method exception thrown: " + e);
+					Assert.fail("nosuch method exception thrown: " + e);
 				} catch (Exception e) {
-					System.out.println("exception thrown: " + e);
+					if (e instanceof InvocationTargetException) {
+						InvocationTargetException invocationTargetException = (InvocationTargetException) e;
+						Throwable targetException = invocationTargetException
+								.getTargetException();
+						if (targetException instanceof AssertionFailedError) {
+							Assert.fail(targetException.getMessage());
+						} else {
+							Assert.fail(targetException.getMessage());
+						}
+					} else {
+						Assert.fail(e.toString());
+					}
 				}
 			} else {
 				try {
@@ -86,24 +107,41 @@ public abstract class BaseKeywordDefinitions {
 					method.invoke(obj, s.get(0));
 				} catch (NoSuchMethodException e) {
 					Assert.fail("nosuch method exception thrown: " + e);
-				} catch (InvocationTargetException e) {
-					Assert.fail("exception thrown: " + e);
-				} catch (IllegalArgumentException e) {
-					Assert.fail(e.toString());
-				} catch (IllegalAccessException e) {
-					Assert.fail(e.toString());
+				} catch (Exception e) {
+					if (e instanceof InvocationTargetException) {
+						InvocationTargetException invocationTargetException = (InvocationTargetException) e;
+						Throwable targetException = invocationTargetException
+								.getTargetException();
+						if (targetException instanceof AssertionFailedError) {
+							Assert.fail(targetException.getMessage());
+						} else {
+							Assert.fail(targetException.getMessage());
+						}
+					} else {
+						Assert.fail(e.toString());
+					}
 				}
 			}
-		}
-		else if (s.size() > 1) {
+		} else if (s.size() > 1) {
 			try {
 				Method method = obj.getClass().getMethod(methodName,
 						String.class, String.class);
 				method.invoke(obj, s.get(0), s.get(1));
 			} catch (NoSuchMethodException e) {
-				System.out.println("nosuch method exception thrown: " + e);
+				Assert.fail("nosuch method exception thrown: " + e);
 			} catch (Exception e) {
-				System.out.println("exception thrown: " + e);
+				if (e instanceof InvocationTargetException) {
+					InvocationTargetException invocationTargetException = (InvocationTargetException) e;
+					Throwable targetException = invocationTargetException
+							.getTargetException();
+					if (targetException instanceof AssertionFailedError) {
+						Assert.fail(targetException.getMessage());
+					} else {
+						Assert.fail(targetException.getMessage());
+					}
+				} else {
+					Assert.fail(e.toString());
+				}
 			}
 		}
 
