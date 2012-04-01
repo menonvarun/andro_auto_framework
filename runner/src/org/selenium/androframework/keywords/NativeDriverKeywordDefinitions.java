@@ -1,6 +1,5 @@
 package org.selenium.androframework.keywords;
 
-import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
 
@@ -22,10 +21,7 @@ import com.google.android.testing.nativedriver.common.AndroidNativeBy;
 public class NativeDriverKeywordDefinitions extends BaseKeywordDefinitions implements IKeywords{
 	UsefulFunctions uf = new UsefulFunctions();
 	AndroidNativeDriver driver =null;
-	public NativeDriverKeywordDefinitions(AndroidNativeDriver driver){
-		this.driver=driver;
-	}
-	
+
 	public NativeDriverKeywordDefinitions(Prefrences prefrences){
 		Object executionContext=prefrences.getExecutionContext();
 		if(executionContext instanceof AndroidNativeDriver){

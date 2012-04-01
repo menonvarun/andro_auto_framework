@@ -1,11 +1,7 @@
 package org.selenium.androframework.keywords;
 
-import java.lang.reflect.Array;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Iterator;
 
 import junit.framework.Assert;
 
@@ -14,14 +10,10 @@ import org.selenium.androframework.common.Prefrences;
 
 import android.widget.RadioButton;
 
-import com.google.android.testing.nativedriver.client.AndroidNativeDriver;
 import com.jayway.android.robotium.solo.Solo;
 
 public class RobotiumKeywordDefinition extends BaseKeywordDefinitions implements IKeywords {
 	private Solo solo;
-	public RobotiumKeywordDefinition(Solo solo) {
-		this.solo = solo;
-	}
 	
 	public RobotiumKeywordDefinition(Prefrences prefrences) {
 		Object executionContext=prefrences.getExecutionContext();

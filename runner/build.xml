@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="andro_auto_framework" basedir=".">
+	<import file="robo-build.xml"/>
 	<property name="RELEASE_ROOT" value="." />
 	<property environment="env"/> 
 	<property name="SRC" value="${RELEASE_ROOT}/src" />

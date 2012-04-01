@@ -3,6 +3,8 @@ package org.selenium.androframework.common;
 import java.io.InputStream;
 import java.util.ArrayList;
 
+import junit.framework.Assert;
+
 import org.selenium.androframework.api.TestCSVReader;
 import org.selenium.androframework.keywords.KeywordCaller;
 
@@ -17,50 +19,18 @@ public class AndroFrameworkExecutor {
 	KeywordCaller kc = null;
 	Prefrences prefrences=null;
 	
-	public AndroFrameworkExecutor(AndroidNativeDriver driver){
-		this.driver=driver;
-	}
-	
-	public AndroFrameworkExecutor(Solo solo){
-		this.solo=solo;
-	}
-	
 	public AndroFrameworkExecutor(Prefrences prefrences){
 		this.prefrences=prefrences;
 	}
-
-	/*public void androExecutor(String filePath) {
-		driver=this.getDriver();
-		kc = new KeywordCaller(driver);
-		this.startActivity();
-		try {
-			reader = new TestCSVReader(filePath);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		int rows = reader.getLines();
-		for (int i = 1; i < rows; i++) {
-			String keyword = reader.getData(i, 0);
-			ArrayList<String> arg = new ArrayList<String>();
-			arg.add(reader.getData(i, 1));
-			arg.add(reader.getData(i, 2));
-			kc.methodCaller(keyword, arg);
-			
-		}
-		driver.quit();
-	}*/
 	
 	public void androExecutor(String filePath) {
 		kc = new KeywordCaller(prefrences);
 		try {
 			reader = new TestCSVReader(filePath);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Assert.fail("Unable to read the csv file :"+ e.toString());
 		}
-		this.executor();
+		this.execute();
 	}
 	
 	public void androExecutor(InputStream filePath) {
@@ -68,46 +38,11 @@ public class AndroFrameworkExecutor {
 		try {
 			reader = new TestCSVReader(filePath);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Assert.fail("Unable to read the csv file :"+ e.toString());
 		}
 		this.execute();
 	}
-	
-	public void androExecutor(AndroidNativeDriver driver,String filePath) {
-		kc = new KeywordCaller(driver);
-		try {
-			reader = new TestCSVReader(filePath);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		this.execute();
-	}
-	
-	public void androExecutor(Solo solo,InputStream filePath) {
-		kc = new KeywordCaller(solo);
-		try {
-			reader = new TestCSVReader(filePath);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		this.executor();
-	}
-	
-	
-	private void executor(){
-		int rows = reader.getLines();
-		for (int i = 1; i < rows; i++) {
-			String keyword = reader.getData(i, 0);
-			ArrayList<String> arg = new ArrayList<String>();
-			arg.add(reader.getData(i, 1));
-			arg.add(reader.getData(i, 2));
-			kc.methodCaller(keyword, arg);
-		}
 
-	}
 	private void execute(){
 		int rows = reader.getLines();
 		for (int i = 1; i < rows; i++) {
@@ -121,14 +56,14 @@ public class AndroFrameworkExecutor {
 		}
 
 	}
-	
+	/*
 	protected AndroidNativeDriver getDriver() {
 		return new AndroidNativeDriverBuilder().withDefaultServer().build();
 	}
 
 	private void startActivity() {
 		driver.startActivity("com.scanfu.android." + "activities.RegistrationAlertActivity");
-	}
+	}*/
 	/*public static void main(String[] args){
 		AndroFrameworkExecutor afe = new AndroFrameworkExecutor();
 		afe.androExecutor("test2.csv");

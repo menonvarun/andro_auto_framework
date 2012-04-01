@@ -9,6 +9,6 @@ public class TestClassName extends RobotiumBaseClass{
 	
 	public void testName(){
 		
-		AndroFrameworkExecutor afe = new AndroFrameworkExecutor(solo);
-		afe.androExecutor(solo,getFile("filePath"));
+		AndroFrameworkExecutor afe = new AndroFrameworkExecutor(prefrences);
+		afe.androExecutor(getFile("filePath"));
 	}

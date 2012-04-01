@@ -12,6 +12,7 @@ public class BaseClass {
 	DefaultProperties prop = DefaultProperties.getDefaultProperty();
 	String appPackage = prop.getValueFromProperty("APP_PACKAGE").concat(".")
 			.concat(prop.getValueFromProperty("DEFAULT_ACTIVITY"));
+	protected Prefrences prefrences=new Prefrences();
 
 	protected AndroidNativeDriver getDriver() {
 		/*
@@ -37,6 +38,7 @@ public class BaseClass {
 	@BeforeMethod
 	public void beforeMethod() {
 		driver = this.getDriver();
+		prefrences.setExecutionContext(driver);
 		this.startActivity();
 	}
 
