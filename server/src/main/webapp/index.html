@@ -17,7 +17,7 @@
   </div>
   
   <div id="recordsHolder" style="display:none;">
-	<a class="exportcsv" href="#" style="position:absolute;right:80px;">Export as CSV</a>	
+	<a id="exportcsv" target="_blank" href="#" style="position:absolute;right:80px;">Export as CSV</a>	
 	<font size="6" class="add" id="addFirstRecord">+</font>
 	<h3>Records of session:  <span id="recordsHeading"></span></h3>
 	<div class="holderDiv">
@@ -277,7 +277,7 @@
 		if(htmlContent == "Edit")
 		{	
 			var command = $(this).parent().siblings('.command').html();	
-			//var rid = $(this).parent().siblings('.rid').html();
+			var rid = $(this).parent().siblings('.rid').html();
 			var className = '';
 			var args0 = $(this).parent().siblings('.args0').html();
 			var args1 = $(this).parent().siblings('.args1').html();	
@@ -293,7 +293,7 @@
 		{
 			var eventSourceElem = $(this);
 			var command = $(this).parent().siblings('.command').find('input').val();	
-			//var rid = $(this).parent().siblings('.rid').children('input').val();
+			var rid = $(this).parent().siblings('.rid').children('input').val();
 			var className = '';
 			var args0 = $(this).parent().siblings('.args0').children('input').val();
 			var args1 = $(this).parent().siblings('.args1').children('input').val();
@@ -328,6 +328,7 @@
 		
 		$("#sessionsHolder").hide();
 		$('#recordsHolder').show();
+                $("#exportcsv").attr("href","/DownloadCsv?id="+sessionID)
 		
 		var recordURI = $(this).attr('title');		
 		
