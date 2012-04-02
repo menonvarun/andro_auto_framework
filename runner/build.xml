@@ -7,7 +7,6 @@
 	<property name="LIB" value="${RELEASE_ROOT}/lib" />
 	<property name="BIN" value="${RELEASE_ROOT}/bin1" />
 	<property name="TESTPACKAGE" value="${SRC}/test" />
-	<property name="android.lib" location="${env.ANDROID_HOME}/platforms/android-10/"/>
 	<property name="REPORT" value="${RELEASE_ROOT}/test-report" />
 	<path id="test.classpath">
 		<fileset dir="${LIB}">

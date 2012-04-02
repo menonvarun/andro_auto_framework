@@ -34,7 +34,7 @@
 	<property name="dx" location="${env.ANDROID_HOME}/platform-tools/dx${bat}" />
 	<property name="apkbuilder" location="${env.ANDROID_HOME}/tools/apkbuilder${bat}" />
 
-	<property name="android.lib" location="${env.ANDROID_HOME}/platforms/android-10/android.jar"/>
+	<property name="android.lib" location="${env.ANDROID_HOME}/platforms/android-10"/>
 	<path id="android.antlibs">
 		<pathelement path="${env.ANDROID_HOME}/tools/lib/anttasks.jar" />
 	</path>
@@ -95,8 +95,9 @@
 		<copy todir="${staging.dir}/src">
 			<fileset dir="${main.dir}/src"/>
 		</copy>
-		<copydir dest="${staging.dir}/assets/testcases"
-    	    	    	    src="${main.dir}/testcases"/>
+		<copy todir="${staging.dir}/assets/testcases/${TESTCASE_FOLDER}">
+    	    	    	    <fileset dir="${main.dir}/testcases/${TESTCASE_FOLDER}"/>
+		</copy>
 
 		<copy todir="${staging.dir}/libs">
 			<fileset dir="${main.dir}/lib"/>
@@ -133,7 +134,7 @@
 		<antcall target="-installappapk" />
 		<delete dir="${resign.folder}"/>
 	</target>
-	<target name="package" depends="-init" unless="test.app.upto.date">
+	<target name="package" depends="clean,-init" unless="test.app.upto.date">
 		<antcall target="installapp" />
 		<antcall target="-compile" />
 		<antcall target="-aapt" />
@@ -177,7 +178,7 @@
 			<arg value="-F" />
 			<arg file="${test.app.aapt}" />
 			<arg value="-I" />
-			<arg path="${android.lib}" />
+			<arg path="${android.lib}/android.jar" />
 			<arg value="-A" />
 			<arg path="${staging.dir}/assets" />
 			<arg value="-m" />

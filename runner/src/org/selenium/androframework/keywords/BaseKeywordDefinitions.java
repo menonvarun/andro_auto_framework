@@ -52,8 +52,8 @@ public abstract class BaseKeywordDefinitions {
 		if (s.size() == 0) {
 			try {
 				Method method = obj.getClass().getMethod(methodName,
-						(Class<?>) null);
-				method.invoke(obj, (Class<?>) null);
+						new Class[]{});
+				method.invoke(obj, new Object[]{});
 			} catch (NoSuchMethodException e) {
 				Assert.fail("nosuch method exception thrown: " + e);
 			} catch (Exception e) {

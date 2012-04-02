@@ -175,7 +175,28 @@ public class RobotiumKeywordDefinition extends BaseKeywordDefinitions implements
 
 	@Override
 	public void entertext(String locator, String text) {
-		Assert.fail("entertext based on locator is not supported at this moment.");
+		int index;
+		try{
+			index=Integer.parseInt(locator);
+			Assert.assertTrue("Unable to find the element after waiting at index: "+index, waitForEditText(index));
+			solo.enterText(index, text);
+		}catch(NumberFormatException e){
+			Assert.fail("entertext based on locator is not supported at this moment.");
+		}
+	}
+	
+	private boolean waitForEditText(int index){
+		boolean found = true;
+		for(int i=0;;i++){
+			if(i>=60)
+				break;
+			else if(solo.getEditText(index)!=null){
+				found=true;
+				break;
+			}
+			solo.sleep(1000);
+		}
+		return found;
 	}
 
 	@Override

@@ -44,17 +44,23 @@ public class AndroFrameworkExecutor {
 	}
 
 	private void execute(){
+		String[] parameters;
 		int rows = reader.getLines();
 		for (int i = 1; i < rows; i++) {
 			Command command = new Command();
 			String[] row =reader.getRow(i);
-			String[] parameters=new String[row.length-1];
+			if(row.length<=1){
+				parameters=new String[0];
+			}else if(row.length==2 && row[1]==""){
+				parameters=new String[0];
+			}else{
+				parameters=new String[row.length-1];
+				System.arraycopy(row, 1, parameters, 0, row.length-1);
+			}
 			command.setName(row[0]);
-			System.arraycopy(row, 1, parameters, 0, row.length-1);
 			command.setParameters(parameters);
 			kc.execute(command);
 		}
-
 	}
 	/*
 	protected AndroidNativeDriver getDriver() {
