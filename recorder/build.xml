@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<project name=""  basedir=".">
+<project name="bot-bot-recorder" default="installappapk"  basedir=".">
 	<description>
-      Bits and pices plucked out of $ANDROID_HOME/tools/ant/build.xml
+      Bits and pices plucked out of $ANDROID_HOME/tools/ant/build.xml and calabash guys
     </description>
 
 	<property name="adb.device.arg" value="" />
