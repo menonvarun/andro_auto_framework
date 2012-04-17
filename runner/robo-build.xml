@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<project name="" default="test" basedir=".">
+<project name="" default="robo-test" basedir=".">
 	<description>
       Bits and pices plucked out of $ANDROID_HOME/tools/ant/build.xml
     </description>
@@ -19,7 +19,7 @@
 	<property name="dex.file" location="${bin.dir}/classes.dex"/>
 	<property name="test.app.unsigned" location="${bin.dir}/bot-bot_unsigned.apk"/>
 	<property name="test.app.signed" location="${bin.dir}/bot-bot.apk"/>
-	<property name="resign.folder" location="${bin.dir}/resignapk"/>
+	<property name="resign.folder" location="resignapk"/>
 	<property name="app.unsigned" location="${resign.folder}/app_unsigned.apk"/>
 	<property name="app.signed" location="${resign.folder}/app_signed.apk"/>
 	
@@ -57,8 +57,15 @@
 		<fileset dir="${env.ANDROID_HOME}/platforms/android-8/" includes="*.jar"/>
 	</path>
 
-	<target name="test" description="Run test features" depends="package">
+	<target name="robo-test" description="Run test features" depends="package">
 		<echo>Under test</echo>
+		<exec executable="${env.ANDROID_HOME}/platform-tools/adb" failonerror="true">
+					<arg value="shell" />
+					<arg value="am" />
+					<arg value="instrument" />
+					<arg value="-w" />
+					<arg value="${tested.package_name}.test/com.zutubi.android.junitreport.JUnitReportTestRunner" />
+				</exec>
 	</target>
 
 
@@ -110,6 +117,7 @@
 
 		<replace file="${staging.dir}/src/org/selenium/androframework/common/RobotiumBaseClass.java" token="#APP_MAIN_ACTIVITY_CLASS#" value="${tested.main_activity}"/>
 		<replace file="${staging.dir}/src/org/selenium/androframework/keywords/KeywordCaller.java" token="#FRAMEWORK#" value="${FRAMEWORK}"/>
+		<replace file="${staging.dir}/src/org/selenium/androframework/common/BotBotTestRunner.java" token="#DATA_DRIVEN_TESTS#" value="${DATA_DRIVEN_TESTS}"/>
 		<exec executable="${env.ANDROID_HOME}/platform-tools/aapt" failonerror="true" output="${staging.dir}/assets/ids.txt">
 			<arg value="dump" />
 			<arg value="resources" />
@@ -132,7 +140,7 @@
 	<target name="installapp" description="Resigns and install the original app under test.">
 		<antcall target="-resign-apk" />
 		<antcall target="-installappapk" />
-		<delete dir="${resign.folder}"/>
+		<!--<delete dir="${resign.folder}"/>-->
 	</target>
 	<target name="package" depends="clean,-init" unless="test.app.upto.date">
 		<antcall target="installapp" />
