@@ -1,19 +1,26 @@
 package org.selenium.androframework.keywords;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 
 import junit.framework.Assert;
 
 import org.selenium.androframework.common.Command;
 import org.selenium.androframework.common.Prefrences;
 
+import android.content.Context;
+import android.util.Log;
+import android.view.View;
+import android.widget.EditText;
 import android.widget.RadioButton;
 
 import com.jayway.android.robotium.solo.Solo;
 
 public class RobotiumKeywordDefinition extends BaseKeywordDefinitions implements IKeywords {
 	private Solo solo;
+	private static HashMap<String, Integer> rmap=new HashMap<String, Integer>();
 	
 	public RobotiumKeywordDefinition(Prefrences prefrences) {
 		Object executionContext=prefrences.getExecutionContext();
@@ -23,6 +30,36 @@ public class RobotiumKeywordDefinition extends BaseKeywordDefinitions implements
 			this.solo=null;
 		}
 		collectSupportedMethods(this.getClass());
+	}
+	
+	public static void storeRId(Context context,String basePackage){
+		try {
+			Class<?> cls=null;
+			Class<?> rcls=Class.forName(basePackage+".R", true, context.getClassLoader());
+			Class<?> decLaredClasses[]=rcls.getDeclaredClasses();
+			for(Class<?> declaredClass:decLaredClasses){
+				if(declaredClass.getName().endsWith("id")){
+					cls=declaredClass;
+					break;
+				}
+			}
+			Object instance=cls.newInstance();
+			Field variables[]=cls.getDeclaredFields();
+			for(Field variable:variables){
+				String name = variable.getName();
+				int value=variable.getInt(instance);
+				rmap.put(name, value);
+			}
+			Log.i("bot-bot", rmap.toString());
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (InstantiationException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	@Override
@@ -93,7 +130,9 @@ public class RobotiumKeywordDefinition extends BaseKeywordDefinitions implements
 
 	@Override
 	public void checklocatorpresent(String locator) {
-		Assert.fail("checklocatorpresent is not supported at this moment.");
+		if (!rmap.containsKey(locator)) {
+			Assert.fail("checklocatorpresent is not supported at this moment.");
+		}
 	}
 
 	@Override
@@ -133,7 +172,12 @@ public class RobotiumKeywordDefinition extends BaseKeywordDefinitions implements
 
 	@Override
 	public void clickbyid(String id) {
-		Assert.fail("clickbyid is not supported at this moment.");
+		if(!rmap.containsKey(id)){
+		Assert.fail("The said id was not found");
+		}
+		int idvalue=rmap.get(id);
+		View view = solo.getView(idvalue);
+		solo.clickOnView(view);
 	}
 
 	@Override
@@ -160,7 +204,8 @@ public class RobotiumKeywordDefinition extends BaseKeywordDefinitions implements
 
 	@Override
 	public void clickspinner(String rid, String value) {
-		Assert.fail("clickspinner is not supported at this moment.");
+		clickbyid(rid);
+		clicktext(value);
 	}
 
 	@Override
@@ -175,6 +220,10 @@ public class RobotiumKeywordDefinition extends BaseKeywordDefinitions implements
 
 	@Override
 	public void entertext(String locator, String text) {
+		if(rmap.containsKey(locator)){
+			EditText textView=(EditText)solo.getView(rmap.get(locator));
+			solo.enterText(textView, text);
+		}else{
 		int index;
 		try{
 			index=Integer.parseInt(locator);
@@ -182,6 +231,7 @@ public class RobotiumKeywordDefinition extends BaseKeywordDefinitions implements
 			solo.enterText(index, text);
 		}catch(NumberFormatException e){
 			Assert.fail("entertext based on locator is not supported at this moment.");
+		}
 		}
 	}
 	

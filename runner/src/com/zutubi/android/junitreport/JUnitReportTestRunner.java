@@ -142,7 +142,7 @@ public class JUnitReportTestRunner extends InstrumentationTestRunner {
 
 	/** you can subclass and override this if you want to use a different TestRunner */
 	protected AndroidTestRunner makeAndroidTestRunner() {
-		return new BotBotTestRunner();
+		return new BotBotTestRunner(getTargetContext());
 	}
 	
     @Override

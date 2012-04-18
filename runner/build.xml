@@ -52,7 +52,7 @@
 		<pathelement path="${BIN}">
 		</pathelement>
 	</path>
-	<target name="test">
+	<target name="test" depends="generate-java-code">
 		<if>
 		 <equals arg1="${FRAMEWORK}" arg2="robotium" />
 		 <then>
@@ -65,7 +65,7 @@
 		 </else>
 		</if>
 	</target>
-	<target name="andro-test" depends="generate-java-code">
+	<target name="andro-test" >
 		<antcall target="compile" />
 		<delete dir="${REPORT}" />
 		<mkdir dir="${REPORT}" />

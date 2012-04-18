@@ -3,9 +3,12 @@ package org.selenium.androframework.common;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.selenium.androframework.keywords.RobotiumKeywordDefinition;
+
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+import android.content.Context;
 import android.test.AndroidTestRunner;
 import android.util.Log;
 
@@ -13,10 +16,14 @@ public class BotBotTestRunner extends AndroidTestRunner{
 	private List<TestCase> botBotTestCases;
 	private String dataDrivenClasses="#DATA_DRIVEN_TESTS#";
 	private ArrayList<Class<?>> dataDrivenTests= new ArrayList<Class<?>>();
-	
-	public BotBotTestRunner(){
+	Context context;
+	private String appPackageName="#APP_TEST_PACKAGE#";
+
+	public BotBotTestRunner(Context context){
 		addDataDrivenTests();
 		this.setTest(getDataDrivenTest());
+		this.context=context;
+		RobotiumKeywordDefinition.storeRId(context, appPackageName);
 	}
 	
 	private void addDataDrivenTests(){
