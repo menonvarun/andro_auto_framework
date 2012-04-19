@@ -27,13 +27,11 @@ https://github.com/Imaginea/bot-bot/downloads
 1. Set the "ANDROID_HOME" enviornment variable to the Android SDK installation directory on your system ex. "/opt/softwares/android-sdk-linux"
 2. Set the tools and platform-tools folder path to your enviornment PATH. ex. "/opt/softwares/android-sdk-linux/tools" & "/opt/softwares/android-sdk-linux/platform-tools"
 3. Open *default.properties* file under the recoder folder and replace the values for the following:
-	
 	- *TEST_APK_FILENAME* -> test apk file path.
 	- key.store -> path to your keystore file to be used for signing the andorid application. Once you had installed Androdi SDK and configured a simulator this key store file will be automatically generated in your user home directory under *android* fodler.
 	- key.store.password -> password of your keystore
 	- key.alias -> Alias for you keystore file
 	- key.alias.password -> Password of your keystore alias.
-	
 	In case you want to use the default keystore file please dont change the above keystore related values in the properties file.
 
 4. Open command prompt and type the command **ant**, this will automatically take your apk file compile it with recorder code, resign it and install it to your emulator or device whichever is running.
