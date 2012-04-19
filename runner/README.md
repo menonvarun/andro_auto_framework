@@ -6,15 +6,22 @@
 As said earlier **bot-bot** is an native android automation tool. One of the componenets of the **bot-bot** is the **runner**.
 
 Runner is a test exectuion frameowrk based on keyword driven approach. The test cases needs to be defined in “csv” format. These csv files will be converted to java files and then executed using the TestNG framework.
+Runner supports 2 types of frameworks **NativeDriver** & **Robotium**. User can choose accordingly from any of the said frameworks.
+
+Runner supports following features:
+
+- Support for test-atuomation for an android application without the need of application source code.
+- Execution of the test-case csv file on the said application and generate a test report for it.
+- Users can easily add their own implementations to bot-bot and use them as keywords. Bot-bot framework will automatically identify these implementation and execute them accordingly.
+- Support for native framework functions are supported out-of-the box.
 
 It uses following open-source tools:
 
-1. [Selenium Nativedriver](http://code.google.com/p/nativedriver/)
-2. [TestNG](http://testng.org/doc/index.html)
-3. [Sikuli](http://sikuli.org/)
+1. [Robotium](http://code.google.com/p/robotium/)
+2. [Selenium Nativedriver](http://code.google.com/p/nativedriver/)
+3. [TestNG](http://testng.org/doc/index.html)
 
-**Note:** This tool requires source code of the app that is being automated to be available.
-Apps that internally call WebView or load webpages may be able to use this tool.(Not tested)
+**Note:** In case you need to use Nativedriver as your execution framework , you need to have the source code the app that needs to be tested.
 
 -----------
 ##Download
@@ -27,11 +34,47 @@ https://github.com/Imaginea/bot-bot/downloads
 ##Pre-conditions:
 
 1. Android SDK has been installed. More info is available at [link](http://developer.android.com/sdk/installing.html)
-2. If you want to use the verifyscreen option in the tool. Please install sikuli on your system. Sikuli can be obtained at: [link](http://sikuli.org/download.shtml)
-3. Apache ant needs to be installed.[link](http://ant.apache.org/)
+2. Apache ant needs to be installed.[link](http://ant.apache.org/)
+3. Install one of the android SDK platform using the Android SDK managers.
 
 ---------
 ##Installation:
+
+###For Robotium:
+
+1. Apk file of the application taht needs to be tested.
+2. Open the resources/default.properties file and change the following values:
+
+	- FRAMEWORK -> "robotium"
+
+	- TESTCASE_FOLDER -> test-case folder name under *testcase* where you have your test-cases in csv format.
+
+	- TEST_APK_FILENAME -> Apk file path of the application that needs to be tested.
+
+	- APP_PACKAGE -> The app package name.
+
+	- DEFAULT_ACTIVITY -> Default lanch activity
+
+	For finding the values of the above 2 variables install your application on an emulator and start the application. And then watch the adb logs by typing the command *adb logcat*. And look for the following:
+
+	<pre style="font-family: Helvetica, Arial, FreeSans, san-serif; color: #000000; background-color: #eee;font-size: 15px;border: 1px dashed #999999;line-height: 15px;padding: 5px; overflow: auto; width: 100%"><code>"Starting activity: Intent { act=android.intent.action.MAIN cat=android.intent.category.LAUNCHER? flg=0x10200000 cmp=com.example.android/.DefaultLauncherActivity"</code></pre>
+
+	From the above APP_PACKAGE will be *com.example.android* and DEFAULT_ACTIVITY will be *DefaultLauncherActivity*.
+	
+	- key.store -> path to your keystore file to be used for signing the andorid application. Once you had installed Androdi SDK and configured a simulator this key store file will be automatically generated in your user home directory under *android* fodler.
+	- key.store.password -> password of your keystore
+	- key.alias -> Alias for you keystore file
+	- key.alias.password -> Password of your keystore alias.
+
+	In case you want to use the default keystore file please dont change the above keystore related values in the properties file.
+
+3. Set ANDROID SDK path as an environment variable **ANDROID_HOME** in your environment variables.
+4. Place your test-case csv files under a folder inside the *testcases* folder in root of the *runner*.
+5. From the command-shell go to the the *bot-bot runner* folder and type the follwing command.
+
+	<pre style="font-family: Helvetica, Arial, FreeSans, san-serif; color: #000000; background-color: #eee;font-size: 15px;border: 1px dashed #999999;line-height: 15px;padding: 5px; overflow: auto; width: 30%"><code>ant</code></pre>
+
+###For NativeDriver:
 
 1. Export the bot-bot from git to your local system.
 2. Import the source code of the android app that needs to be installed into your eclipse IDE.
@@ -62,7 +105,7 @@ Here the {app package name} needs to be replaced with the name of the package as
 7. Package name and initial activity name has to be defined in the BaseClass.java file. (This will be converted to properties file going forward)
 8. Run the ant command at the root of the andro_auto_framework directory:
 
-	<pre style="font-family: Helvetica, Arial, FreeSans, san-serif; color: #000000; background-color: #eee;font-size: 15px;border: 1px dashed #999999;line-height: 15px;padding: 5px; overflow: auto; width: 100%"><code>ant andro-test</code></pre>
+	<pre style="font-family: Helvetica, Arial, FreeSans, san-serif; color: #000000; background-color: #eee;font-size: 15px;border: 1px dashed #999999;line-height: 15px;padding: 5px; overflow: auto; width: 100%"><code>ant</code></pre>
 
 	This will compile your code and execute your test cases. Currently TestNG , Junit & TestNG-xslt report are generated for the test execution.
 
