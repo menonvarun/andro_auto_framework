@@ -32,6 +32,7 @@ https://github.com/Imaginea/bot-bot/downloads
 	- key.store.password -> password of your keystore
 	- key.alias -> Alias for you keystore file
 	- key.alias.password -> Password of your keystore alias.
+ 
 	In case you want to use the default keystore file please dont change the above keystore related values in the properties file.
 
 4. Open command prompt and type the command **ant**, this will automatically take your apk file compile it with recorder code, resign it and install it to your emulator or device whichever is running.
