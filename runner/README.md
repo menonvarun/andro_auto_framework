@@ -44,33 +44,28 @@ https://github.com/Imaginea/bot-bot/downloads
 
 1. Apk file of the application taht needs to be tested.
 2. Open the resources/default.properties file and change the following values:
-
 	- FRAMEWORK -> "robotium"
-
 	- TESTCASE_FOLDER -> test-case folder name under *testcase* where you have your test-cases in csv format.
-
 	- TEST_APK_FILENAME -> Apk file path of the application that needs to be tested.
-
 	- APP_PACKAGE -> The app package name.
-
 	- DEFAULT_ACTIVITY -> Default lanch activity
-
-	For finding the values of the above 2 variables install your application on an emulator and start the application. And then watch the adb logs by typing the command *adb logcat*. And look for the following:
-
-	<pre style="font-family: Helvetica, Arial, FreeSans, san-serif; color: #000000; background-color: #eee;font-size: 15px;border: 1px dashed #999999;line-height: 15px;padding: 5px; overflow: auto; width: 100%"><code>"Starting activity: Intent { act=android.intent.action.MAIN cat=android.intent.category.LAUNCHER? flg=0x10200000 cmp=com.example.android/.DefaultLauncherActivity"</code></pre>
-
-	From the above APP_PACKAGE will be *com.example.android* and DEFAULT_ACTIVITY will be *DefaultLauncherActivity*.
-	
-	- key.store -> path to your keystore file to be used for signing the andorid application. Once you had installed Androdi SDK and configured a simulator this key store file will be automatically generated in your user home directory under *android* fodler.
+ 	- key.store -> path to your keystore file to be used for signing the andorid application. Once you had installed Androdi SDK and configured a simulator this key store file will be automatically generated in your user home directory under *android* fodler.
 	- key.store.password -> password of your keystore
 	- key.alias -> Alias for you keystore file
 	- key.alias.password -> Password of your keystore alias.
 
 	In case you want to use the default keystore file please dont change the above keystore related values in the properties file.
 
-3. Set ANDROID SDK path as an environment variable **ANDROID_HOME** in your environment variables.
-4. Place your test-case csv files under a folder inside the *testcases* folder in root of the *runner*.
-5. From the command-shell go to the the *bot-bot runner* folder and type the follwing command.
+	For finding the values of APP_PACKAGE & DEFAULT_ACTIVITY variables install your application on an emulator and start the application. And then watch the adb logs by typing the command *adb logcat*. And look for the following:
+	<pre style="font-family: Helvetica, Arial, FreeSans, san-serif; color: #000000; background-color: #eee;font-size: 15px;border: 1px dashed #999999;line-height: 15px;padding: 5px; overflow: auto; width: 100%"><code>"Starting activity: Intent { act=android.intent.action.MAIN cat=android.intent.category.LAUNCHER? flg=0x10200000 cmp=com.example.android/.DefaultLauncherActivity"</code></pre>
+	
+	From the above APP_PACKAGE will be *com.example.android* and DEFAULT_ACTIVITY will be *DefaultLauncherActivity*.
+	
+	
+3. Set the "ANDROID_HOME" enviornment variable to the Android SDK installation directory on your system ex. "/opt/softwares/android-sdk-linux"
+4. Set the tools and platform-tools folder path to your enviornment PATH. ex. "/opt/softwares/android-sdk-linux/tools" & "/opt/softwares/android-sdk-linux/platform-tools"
+5. Place your test-case csv files under a folder inside the *testcases* folder in root of the *runner*.
+6. From the command-shell go to the the *bot-bot runner* folder and type the follwing command.
 
 	<pre style="font-family: Helvetica, Arial, FreeSans, san-serif; color: #000000; background-color: #eee;font-size: 15px;border: 1px dashed #999999;line-height: 15px;padding: 5px; overflow: auto; width: 30%"><code>ant</code></pre>
 
