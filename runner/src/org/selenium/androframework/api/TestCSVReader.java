@@ -1,6 +1,9 @@
 package org.selenium.androframework.api;
 
+import java.io.File;
 import java.io.FileReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.List;
 
 
@@ -11,6 +14,11 @@ public class TestCSVReader {
 	List<String[]> rows=null;
 	public TestCSVReader(String filePath) throws Exception{
 		reader = new CSVReader((new FileReader(filePath)),',');
+		rows=reader.readAll();
+	}
+	
+	public TestCSVReader(InputStream ipPath) throws Exception{
+		reader = new CSVReader(new InputStreamReader(ipPath),',');
 		rows=reader.readAll();
 	}
 	
@@ -27,6 +35,13 @@ public class TestCSVReader {
 		data=rowData[column];
 		
 		return data;
+	}
+	
+	public String[] getRow(int row){
+		if(row < 0 && row > rows.size()){
+			return new String[0];
+		}
+		return rows.get(row);
 	}
 	
 	public int getLines(){

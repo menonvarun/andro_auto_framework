@@ -6,6 +6,8 @@ import java.util.Set;
 
 import org.imaginea.botbot.OnClickListenerTest;
 
+import android.content.Context;
+import android.text.InputType;
 import android.util.Log;
 import android.view.*;
 import android.widget.AdapterView;
@@ -17,10 +19,14 @@ import android.widget.TextView;
 
 public class ListenerAdder {
 	static Set<View> processedView = new HashSet<View>();
-
+	private static Context context;
 	public void processView(View view) {
 
 		if (!processedView.contains(view)) {
+			if(context==null){
+				context=view.getContext();
+				ServerProperties.setResources(context);
+			}
 			addListeners(view);
 		}
 		if (view instanceof ViewGroup) {
@@ -92,6 +98,7 @@ public class ListenerAdder {
 			}
 			view.setOnClickListener(new OnClickListenerTest());
 			if (view instanceof EditText) {
+				((EditText) view).setInputType(InputType.TYPE_NULL);
 				((TextView) view).addTextChangedListener(new TextListner(
 						(TextView) view));
 				processedView.add(view);

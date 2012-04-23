@@ -17,13 +17,15 @@
   </div>
   
   <div id="recordsHolder" style="display:none;">
-	<a class="exportcsv" href="#" style="position:absolute;right:80px;">Export as CSV</a>	
+	<a id="exportcsv" target="_blank" href="#" style="position:absolute;right:80px;">Export as CSV</a>	
 	<font size="6" class="add" id="addFirstRecord">+</font>
 	<h3>Records of session:  <span id="recordsHeading"></span></h3>
 	<div class="holderDiv">
 		<table width="100%" id="Records" cellpadding="5"></table>
 	</div>
 	<a class="back" href="#">Back</a>
+	<a href="#"> | </a>
+	<a class="refresh" href="#">Refresh</a>
 	<span id="addRecordDiv" class="rightFloater">
 		Add a new record after &nbsp;
 		<input class="afterBeforeRadio" type="radio" name="addPlaceLocator" value="after" checked/> After &nbsp;
@@ -41,8 +43,7 @@
 </div>
 <script>
 	var maxEntryNo = 0;
-	var prevEntryNo = -1;
-	
+	var prevEntryNo = 0;
 	$(".holderDiv").css('height', window.innerHeight - 280);
 	function getSessions() {
 		$("#sessionsHolder").show();
@@ -112,10 +113,16 @@
 	}
 		
 	function addRecord(data)
-	{
-		var newRecodEntryNo = parseInt(maxEntryNo)+1;
-		var recordData = '{"entryNo":"a'+newRecodEntryNo+'","prevEntryNo":"'+prevEntryNo+'","recordSession":{"id":"'+data.sessionID+'"},"payload":"{\\\"command\\\":\\\"'+data.command+'\\\",\\\"rid\\\":\\\"'+data.rid+'\\\",\\\"viewClassName\\\":\\\"'+data.className+'\\\",\\\"args[0]\\\":\\\"'+data.args0+'\\\",\\\"args[1]\\\":\\\"'+data.args1+'\\\"}"}';
-		console.log(recordData);
+	{	
+		var newRecodEntryNo = 1;
+		var entryArray = getEntryNoArray();
+		var newRecodEntryNo = generateEntry(newRecodEntryNo,entryArray);
+		newRecodEntryNo='a'+newRecodEntryNo;
+		var tmpArgs=[data.args0,data.args1,data.args2];
+		var finalData=getArgsPostData(tmpArgs);
+		
+		var recordData = '{"entryNo":"'+newRecodEntryNo+'","prevEntryNo":"'+prevEntryNo+'","recordSession":{"id":"'+data.sessionID+'"},"payload":"{\\\"command\\\":\\\"'+data.command+'\\\",\\\"viewClassName\\\":\\\"'+data.className+finalData+'\\\"}"}';
+		//console.log(recordData);
 		
 					
 				
@@ -124,21 +131,27 @@
 				var recordURI = $nxt.attr("id");
 				var recordSession = $nxt.attr("title");
 				//console.log(recordSession);
-				
+				var entryNo = $nxt.find('.entryNo').html();
 				var command = $nxt.find('.command').html();	
-				var rid = $nxt.find('.rid').html();
-				var className = $nxt.find('.className').html();
+				var className = '';
 				var args0 = $nxt.find('.args0').html();
-				var args1 = $nxt.find('.args1').html();		
+				var args1 = $nxt.find('.args1').html();	
+				var args2 = $nxt.find('.args2').html();	
 				var recordID = $nxt.find('.recordID').html();
 				var entryNo = $nxt.find('.entryNo').html();
-
-				var sibblingData = '{"entryNo":"'+entryNo+'","prevEntryNo":"'+newRecodEntryNo+'","id":"'+recordID+'","payload":"{\\\"command\\\":\\\"'+command+'\\\",\\\"rid\\\":\\\"'+rid+'\\\",\\\"viewClassName\\\":\\\"'+className+'\\\",\\\"args[0]\\\":\\\"'+args0+'\\\",\\\"args[1]\\\":\\\"'+args1+'\\\"}","recordSession":{"@uri":"'+recordSession+'"}}';
-				console.log(recordURI+" -- "+sibblingData);
+				if((recordURI!==undefined)&&(recordURI.match('/'+"$")=='/')){
+					recordURI=recordURI.substr(0,recordURI.length-1);
+				}
+				if(recordURI!==undefined){		
+				var templast=recordURI.lastIndexOf('/');		
+				recordID=recordURI.substr(templast+1,recordURI.length);
+				}	
+				var sibblingData = '{"entryNo":"'+entryNo+'","prevEntryNo":"'+newRecodEntryNo+'","id":"'+recordID+'","payload":"{\\\"command\\\":\\\"'+command+'\\\",\\\"viewClassName\\\":\\\"'+className+'\\\",\\\"args[0]\\\":\\\"'+args0+'\\\",\\\"args[1]\\\":\\\"'+args1+'\\\",\\\"args[2]\\\":\\\"'+args2+'\\\"}","recordSession":{"@uri":"'+recordSession+'"}}';
+				//console.log(recordURI+" -- "+sibblingData);
 				
 		
 		$.ajax({
-			url: 'api/recordentries/',
+			url: 'api/recordentries',
 			data: recordData,
 			type: 'POST',
 			processData:false,
@@ -172,8 +185,8 @@
 	}
 	
 	$("#addFirstRecord").click(function(){
-		prevEntryNo = -1;
-		$("#Records").append("<tr class='newRow'><td></td><td></td><td class='command'><input type='text'/></td><td class='rid'><input type='text'/></td><td class='className'><input type='text'/></td><td class='args0'><input type='text'/></td><td class='args1'><input type='text'/></td><td><a href='#' id='saveNewRecord'>Save</a>&nbsp;|&nbsp;<a href='#' id='cancelNewRecord'>Cancel</a></td></tr>");
+		prevEntryNo = 0;
+		$("#Records").append("<tr class='newRow'><td></td><td class='command'><input type='text'/></td><td class='args0'><input type='text'/></td><td class='args1'><input type='text'/></td><td class='args2'><input type='text'/></td><td><a href='#' id='saveNewRecord'>Save</a>&nbsp;|&nbsp;<a href='#' id='cancelNewRecord'>Cancel</a></td></tr>");
 	});
 	
 	$("#addRecord").click(function(){
@@ -185,32 +198,38 @@
 		if(addPlaceLocator == "after")
 		{
 			prevEntryNo = $("#recordsCombo option:selected").text();
-			$(record).after("<tr class='newRow'><td></td><td></td><td class='command'><input type='text'/></td><td class='rid'><input type='text'/></td><td class='className'><input type='text'/></td><td class='args0'><input type='text'/></td><td class='args1'><input type='text'/></td><td><a href='#' id='saveNewRecord'>Save</a>&nbsp;|&nbsp;<a href='#' id='cancelNewRecord'>Cancel</a></td></tr>");
+			$(record).after("<tr class='newRow'><td></td><td class='command'><input type='text'/></td><td class='args0'><input type='text'/></td><td class='args1'><input type='text'/></td><td class='args2'><input type='text'/></td><td><a href='#' id='saveNewRecord'>Save</a>&nbsp;|&nbsp;<a href='#' id='cancelNewRecord'>Cancel</a></td></tr>");
 		}
 		else
 		{	
-			prevEntryNo = $("#recordsCombo option:selected").val();
-			$(record).before("<tr class='newRow'><td></td><td></td><td class='command'><input type='text'/></td><td class='rid'><input type='text'/></td><td class='className'><input type='text'/></td><td class='args0'><input type='text'/></td><td class='args1'><input type='text'/></td><td><a href='#' id='saveNewRecord'>Save</a>&nbsp;|&nbsp;<a href='#' id='cancelNewRecord'>Cancel</a></td></tr>");
+			prevEntryNo = $("#recordsCombo option:selected").prev().text();
+			$(record).before("<tr class='newRow'><td></td><td class='command'><input type='text'/></td><td class='args0'><input type='text'/></td><td class='args1'><input type='text'/><td class='args2'><input type='text'/></td></td><td><a href='#' id='saveNewRecord'>Save</a>&nbsp;|&nbsp;<a href='#' id='cancelNewRecord'>Cancel</a></td></tr>");
 		}			
 	});	
 	
 	$(".back").click(function(){
 		getSessions();
 	});
+	$(".refresh").click(function(){
+		var recordURI = $("#Records").attr("recordURI");
+		getRecords(recordURI);
+	});
 	$(".exportcsv").click(function(){
-		$('#Records').table2CSV();
+		$('#Records').table2CSV({
+			header:["Command","Argument 1","Argument 2","Argument 3"]
+		});
 	});
 	
 	$("#saveNewRecord").live("click", function(){
 		var command = $(this).parent().siblings('.command').find('input').val();	
-		var rid = $(this).parent().siblings('.rid').children('input').val();
-		var className = $(this).parent().siblings('.className').children('input').val();
+		var className = '';
 		var args0 = $(this).parent().siblings('.args0').children('input').val();
 		var args1 = $(this).parent().siblings('.args1').children('input').val();
+		var args2 = $(this).parent().siblings('.args2').children('input').val();
 		var recordURI = $("#Records").attr("recordURI");
 		var sessionID = $("#Records").attr("sessionID");
 		
-		addRecord({recordURI:recordURI,sessionID:sessionID,command:command,rid:rid,className:className,args0:args0,args1:args1});
+		addRecord({recordURI:recordURI,sessionID:sessionID,command:command,className:className,args0:args0,args1:args1,args2:args2});
 	});
 	
 	$("#cancelNewRecord").live("click", function(){
@@ -248,35 +267,45 @@
 		var htmlContent = $(this).html();
 		var recordURI = $(this).attr("title");
 		var recordSession = $(this).parent().parent().attr("title");
+		var sessionID = $("#Records").attr("sessionID");
 		var recordID = $(this).parent().siblings('.recordID').html();
 		var entryNo = $(this).parent().siblings('.entryNo').html();
-		
+		var prevEntryNo = $(this).parent().parent().prev().children('td.entryNo').html();
+		if(recordURI.match('/'+"$")=='/'){
+					recordURI=recordURI.substr(0,recordURI.length-1);
+				}
+		var templast=recordURI.lastIndexOf('/');		
+		recordID=recordURI.substr(templast+1,recordURI.length);
+	
 		if(htmlContent == "Edit")
 		{	
 			var command = $(this).parent().siblings('.command').html();	
-			var rid = $(this).parent().siblings('.rid').html();
-			var className = $(this).parent().siblings('.className').html();
+			var className = '';
 			var args0 = $(this).parent().siblings('.args0').html();
-			var args1 = $(this).parent().siblings('.args1').html();	
+			var args1 = $(this).parent().siblings('.args1').html();
+			var args2 = $(this).parent().siblings('.args2').html();	
 			
 			$(this).parent().siblings('.command').html("<input type='text' value='"+command+"'/>");			
-			$(this).parent().siblings('.rid').html("<input type='text' value='"+rid+"'/>");			
-			$(this).parent().siblings('.className').html("<input type='text' value='"+className+"'/>");			
 			$(this).parent().siblings('.args0').html("<input type='text' value='"+args0+"'/>");			
 			$(this).parent().siblings('.args1').html("<input type='text' value='"+args1+"'/>");
+			$(this).parent().siblings('.args2').html("<input type='text' value='"+args2+"'/>");
 			
-			$(this).html("Save");
+			$(this).html("<a href='#' id='editRecords'>Save</a>&nbsp;|&nbsp;<a href='#' id='editRecords'>Cancel</a>");
 		}
 		else
 		{
 			var eventSourceElem = $(this);
 			var command = $(this).parent().siblings('.command').find('input').val();	
-			var rid = $(this).parent().siblings('.rid').children('input').val();
-			var className = $(this).parent().siblings('.className').children('input').val();
+			var className = '';
 			var args0 = $(this).parent().siblings('.args0').children('input').val();
 			var args1 = $(this).parent().siblings('.args1').children('input').val();
+			var args2 = $(this).parent().siblings('.args2').children('input').val();
 			
-			var data = '{"entryNo":"'+entryNo+'","id":"'+recordID+'","payload":"{\\\"command\\\":\\\"'+command+'\\\",\\\"rid\\\":\\\"'+rid+'\\\",\\\"viewClassName\\\":\\\"'+className+'\\\",\\\"args[0]\\\":\\\"'+args0+'\\\",\\\"args[1]\\\":\\\"'+args1+'\\\"}","recordSession":{"@uri":"'+recordSession+'"}}';
+			var tmpArgs=[args0,args1,args2];
+		var finalData=getArgsPostData(tmpArgs);
+		
+
+			var data = '{"entryNo":"'+entryNo+'","prevEntryNo":"'+prevEntryNo+'","id":"'+recordID+'","payload":"{\\\"command\\\":\\\"'+command+'\\\",\\\"viewClassName\\\":\\\"'+className+finalData+'\\\"}","recordSession":{"@uri":"'+recordSession+'"}}';
 			var endPoint = recordURI;
 			
 			$.ajax({
@@ -288,10 +317,10 @@
 				dataType: "json",  
 				success: function(json, textStatus, jqXHR) {
 					eventSourceElem.parent().siblings('.command').html(command);			
-					eventSourceElem.parent().siblings('.rid').html(rid);			
 					eventSourceElem.parent().siblings('.className').html(className);			
 					eventSourceElem.parent().siblings('.args0').html(args0);			
 					eventSourceElem.parent().siblings('.args1').html(args1);
+					eventSourceElem.parent().siblings('.args2').html(args2);
 					eventSourceElem.html("Edit");
 				}
 			});			
@@ -306,6 +335,7 @@
 		
 		$("#sessionsHolder").hide();
 		$('#recordsHolder').show();
+                $("#exportcsv").attr("href","DownloadCsv?id="+sessionID)
 		
 		var recordURI = $(this).attr('title');		
 		
@@ -331,7 +361,7 @@
 			success: function(json) { 
 				//$('#Records').html("<img src='loader.gif'/>");
 				maxEntryNo = 0;
-				var records = "<tr class='gradientBackground'><th rowspan='2'>ID</th><th rowspan='2'>Entry No</th><th colspan='5'>Payload</th><th rowspan='2'>Edit</th></tr><tr class='gradientBackground'><th>Command</th><th>Rid</th><th>Class Name</th><th>Argument 1</th><th>Argument 2</th></tr>";
+				var records = "<tr class='gradientBackground'><th rowspan='2'>Entry No</th><th colspan='4'>Payload</th><th rowspan='2'>Edit</th></tr><tr class='gradientBackground'><th>Command</th><th>Argument 1</th><th>Argument 2</th><th>Argument 3</th></tr>";
 				if(json.record == undefined)
 				{			
 					records = records + "<tr><td colspan='8' align='center'>No Records Found</td></tr>"; 
@@ -347,10 +377,10 @@
 					var recordPayLoad = json.record.payload;
 					var payloadJSON = JSON.parse(recordPayLoad);
 					var recordPayLoadCommand = payloadJSON.command == undefined ?"":payloadJSON.command;
-					var recordPayLoadRid = payloadJSON.rid == undefined ?"":payloadJSON.rid;
 					var recordPayLoadViewClassName = payloadJSON.viewClassName == undefined ?"":payloadJSON.viewClassName;
 					var recordPayLoadArgs0 = payloadJSON['args[0]'] == undefined ?"":payloadJSON['args[0]']; // keyName of this attribute of object is like array notation, therefore used different notation to retrieve its value
 					var recordPayLoadArgs1 = payloadJSON['args[1]'] == undefined ?"":payloadJSON['args[1]']; // keyName of this attribute of object is like array notation, therefore used different notation to retrieve its value
+					var recordPayLoadArgs2 = payloadJSON['args[2]'] == undefined ?"":payloadJSON['args[2]'];
 					var recordSession = json.record.recordSession['@uri'];
 					recordSession = recordSession.substr(0,recordSession.indexOf('recordentries/'));
 					
@@ -359,26 +389,26 @@
 					if(recordEntryNo > maxEntryNo)
 						maxEntryNo = recordEntryNo;
 					
-					records = records + "<tr class='row"+recordEntryNo+"' id='"+recordURI+"' title='"+recordSession+"'><td class='recordID'>"+recordID+"</td><td class='entryNo'>"+recordEntryNo+"</td><td class='command'>"+recordPayLoadCommand+"</td><td class='rid'>"+recordPayLoadRid+"</td><td class='className'>"+recordPayLoadViewClassName+"</td><td class='args0'>"+recordPayLoadArgs0+"</td><td class='args1'>"+recordPayLoadArgs1+"</td><td><a href='#' class='editRecords' title='"+recordURI+"'>Edit</a></td></tr>"; 	
+					records = records + "<tr class='row"+recordEntryNo+"' id='"+recordURI+"' title='"+recordSession+"'><td class='entryNo'>"+recordEntryNo+"</td><td class='command'>"+recordPayLoadCommand+"</td><td class='args0'>"+recordPayLoadArgs0+"</td><td class='args1'>"+recordPayLoadArgs1+"</td><td class='args2'>"+recordPayLoadArgs2+"</td><td><a href='#' class='editRecords' title='"+recordURI+"'>Edit</a></td></tr>"; 	
 				}
 				else
 				{		
-					var jsonArray = json.record.sort(mycomparator);
+					//var jsonArray = json.record.sort(mycomparator);
 					var recordEns = [];
-					
-					for(var i=0; i<jsonArray.length; i++)
+					var prevsorted= rearrangeJSONArray(json.record);
+					for(var i=0; i<prevsorted.length; i++)
 					{
-						var recordURI = json.record[i]['@uri'];		
-						var recordID = json.record[i].id;
-						var recordEntryNo = json.record[i].entryNo;
-						var recordPayLoad = json.record[i].payload;
+						var recordURI = prevsorted[i]['@uri'];		
+						var recordID = prevsorted[i].id;
+						var recordEntryNo = prevsorted[i].entryNo;
+						var recordPayLoad = prevsorted[i].payload;
 						var payloadJSON = JSON.parse(recordPayLoad);
 						var recordPayLoadCommand = payloadJSON.command == undefined ?"":payloadJSON.command;
-						var recordPayLoadRid = payloadJSON.rid == undefined ?"":payloadJSON.rid;
 						var recordPayLoadViewClassName = payloadJSON.viewClassName == undefined ?"":payloadJSON.viewClassName;
 						var recordPayLoadArgs0 = payloadJSON['args[0]'] == undefined ?"":payloadJSON['args[0]']; // keyName of this attribute of object is like array notation, therefore used different notation to retrieve its value
 						var recordPayLoadArgs1 = payloadJSON['args[1]'] == undefined ?"":payloadJSON['args[1]']; // keyName of this attribute of object is like array notation, therefore used different notation to retrieve its value
-						var recordSession = json.record[i].recordSession['@uri'];
+						var recordPayLoadArgs2 = payloadJSON['args[2]'] == undefined ?"":payloadJSON['args[2]'];
+						var recordSession = prevsorted[i].recordSession['@uri'];
 						recordSession = recordSession.substr(0,recordSession.indexOf('recordentries/'));
 						
 						//filling recordEns array for combo box
@@ -388,9 +418,9 @@
 							maxEntryNo = recordEntryNo;
 					
 						if(i % 2 == 0)
-							records = records + "<tr class='row"+recordEntryNo+"' id='"+recordURI+"' title='"+recordSession+"'><td class='recordID'>"+recordID+"</td><td class='entryNo'>"+recordEntryNo+"</td><td class='command'>"+recordPayLoadCommand+"</td><td class='rid'>"+recordPayLoadRid+"</td><td class='className'>"+recordPayLoadViewClassName+"</td><td class='args0'>"+recordPayLoadArgs0+"</td><td class='args1'>"+recordPayLoadArgs1+"</td><td><a href='#' class='editRecords' title='"+recordURI+"'>Edit</a></td></tr>"; 	
+							records = records + "<tr class='row"+recordEntryNo+"' id='"+recordURI+"' title='"+recordSession+"'><td class='entryNo'>"+recordEntryNo+"</td><td class='command'>"+recordPayLoadCommand+"</td><td class='args0'>"+recordPayLoadArgs0+"</td><td class='args1'>"+recordPayLoadArgs1+"</td><td class='args2'>"+recordPayLoadArgs2+"</td><td><a href='#' class='editRecords' title='"+recordURI+"'>Edit</a></td></tr>"; 	
 						else
-							records = records + "<tr class='alt row"+recordEntryNo+"' id='"+recordURI+"' title='"+recordSession+"' class='alt'><td class='recordID'>"+recordID+"</td><td class='entryNo'>"+recordEntryNo+"</td><td class='command'>"+recordPayLoadCommand+"</td><td class='rid'>"+recordPayLoadRid+"</td><td class='className'>"+recordPayLoadViewClassName+"</td><td class='args0'>"+recordPayLoadArgs0+"</td><td class='args1'>"+recordPayLoadArgs1+"</td><td><a href='#' class='editRecords' title='"+recordURI+"'>Edit</a></td></tr>"; 	
+							records = records + "<tr class='alt row"+recordEntryNo+"' id='"+recordURI+"' title='"+recordSession+"' class='alt'><td class='entryNo'>"+recordEntryNo+"</td><td class='command'>"+recordPayLoadCommand+"</td><td class='args0'>"+recordPayLoadArgs0+"</td><td class='args1'>"+recordPayLoadArgs1+"</td><td class='args2'>"+recordPayLoadArgs2+"</td><td><a href='#' class='editRecords' title='"+recordURI+"'>Edit</a></td></tr>"; 	
 					}
 					/*
 					jQuery("#my-table").table2csv({
@@ -426,6 +456,62 @@
 		}
 		$('#recordsCombo').html(comboInnerHTML);
 	}
+
+
+function rearrangeJSONArray(srcArray) {	  
+		var resultArray = [] ;
+		
+		var desiredArray = getDesiredArray(srcArray,"0");
+		while(desiredArray != undefined)
+		{
+			resultArray.push(desiredArray);
+			desiredArray = getDesiredArray(srcArray,desiredArray['entryNo']);
+		}
+		return resultArray;
+						
+	}
+	
+	function getDesiredArray(arr,key) {
+		for(var arrEntry in arr) {
+			if (arr[arrEntry]['prevEntryNo'] == key) {
+				return arr[arrEntry];
+			}
+		}			
+	}
+
+function getEntryNoArray(){
+var entryNoArray = new Array();
+$('#Records tr').each(function() {
+    var entry = $(this).find(".entryNo").html();
+if(entry!==null){	
+entryNoArray.push(entry);    
+} 
+});
+return entryNoArray;
+}
+
+function generateEntry(newEntry,entryArray){
+var temp = 'a' + newEntry;
+if(jQuery.inArray(temp,entryArray)!==-1){
+newEntry++;
+return generateEntry(newEntry,entryArray);
+}
+return newEntry;
+}
+function getArgsPostData(tmpArgs){
+var finalData="";
+		var i=0;
+		var dataCount=-1;		
+		for(i=0;i<tmpArgs.length;i++){
+		if(tmpArgs[i]!=""){
+			dataCount=i;
+		}
+		}
+		for(i=0;i<=dataCount;i++){
+		finalData=finalData+'\\\",\\\"args['+i+']\\\":\\\"'+tmpArgs[i];			
+		}
+return finalData;
+}
   </script>
 
 </body>

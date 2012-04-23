@@ -29,7 +29,13 @@ jQuery.fn.table2CSV = function(options) {
     // actual data
     $(el).find('tr').each(function() {
         var tmpRow = [];
-        $(this).filter(':visible').find('td').each(function() {
+	var temp =  $(this).filter(':visible').find('td');
+	temp = temp.filter(function(index) {
+   		if($(this).find('a').hasClass('editRecords')) return false;
+ 		if($(this).hasClass('entryNo')) return false;
+		return true;
+	});
+       	temp.each(function() {
             if ($(this).css('display') != 'none') tmpRow[tmpRow.length] = formatData($(this).html());
         });
         row2CSV(tmpRow);

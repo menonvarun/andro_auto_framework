@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project name="bot-bot-recorder" default="installappapk"  basedir=".">
+	<description>
+      Bits and pices plucked out of $ANDROID_HOME/tools/ant/build.xml and calabash guys
+    </description>
+
+	<property name="adb.device.arg" value="" />
+	<property environment="env"/>
+	<property file="default.properties"/>
+	<property name="bin.dir" location="robo-bin"/>
+	<property name="code.bin.dir" location="${bin.dir}/code-bin"/>
+	<property name="staging.dir" location="${bin.dir}/staging"/>
+	<property name="main.dir" location="."/>
+	<property name="dex.dir" location="${bin.dir}/dex"/>
+	<property name="dex.file" location="${dex.dir}/classes.dex"/>
+	<property name="resign.folder" location="${bin.dir}/resignapk"/>
+	<property name="app.unsigned" location="${resign.folder}/app_unsigned.apk"/>
+	<property name="app.signed" location="${resign.folder}/app_signed.apk"/>
+	<property name="aop" location="${bin.dir}/aop"/>
+	<property name="aopjava" location="${bin.dir}/aopjava"/>
+	<property name="tested.project.apk" value="${TEST_APK_FILENAME}"/>
+	
+	<!-- Tells adb which device to target. You can change this from the command line
+	         by invoking "ant -Dadb.device.arg=-d" for device "ant -Dadb.device.arg=-e" for
+	         the emulator. -->
+	<property name="adb.device.arg" value="" />
+	<!-- Windows support -->
+	<condition property="bat" value=".bat" else="">
+		<os family="windows" />
+	</condition>
+	<condition property="ext" value=".bat">
+		<os family="windows" />
+	</condition>
+	<condition property="ext" value=".sh" >
+		<os family="unix" />
+	</condition>
+	
+	<property name="dx" location="${env.ANDROID_HOME}/platform-tools/dx${bat}" />
+	<property name="apkbuilder" location="${env.ANDROID_HOME}/tools/apkbuilder${bat}" />
+	<property name="dex2jar" location="./lib/dex2jar-0.0.9.8/d2j-dex2jar${ext}" />
+	<property name="asm-verify" location="./lib/dex2jar-0.0.9.8/d2j-asm-verify${ext}" />
+	<property name="dex2jar.decoded.jar" location="${bin.dir}/dex2jar-decoded.jar" />
+	<property name="dex2jar.decoded.dir" location="${bin.dir}/dex2jar-decoded" />
+	<property name="android.lib" location="${env.ANDROID_HOME}/platforms/android-10"/>
+	<property name="out.classes.absolute.dir" location="${dex2jar.decoded.dir}"/>
+	<property name="recorder.dir" location="."/>
+	<path id="android.antlibs">
+		<pathelement path="${env.ANDROID_HOME}/tools/lib/anttasks.jar" />
+	</path>
+	<taskdef name="xpath" classname="com.android.ant.XPathTask" classpathref="android.antlibs"/>
+	<taskdef name="aapt" classname="com.android.ant.AaptExecTask" classpathref="android.antlibs" />
+	<taskdef name="apkbuilder" classname="com.android.ant.ApkBuilderTask" classpathref="android.antlibs" />
+	<taskdef resource="org/aspectj/tools/ant/taskdefs/aspectjTaskdefs.properties">
+		<classpath>
+			<pathelement location="./lib/aspectjtools.jar" />
+		</classpath>
+	</taskdef>
+
+
+
+
+	<path id="jar.libs.ref">
+		<fileset dir="${staging.dir}/libs/" includes="*.jar" />
+	</path>
+
+	<path id="android.target.classpath">
+		<fileset dir="${env.ANDROID_HOME}/platforms/android-8/" includes="*.jar"/>
+	</path>
+
+	<target name="dex2jar">
+	<exec executable="${dex2jar}" failonerror="yes">
+		<arg value="-f" />
+		<arg value="-o" />
+		<arg value="${dex2jar.decoded.jar}" />
+		<arg value="${tested.project.apk}" />
+	</exec>
+	<exec executable="${asm-verify}" failonerror="yes">
+		<arg value="${dex2jar.decoded.jar}" />
+	</exec>
+	<unzip src="${dex2jar.decoded.jar}" dest="${dex2jar.decoded.dir}" />
+	</target>
+
+	<target name="-init">
+		<delete dir="${bin.dir}" />
+		<mkdir dir="${bin.dir}" />
+	</target>
+	<target name="resign-apk" depends="-init,dex2jar">
+		<delete dir="${resign.folder}" />
+		<mkdir dir="${resign.folder}" />
+		<copy file="${tested.project.apk}" tofile="${resign.folder}/testapp.zip" />
+		<unzip src="${resign.folder}/testapp.zip" dest="${staging.dir}" />
+		<delete dir="${staging.dir}/META-INF" />
+		<antcall target="compile-aopjava" />
+		<antcall target="aop" />
+		<antcall target="dex" />
+		<delete dir="${staging.dir}/classes.dex" />
+		<copy file="${dex.file}" todir="${staging.dir}" />
+		<copy file="${recorder.dir}/recorder.properties" todir="${staging.dir}/assets" />
+		<zip destfile="${app.unsigned}" basedir="${staging.dir}" />
+		<antcall target="-signapp" />
+	</target>
+
+	<target name="compile-aopjava">
+		<delete dir="${code.bin.dir}" />
+		<mkdir dir="${code.bin.dir}" />
+		<delete dir="${aopjava}" />
+		<mkdir dir="${aopjava}" />
+		<copy todir="${code.bin.dir}">
+			<fileset dir="${out.classes.absolute.dir}" />
+		</copy>
+
+		<javac srcdir="${recorder.dir}/src" destdir="${aopjava}" verbose="${verbose}"
+			bootclasspathref="android.target.classpath" classpath="${extensible.classpath}">
+		</javac>
+		<copy todir="${code.bin.dir}">
+			<fileset dir="${aopjava}" />
+		</copy>
+	</target>
+
+	<target name="aop">
+		<echo
+			message="Weaving aspects to .class files before dex converts .class files to .dex file" />
+		<iajc destDir="${aop}" Xlintwarnings="true" showWeaveInfo="true"
+			target="1.5" source="1.5">
+			<sourceRoots>
+				<pathelement location="${recorder.dir}/aspects" />
+			</sourceRoots>
+			<inpath>
+				<pathelement location="${code.bin.dir}" />
+			</inpath>
+			<classpath>
+				<pathelement location="./lib/aspectjrt.jar" />
+				<path refid="android.target.classpath" />
+			</classpath>
+		</iajc>
+		<copy file="./lib/aspectjrt.jar" todir="${aop}/libs" />
+	</target>
+	<target name="clean" description="clean up">
+		<delete dir="${staging.dir}" />
+		<delete dir="${bin.dir}" />
+	</target>
+
+	<target name="aapt">
+		<exec executable="${env.ANDROID_HOME}/platform-tools/aapt" failonerror="yes">
+			<arg value="package" />
+			<arg value="-f" />
+			<arg value="-M" />
+			<arg file="${staging.dir}/AndroidManifest.xml" />
+			<arg value="-F" />
+			<arg file="${test.app.aapt}" />
+			<arg value="-I" />
+			<arg path="${android.lib}/android.jar" />
+			<arg value="-A" />
+			<arg path="${staging.dir}/assets" />
+			<arg value="-m" />
+			<arg value="-J" />
+			<arg path="gen" />
+		</exec>
+	</target>
+
+	<target name="dex">
+		<mkdir dir="${dex.dir}"/>
+		<exec executable="${dx}" failonerror="yes">
+			<arg value="--dex" />
+			<arg value="--output" />
+			<arg file="${dex.file}" />
+			<arg path="${aop}" />
+		</exec>
+	</target>
+
+
+	<target name="-apk">
+		<exec executable="${apkbuilder}" failonerror="yes">
+			<arg file="${test.app.unsigned}" />
+			<arg value="-u" />
+			<arg value="-z" />
+			<arg file="${test.app.aapt}" />
+			<arg value="-f" />
+			<arg file="${dex.file}" />
+		</exec>
+	</target>
+	<target name ="-signapp" description="Signs the app under test">
+			<signjar
+		  jar="${app.unsigned}"
+		  signedjar="${app.signed}"
+		  keystore="${key.store}"
+		  storepass="${key.store.password}"
+		  alias="${key.alias}"
+		  keypass="${key.alias.password}"
+		  verbose="false"/>
+	</target>
+	<target name="installappapk" depends="resign-apk" description="Install the original app apk file onto the device or simulator">
+		<echo>Installing ${app.signed} onto default emulator or device...</echo>
+		<exec executable="${env.ANDROID_HOME}/platform-tools/adb" failonerror="true">
+			<arg line="${adb.device.arg}" />
+			<arg value="install" />
+			<arg value="-r" />
+			<arg path="${app.signed}" />
+		</exec>
+
+	</target>
+
+</project>
