@@ -49,99 +49,55 @@ public abstract class BaseKeywordDefinitions {
 	}
 
 	protected void invoker(Object obj, String methodName, List<String> s) {
-		if (s.size() == 0) {
-			try {
+		
+		try {
+			if (s.size() == 0) {
 				Method method = obj.getClass().getMethod(methodName,
-						new Class[]{});
-				method.invoke(obj, new Object[]{});
-			} catch (NoSuchMethodException e) {
-				Assert.fail("nosuch method exception thrown: " + e);
-			} catch (Exception e) {
-				if (e instanceof InvocationTargetException) {
-					InvocationTargetException invocationTargetException = (InvocationTargetException) e;
-					Throwable targetException = invocationTargetException
-							.getTargetException();
-					if (targetException instanceof AssertionFailedError) {
-						Assert.fail(targetException.getMessage());
-					} else {
-						Assert.fail(targetException.getMessage());
-					}
-				} else {
-					Assert.fail(e.toString());
-				}
-			}
-		} else if (s.size() == 1) {
-			int tempVal = 0;
-			boolean isInteger = false;
-			try {
-				tempVal = Integer.parseInt(s.get(0));
-				isInteger = true;
-			} catch (NumberFormatException e) {
+						new Class[] {});
+				method.invoke(obj, new Object[] {});
 
-			}
-			if (isInteger) {
+			} else if (s.size() == 1) {
+				int tempVal = 0;
+				boolean isInteger = false;
 				try {
+					tempVal = Integer.parseInt(s.get(0));
+					isInteger = true;
+				} catch (NumberFormatException e) {
+					//Escaping as we wanted to check if the variable is integer or not
+				}
+				if (isInteger) {
 					Method method = obj.getClass().getMethod(methodName,
 							int.class);
 					method.invoke(obj, tempVal);
-				} catch (NoSuchMethodException e) {
-					Assert.fail("nosuch method exception thrown: " + e);
-				} catch (Exception e) {
-					if (e instanceof InvocationTargetException) {
-						InvocationTargetException invocationTargetException = (InvocationTargetException) e;
-						Throwable targetException = invocationTargetException
-								.getTargetException();
-						if (targetException instanceof AssertionFailedError) {
-							Assert.fail(targetException.getMessage());
-						} else {
-							Assert.fail(targetException.getMessage());
-						}
-					} else {
-						Assert.fail(e.toString());
-					}
-				}
-			} else {
-				try {
+				} else {
 					Method method = obj.getClass().getMethod(methodName,
 							String.class);
 					method.invoke(obj, s.get(0));
-				} catch (NoSuchMethodException e) {
-					Assert.fail("nosuch method exception thrown: " + e);
-				} catch (Exception e) {
-					if (e instanceof InvocationTargetException) {
-						InvocationTargetException invocationTargetException = (InvocationTargetException) e;
-						Throwable targetException = invocationTargetException
-								.getTargetException();
-						if (targetException instanceof AssertionFailedError) {
-							Assert.fail(targetException.getMessage());
-						} else {
-							Assert.fail(targetException.getMessage());
-						}
-					} else {
-						Assert.fail(e.toString());
-					}
 				}
-			}
-		} else if (s.size() > 1) {
-			try {
+			} else if (s.size() == 2) {
 				Method method = obj.getClass().getMethod(methodName,
 						String.class, String.class);
 				method.invoke(obj, s.get(0), s.get(1));
-			} catch (NoSuchMethodException e) {
-				Assert.fail("nosuch method exception thrown: " + e);
-			} catch (Exception e) {
-				if (e instanceof InvocationTargetException) {
-					InvocationTargetException invocationTargetException = (InvocationTargetException) e;
-					Throwable targetException = invocationTargetException
-							.getTargetException();
-					if (targetException instanceof AssertionFailedError) {
-						Assert.fail(targetException.getMessage());
-					} else {
-						Assert.fail(targetException.getMessage());
-					}
+				
+			} else if(s.size()>2){
+				Method method = obj.getClass().getMethod(methodName,
+						String.class, String.class, String.class);
+				method.invoke(obj, s.get(0), s.get(1),s.get(2));
+			}
+		} catch (NoSuchMethodException e) {
+			Assert.fail("nosuch method exception thrown: " + e);
+		} catch (Exception e) {
+			if (e instanceof InvocationTargetException) {
+				InvocationTargetException invocationTargetException = (InvocationTargetException) e;
+				Throwable targetException = invocationTargetException
+						.getTargetException();
+				if (targetException instanceof AssertionFailedError) {
+					Assert.fail(targetException.getMessage());
 				} else {
-					Assert.fail(e.toString());
+					Assert.fail(targetException.getMessage());
 				}
+			} else {
+				Assert.fail(e.toString());
 			}
 		}
 
