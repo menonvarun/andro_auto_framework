@@ -12,8 +12,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URI;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.servlet.ServletException;
@@ -58,23 +57,29 @@ public class DownloadCsv extends HttpServlet {
             int id = Integer.parseInt(request.getParameter("id"));
             RecordSession session = getEntity(id);
             List<RecordEntry> sessionList = session.getRecordEntries();
-            Iterator<RecordEntry> iterator = sessionList.iterator();
+            List<RecordEntry> sortedList=getSortedlist(sessionList);
+            Iterator<RecordEntry> iterator = sortedList.iterator();
+            
             response.setContentType("text/csv");
             String disposition = "attachment; fileName=testCase.csv";
             response.setHeader("Content-Disposition", disposition);
 
             PrintWriter writer = response.getWriter();
-            writer.append("\"Command\",\"Rid\",\"Argument 1\",\"Argument 2\"\n");
+            writer.append("\"Command\",\"Argument 1\",\"Argument 2\",\"Argument 3\"\n");
 
             while (iterator.hasNext()) {
                 RecordEntry tempEntry = iterator.next();
 
                 JSONObject jsonObject = (JSONObject) new JSONParser().parse(tempEntry.getPayload());
 
-                if (!jsonObject.containsKey("args[1]")) {
-                    writer.append("\"" + jsonObject.get("command") + "\"" + "," + "\"" + jsonObject.get("rid") + "\"" + "," + "\"" + jsonObject.get("args[0]") + "\"" + ",\"\"\n");
-                } else {
-                    writer.append("\"" + jsonObject.get("command") + "\"" + "," + "\"" + jsonObject.get("rid") + "\"" + "," + "\"" + jsonObject.get("args[0]") + "\"" + "," + "\"" + jsonObject.get("args[1]") + "\"" + "\n");
+                if (jsonObject.containsKey("args[2]")) {
+                    writer.append("\"" + jsonObject.get("command") + "\"" + "," + "\"" + jsonObject.get("args[0]") + "\"" + "," + "\"" + jsonObject.get("args[1]") + "\"" + "," + "\"" + jsonObject.get("args[2]") + "\"" + "\n");
+                }else if (jsonObject.containsKey("args[1]")) {
+                    writer.append("\"" + jsonObject.get("command") + "\"" + "," + "\"" + jsonObject.get("args[0]") + "\"" + "," + "\"" + jsonObject.get("args[1]") + "\"" + "\n");
+                } else if (jsonObject.containsKey("args[0]")) {
+                    writer.append("\"" + jsonObject.get("command") + "\"" + "," + "\"" + jsonObject.get("args[0]") + "\"" + "\n");
+                }else{
+                    writer.append("\"" + jsonObject.get("command") + "\"" + ","+ "\n");
                 }
             }
 
@@ -107,5 +112,41 @@ public class DownloadCsv extends HttpServlet {
         } catch (NoResultException ex) {
             throw new WebApplicationException(new Throwable("Resource does not exist."), 404);
         }
+    }
+   
+    private List<RecordEntry> getSortedlist(List<RecordEntry> original) {
+        ArrayList<String> sortedArray = new ArrayList<String>();
+        HashMap<String, String> source = new HashMap<String, String>();
+        HashMap<String, RecordEntry> entryMap = new HashMap<String, RecordEntry>();
+        List<RecordEntry> sortedEntry= new ArrayList<RecordEntry>();
+        for(RecordEntry entry:original){
+            source.put(entry.getEntryNo(), entry.getPrevEntryNo());
+            entryMap.put(entry.getEntryNo(), entry);
+        }
+        ArrayList<String> desired = getDesiredMap(source, "0");
+        while (!desired.isEmpty()) {
+            sortedArray.add(desired.get(0));
+            desired = getDesiredMap(source, desired.get(0));
+        }
+        for(String entryNo:sortedArray){
+            RecordEntry entry=entryMap.get(entryNo);
+            sortedEntry.add(entry);
+        }
+        
+        return sortedEntry;
+    }
+
+    private ArrayList<String> getDesiredMap(HashMap<String, String> map, String entry) {
+        Set<String> keys = map.keySet();
+        ArrayList<String> temp = new ArrayList<String>();
+        for (String key : keys) {
+            if (map.get(key).contentEquals(entry)) {
+                temp.add(key);
+                temp.add(map.get(key));
+                break;
+            }
+        }
+        return temp;
+
     }
 }
