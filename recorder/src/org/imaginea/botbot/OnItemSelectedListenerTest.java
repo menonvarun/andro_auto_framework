@@ -25,9 +25,7 @@ public class OnItemSelectedListenerTest implements
 		if (lastposition != aPosition) {
 			AdapterView parent1 = (AdapterView) parent;
 			View view = (View) v;
-			int rowNum = (Integer) aPosition;
-			long rowID = (Long) arg3;
-			Recorder.record("clickspinner", parent1, view, rowNum, rowID);
+			Recorder.record("clickspinner", parent1, view);
 			lastposition=aPosition;
 		}
 
