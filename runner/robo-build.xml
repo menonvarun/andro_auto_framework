@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project name="" default="robo-test" basedir=".">
+	<description>
+      Bits and pices plucked out of $ANDROID_HOME/tools/ant/build.xml
+    </description>
+
+	<property name="adb.device.arg" value="" />
+	<property environment="env" />
+	<property file="resources/default.properties" />
+	<property name="tested.package_name" value="${APP_PACKAGE}" />
+	<property name="tested.main_activity" value="${DEFAULT_ACTIVITY}" />
+	<property name="tested.project.apk" value="${TEST_APK_FILENAME}" />
+	<property name="staging.dir" location="staging" />
+	<property name="main.dir" location="." />
+	<property name="test.app.dir" location="resources/robotium-files/bot-bot-test" />
+	<property name="bin.dir" location="robo-bin" />
+	<property name="test.app" location="${bin.dir}/bot-bot.apk" />
+	<property name="test.app.aapt" location="${bin.dir}/bot-bot_aapt.apk" />
+	<property name="dex.file" location="${bin.dir}/classes.dex" />
+	<property name="test.app.unsigned" location="${bin.dir}/bot-bot_unsigned.apk" />
+	<property name="test.app.signed" location="${bin.dir}/bot-bot.apk" />
+	<property name="resign.folder" location="resignapk" />
+	<property name="app.unsigned" location="${resign.folder}/app_unsigned.apk" />
+	<property name="app.signed" location="${resign.folder}/app_signed.apk" />
+
+	<!-- Tells adb which device to target. You can change this from the command line
+	         by invoking "ant -Dadb.device.arg=-d" for device "ant -Dadb.device.arg=-e" for
+	         the emulator. -->
+	<property name="adb.device.arg" value="" />
+	<!-- Windows support -->
+	<condition property="bat" value=".bat" else="">
+		<os family="windows" />
+	</condition>
+	<property name="dx" location="${env.ANDROID_HOME}/platform-tools/dx${bat}" />
+	<property name="apkbuilder" location="${env.ANDROID_HOME}/tools/apkbuilder${bat}" />
+
+	<property name="android.lib" location="${env.ANDROID_HOME}/platforms/android-10" />
+	<path id="android.antlibs">
+		<pathelement path="${env.ANDROID_HOME}/tools/lib/anttasks.jar" />
+	</path>
+	<taskdef name="xpath" classname="com.android.ant.XPathTask" classpathref="android.antlibs" />
+	<taskdef name="aapt" classname="com.android.ant.AaptExecTask" classpathref="android.antlibs" />
+	<taskdef name="apkbuilder" classname="com.android.ant.ApkBuilderTask" classpathref="android.antlibs" />
+
+
+
+
+	<path id="jar.libs.ref">
+		<fileset dir="${staging.dir}/libs/" includes="*.jar" />
+	</path>
+
+	<path id="cucumber.path">
+		<fileset dir="cucumber/" includes="*.jar" />
+	</path>
+
+	<path id="android.target.classpath">
+		<fileset dir="${env.ANDROID_HOME}/platforms/android-8/" includes="*.jar" />
+	</path>
+
+	<target name="robo-test" description="Run test features" depends="package">
+		<echo>Under test</echo>
+		<exec executable="${env.ANDROID_HOME}/platform-tools/adb" failonerror="true">
+			<arg value="shell" />
+			<arg value="am" />
+			<arg value="instrument" />
+			<arg value="-w" />
+			<arg value="${tested.package_name}.test/com.zutubi.android.junitreport.JUnitReportTestRunner" />
+		</exec>
+	</target>
+
+
+	<target name="-init">
+		<uptodate property="test.app.upto.date" targetfile="${test.app.signed}">
+			<srcfiles dir="${staging.dir}" includes="**/*" />
+			<srcfiles file="resources/default.properties" />
+		</uptodate>
+	</target>
+	<target name="-resign-apk">
+		<delete dir="${resign.folder}" />
+		<mkdir dir="${resign.folder}" />
+		<copy file="${tested.project.apk}" tofile="${resign.folder}/testapp.zip" />
+		<unzip src="${resign.folder}/testapp.zip" dest="resignapk/testapp" />
+		<delete dir="resignapk/testapp/META-INF" />
+		<zip destfile="${app.unsigned}" basedir="resignapk/testapp" />
+		<antcall target="-signapp" />
+	</target>
+	<target name="-stage">
+		<mkdir dir="${staging.dir}" />
+		<mkdir dir="${bin.dir}" />
+		<antcall target="-prepare.manifest" />
+		<antcall target="-prepare.testserver" />
+	</target>
+
+	<target name="-prepare.manifest" description="Makes sure the manifest matches the tested application by looking at its manifest file">
+		<copy todir="${staging.dir}">
+			<fileset dir="${test.app.dir}" />
+		</copy>
+		<delete dir="${staging.dir}/src" />
+		<mkdir dir="${staging.dir}" />
+		<copy todir="${staging.dir}/src">
+			<fileset dir="${main.dir}/src" />
+		</copy>
+		<copy todir="${staging.dir}/assets/testcases/${TESTCASE_FOLDER}">
+			<fileset dir="${main.dir}/testcases/${TESTCASE_FOLDER}" />
+		</copy>
+
+		<copy todir="${staging.dir}/libs">
+			<fileset dir="${main.dir}/lib" />
+		</copy>
+		<replace file="${staging.dir}/AndroidManifest.xml" token="#TESTED_APP_PACKAGE#" value="${tested.package_name}" />
+	</target>
+
+	<target name="-prepare.testserver" description="Makes sure the testserver matches the tested application by looking at its manifest file">
+		<replace file="${staging.dir}/src/org/selenium/androframework/common/RobotiumBaseClass.java" token="#APP_TEST_PACKAGE#" value="${tested.package_name}" />
+
+		<replace file="${staging.dir}/src/org/selenium/androframework/common/RobotiumBaseClass.java" token="#APP_MAIN_ACTIVITY_CLASS#" value="${tested.main_activity}" />
+		<replace file="${staging.dir}/src/org/selenium/androframework/keywords/KeywordCaller.java" token="#FRAMEWORK#" value="${FRAMEWORK}" />
+		<replace file="${staging.dir}/src/org/selenium/androframework/common/BotBotTestRunner.java" token="#DATA_DRIVEN_TESTS#" value="${DATA_DRIVEN_TESTS}" />
+		<replace file="${staging.dir}/src/org/selenium/androframework/common/BotBotTestRunner.java" token="#APP_TEST_PACKAGE#" value="${tested.package_name}" />
+		<exec executable="${env.ANDROID_HOME}/platform-tools/aapt" failonerror="true" output="${staging.dir}/assets/ids.txt">
+			<arg value="dump" />
+			<arg value="resources" />
+			<arg file="${tested.project.apk}" />
+		</exec>
+	</target>
+
+
+	<target name="-compile">
+		<antcall target="-stage" />
+		<javac srcdir="${staging.dir}/src" destdir="${bin.dir}" verbose="${verbose}" bootclasspathref="android.target.classpath" classpath="${extensible.classpath}" classpathref="jar.libs.ref">
+		</javac>
+	</target>
+	<target name="installapp" description="Resigns and install the original app under test.">
+		<antcall target="-resign-apk" />
+		<antcall target="-installappapk" />
+		<!--<delete dir="${resign.folder}"/>-->
+	</target>
+	<target name="package" depends="clean,-init" unless="test.app.upto.date">
+		<antcall target="installapp" />
+		<antcall target="-compile" />
+		<antcall target="-aapt" />
+		<antcall target="-dex" />
+		<antcall target="-apk" />
+		<antcall target="-sign" />
+		<antcall target="-installtestapk" />
+	</target>
+
+	<target name="-installtestapk" description="Install the test apk file onto the device or simulator">
+		<echo>Installing ${out.final.file} onto default emulator or device...</echo>
+		<exec executable="${env.ANDROID_HOME}/platform-tools/adb" failonerror="true">
+			<arg line="${adb.device.arg}" />
+			<arg value="install" />
+			<arg value="-r" />
+			<arg path="${test.app.signed}" />
+		</exec>
+
+	</target>
+	<target name="-installappapk" description="Install the original app apk file onto the device or simulator">
+		<echo>Installing ${out.final.file} onto default emulator or device...</echo>
+		<exec executable="${env.ANDROID_HOME}/platform-tools/adb" failonerror="true">
+			<arg line="${adb.device.arg}" />
+			<arg value="install" />
+			<arg value="-r" />
+			<arg path="${app.signed}" />
+		</exec>
+
+	</target>
+	<target name="clean" description="clean up">
+		<delete dir="${staging.dir}" />
+		<delete dir="${bin.dir}" />
+	</target>
+
+	<target name="-aapt">
+		<exec executable="${env.ANDROID_HOME}/platform-tools/aapt" failonerror="yes">
+			<arg value="package" />
+			<arg value="-f" />
+			<arg value="-M" />
+			<arg file="${staging.dir}/AndroidManifest.xml" />
+			<arg value="-F" />
+			<arg file="${test.app.aapt}" />
+			<arg value="-I" />
+			<arg path="${android.lib}/android.jar" />
+			<arg value="-A" />
+			<arg path="${staging.dir}/assets" />
+			<arg value="-m" />
+			<arg value="-J" />
+			<arg path="gen" />
+		</exec>
+	</target>
+
+	<target name="-dex">
+		<antcall target="-stage.libs" />
+		<exec executable="${dx}" failonerror="yes">
+			<arg value="--dex" />
+			<arg value="--output" />
+			<arg file="${dex.file}" />
+			<arg path="${bin.dir}" />
+		</exec>
+	</target>
+
+	<target name="-stage.libs">
+		<copy file="${staging.dir}/libs/robotium-solo-3.1.jar" todir="${bin.dir}/libs" />
+		<copy file="${staging.dir}/libs/opencsv-2.3.jar" todir="${bin.dir}/libs" />
+		<copy file="${staging.dir}/libs/testng-6.1.1.jar" todir="${bin.dir}/libs" />
+		<copy file="${staging.dir}/libs/client-standalone.jar" todir="${bin.dir}/libs" />
+		<!--<copy todir="${bin.dir}/libs">
+			<fileset dir="${staging.dir}/libs"/>
+		</copy>-->
+	</target>
+
+	<target name="-apk">
+		<exec executable="${apkbuilder}" failonerror="yes">
+			<arg file="${test.app.unsigned}" />
+			<arg value="-u" />
+			<arg value="-z" />
+			<arg file="${test.app.aapt}" />
+			<arg value="-f" />
+			<arg file="${dex.file}" />
+		</exec>
+	</target>
+	<target name="-signapp" description="Signs the app under test">
+		<signjar jar="${app.unsigned}" signedjar="${app.signed}" keystore="${key.store}" storepass="${key.store.password}" alias="${key.alias}" keypass="${key.alias.password}" verbose="false" />
+	</target>
+
+	<target name="-sign">
+		<signjar jar="${test.app.unsigned}" signedjar="${test.app.signed}" keystore="${key.store}" storepass="${key.store.password}" alias="${key.alias}" keypass="${key.alias.password}" verbose="false" />
+	</target>
+
+</project>

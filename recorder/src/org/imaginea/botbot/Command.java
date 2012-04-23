@@ -1,5 +1,9 @@
 package org.imaginea.botbot;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import android.content.res.Resources.NotFoundException;
 import android.view.View;
 
@@ -12,15 +16,14 @@ public class Command {
 
 	String userAction;
 	Object view;
-	Object[] args;
+	List<Object> arguments;
 	int id = 0;
-	String rid = "";
 	String viewClassName = "";
 
 	public void add(String command, Object view, Object... args) {
 		this.userAction = command;
 		this.view = view;
-		this.args = args;
+		this.arguments = Arrays.asList(args);
 		if (view.getClass().getName().contains("Button")) {
 			this.userAction = "clickbutton";
 		}
@@ -30,7 +33,12 @@ public class Command {
 	public void add(String command, View view, Object... args) {
 		this.userAction = command;
 		this.view = view;
-		this.args = args;
+		if(args.length==1 && args[0].equals("")){
+			this.arguments= new ArrayList<Object>();
+		}
+		else{
+			this.arguments = new ArrayList<Object>(Arrays.asList(args));
+		}
 		String className = view.getClass().getName();
 		if (vc.isSupportedClass(className)) {
 			this.viewClassName = vc.getFullClassName(className);
@@ -41,12 +49,16 @@ public class Command {
 		this.id = view.getId();
 
 		try {
-			this.rid = getStringIdFromResource(view, id);
+			if(arguments.size()>=1){
+				arguments.add(0, getStringIdFromResource(view, id));
+			}else{
+				arguments.add(getStringIdFromResource(view, id));
+			}
 			if (command.contentEquals("click")) {
 				this.userAction = "clickbyid";
 			}
 		} catch (NotFoundException e) {
-			this.rid = "";
+			//Escaping in case the rid resource is not found
 		}
 	}
 
@@ -63,18 +75,12 @@ public class Command {
 
 	public String getData() {
 		String data = "";
-		int argLength;
 		data = data.concat("\"command\":\"" + this.userAction + "\"");
-		data = data.concat(",\"rid\":\"" + this.rid + "\"");
 		data = data.concat(",\"viewClassName\":\"" + this.viewClassName + "\"");
-		try {
-			argLength = args.length;
-		} catch (NullPointerException e) {
-			argLength=0;
-		}
-		for (int i = 0; i < argLength; i++) {
-
-			data = data.concat(",\"args[" + i + "]\":\"" + this.args[i] + "\"");
+		int i=0;
+		for (Object args:arguments) {
+			data = data.concat(",\"args[" + i + "]\":\"" + args + "\"");
+			i++;
 		}
 
 		data = data.replace("\"", "\\\"");
@@ -93,12 +99,13 @@ public class Command {
 		try {
 			retText = "command =" + this.userAction + "; view=" + view.toString()
 					+ "; viewClassName=" + this.viewClassName + "; id=" + id
-					+ "; rid=" + rid + "; args[0]=" + args[0].toString()
-					+ "; args[1]=" + args[1].toString();
-		} catch (ArrayIndexOutOfBoundsException e) {
+					+ "; args[0]=" + arguments.get(0).toString()
+					+ "; args[1]=" + arguments.get(1).toString()
+					+ "; args[2]=" + arguments.get(2).toString();
+		} catch (IndexOutOfBoundsException e) {
 			retText = "command =" + this.userAction + "; view=" + view.toString()
 					+ "; viewClassName=" + this.viewClassName + "; id=" + id
-					+ "; rid=" + rid + "; args=" + args.toString();
+					+ "; args=" + arguments.toString();
 		}
 		return retText;
 	}

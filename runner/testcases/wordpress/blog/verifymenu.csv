@@ -1,0 +1,6 @@
+,,
+clickmenu,
+asserttextpresent,Add Account
+asserttextpresent,Preferences
+asserttextpresent,Remove Blog
+asserttextpresent,About

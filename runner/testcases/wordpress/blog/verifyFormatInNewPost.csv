@@ -1,0 +1,7 @@
+,,
+checklocatorpresent,dashboard_newpost_btn
+clickbyid,dashboard_newpost_btn
+clickbyid,postFormat
+scrollup,10
+asserttextpresent,Audio
+asserttextpresent,Chat

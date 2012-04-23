@@ -6,6 +6,6 @@ public class TestClassName extends BaseClass{
 @Test
 	public void testName(){
 		
-		AndroFrameworkExecutor afe = new AndroFrameworkExecutor();
-		afe.androExecutor(driver,"filePath");
+		AndroFrameworkExecutor afe = new AndroFrameworkExecutor(prefrences);
+		afe.androExecutor("filePath");
 	}

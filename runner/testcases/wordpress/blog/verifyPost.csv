@@ -1,0 +1,6 @@
+,,
+checklocatorpresent,dashboard_posts_btn
+clickbyid,dashboard_posts_btn
+checktextpresent,Hello world!
+clicktext,Hello world!
+verifyscreen,resources/wordpress/blog/helloworld.jpg

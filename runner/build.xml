@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="andro_auto_framework" basedir=".">
+<project name="bot-bot" default="test" basedir=".">
+	<import file="robo-build.xml"/>
 	<property name="RELEASE_ROOT" value="." />
+	<property environment="env"/> 
 	<property name="SRC" value="${RELEASE_ROOT}/src" />
 	<property name="LIB" value="${RELEASE_ROOT}/lib" />
 	<property name="BIN" value="${RELEASE_ROOT}/bin1" />
@@ -12,6 +14,11 @@
 		</fileset>
 		<pathelement path="${BIN}"/>
 	</path>
+	<taskdef resource="net/sf/antcontrib/antcontrib.properties">
+	  <classpath>
+	    <pathelement location="${LIB}/ant-contrib-0.6.jar"/>
+	  </classpath>
+	</taskdef>
 	<target name="init">
 		<delete dir="${BIN}" />
 		<mkdir dir="${BIN}" />
@@ -21,6 +28,9 @@
 			<classpath>
 				<pathelement path="${BIN}">
 				</pathelement>
+				<fileset dir="${android.lib}">
+									<include name="**/*.jar" />
+								</fileset>
 				<fileset dir="${LIB}">
 					<include name="**/*.jar" />
 				</fileset>
@@ -42,7 +52,20 @@
 		<pathelement path="${BIN}">
 		</pathelement>
 	</path>
-	<target name="andro-test" depends="generate-java-code">
+	<target name="test" depends="generate-java-code">
+		<if>
+		 <equals arg1="${FRAMEWORK}" arg2="robotium" />
+		 <then>
+		 	<echo message="Executing Robotium based test" />
+		 	<antcall target="robo-test" />
+		 </then>
+		 <else>
+		   <echo message="Executing nativedriver test" />
+		 	<antcall target="andro-test" />
+		 </else>
+		</if>
+	</target>
+	<target name="andro-test" >
 		<antcall target="compile" />
 		<delete dir="${REPORT}" />
 		<mkdir dir="${REPORT}" />
