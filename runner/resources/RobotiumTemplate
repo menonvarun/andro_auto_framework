@@ -1,5 +1,5 @@
-import org.selenium.androframework.common.AndroFrameworkExecutor;
-import org.selenium.androframework.common.RobotiumBaseClass;
+import org.imaginea.botbot.common.AndroFrameworkExecutor;
+import org.imaginea.botbot.common.RobotiumBaseClass;
 
 public class TestClassName extends RobotiumBaseClass{
 	

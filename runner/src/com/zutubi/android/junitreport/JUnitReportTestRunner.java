@@ -26,8 +26,8 @@ import java.util.List;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.selenium.androframework.common.BotBotTestRunner;
-import org.selenium.androframework.common.DataDrivenTestCase;
+import org.imaginea.botbot.common.BotBotTestRunner;
+import org.imaginea.botbot.common.DataDrivenTestCase;
 
 import dalvik.system.DexFile;
 import dalvik.system.PathClassLoader;

@@ -1,4 +1,4 @@
-package org.selenium.androframework.common;
+package org.imaginea.botbot.common;
 
 public class Prefrences {
 	Object executionContext;

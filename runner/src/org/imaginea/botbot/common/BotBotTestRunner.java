@@ -1,9 +1,9 @@
-package org.selenium.androframework.common;
+package org.imaginea.botbot.common;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.selenium.androframework.keywords.RobotiumKeywordDefinition;
+import org.imaginea.botbot.keywords.RobotiumKeywordDefinition;
 
 import junit.framework.Test;
 import junit.framework.TestCase;

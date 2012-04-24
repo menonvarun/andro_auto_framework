@@ -1,4 +1,4 @@
-package org.selenium.androframework.keywords;
+package org.imaginea.botbot.keywords;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -7,8 +7,8 @@ import java.util.HashMap;
 
 import junit.framework.Assert;
 
-import org.selenium.androframework.common.Command;
-import org.selenium.androframework.common.Prefrences;
+import org.imaginea.botbot.common.Command;
+import org.imaginea.botbot.common.Prefrences;
 
 import android.content.Context;
 import android.util.Log;

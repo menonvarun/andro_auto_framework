@@ -1,4 +1,4 @@
-package org.selenium.androframework.api;
+package org.imaginea.botbot.api;
 
 import java.io.File;
 import java.io.FileReader;

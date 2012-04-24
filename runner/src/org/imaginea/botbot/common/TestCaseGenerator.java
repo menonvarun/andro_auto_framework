@@ -1,4 +1,4 @@
-package org.selenium.androframework.common;
+package org.imaginea.botbot.common;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -7,7 +7,7 @@ import java.util.Iterator;
 
 import junit.framework.Assert;
 
-import org.selenium.androframework.api.DefaultProperties;
+import org.imaginea.botbot.api.DefaultProperties;
 
 public class TestCaseGenerator {
 	HashMap<String, ArrayList<String>> hm = new HashMap<String, ArrayList<String>>();

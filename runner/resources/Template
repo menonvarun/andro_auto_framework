@@ -1,5 +1,5 @@
-import org.selenium.androframework.common.AndroFrameworkExecutor;
-import org.selenium.androframework.common.BaseClass;
+import org.imaginea.botbot.common.AndroFrameworkExecutor;
+import org.imaginea.botbot.common.BaseClass;
 import org.testng.annotations.Test;
 
 public class TestClassName extends BaseClass{

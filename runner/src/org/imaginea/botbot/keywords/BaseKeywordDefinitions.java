@@ -1,4 +1,4 @@
-package org.selenium.androframework.keywords;
+package org.imaginea.botbot.keywords;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -11,7 +11,7 @@ import java.util.List;
 import junit.framework.Assert;
 import junit.framework.AssertionFailedError;
 
-import org.selenium.androframework.common.Command;
+import org.imaginea.botbot.common.Command;
 
 public abstract class BaseKeywordDefinitions {
 	protected HashMap<String, Integer> methodMap = new HashMap<String, Integer>();
