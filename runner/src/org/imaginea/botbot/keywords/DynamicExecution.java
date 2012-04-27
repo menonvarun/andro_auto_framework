@@ -1,9 +1,9 @@
-package org.selenium.androframework.keywords;
+package org.imaginea.botbot.keywords;
 
 import java.util.Arrays;
 
-import org.selenium.androframework.common.Command;
-import org.selenium.androframework.common.Prefrences;
+import org.imaginea.botbot.common.Command;
+import org.imaginea.botbot.common.Prefrences;
 
 
 public class DynamicExecution extends BaseKeywordDefinitions{

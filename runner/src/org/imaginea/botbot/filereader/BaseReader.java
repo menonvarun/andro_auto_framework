@@ -1,4 +1,4 @@
-package org.selenium.androframework.filereader;
+package org.imaginea.botbot.filereader;
 
 public interface BaseReader {
 	

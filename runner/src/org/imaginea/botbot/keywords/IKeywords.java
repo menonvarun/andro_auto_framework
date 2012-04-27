@@ -1,4 +1,4 @@
-package org.selenium.androframework.keywords;
+package org.imaginea.botbot.keywords;
 
 public interface IKeywords {
 	public boolean isSupported(String type);

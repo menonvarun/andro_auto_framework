@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project name="" default="robo-test" basedir=".">
 	<description>
-      Bits and pices plucked out of $ANDROID_HOME/tools/ant/build.xml
+      Bits and pieces plucked out of $ANDROID_HOME/tools/ant/build.xml and calabash guys.
     </description>
 
 	<property name="adb.device.arg" value="" />
@@ -22,6 +22,7 @@
 	<property name="resign.folder" location="resignapk" />
 	<property name="app.unsigned" location="${resign.folder}/app_unsigned.apk" />
 	<property name="app.signed" location="${resign.folder}/app_signed.apk" />
+	<property name="BASE_PACKAGE_FOLDER" value="org/imaginea/botbot" />
 
 	<!-- Tells adb which device to target. You can change this from the command line
 	         by invoking "ant -Dadb.device.arg=-d" for device "ant -Dadb.device.arg=-e" for
@@ -111,12 +112,12 @@
 	</target>
 
 	<target name="-prepare.testserver" description="Makes sure the testserver matches the tested application by looking at its manifest file">
-		<replace file="${staging.dir}/src/org/selenium/androframework/common/RobotiumBaseClass.java" token="#APP_TEST_PACKAGE#" value="${tested.package_name}" />
+		<replace file="${staging.dir}/src/${BASE_PACKAGE_FOLDER}/common/RobotiumBaseClass.java" token="#APP_TEST_PACKAGE#" value="${tested.package_name}" />
 
-		<replace file="${staging.dir}/src/org/selenium/androframework/common/RobotiumBaseClass.java" token="#APP_MAIN_ACTIVITY_CLASS#" value="${tested.main_activity}" />
-		<replace file="${staging.dir}/src/org/selenium/androframework/keywords/KeywordCaller.java" token="#FRAMEWORK#" value="${FRAMEWORK}" />
-		<replace file="${staging.dir}/src/org/selenium/androframework/common/BotBotTestRunner.java" token="#DATA_DRIVEN_TESTS#" value="${DATA_DRIVEN_TESTS}" />
-		<replace file="${staging.dir}/src/org/selenium/androframework/common/BotBotTestRunner.java" token="#APP_TEST_PACKAGE#" value="${tested.package_name}" />
+		<replace file="${staging.dir}/src/${BASE_PACKAGE_FOLDER}/common/RobotiumBaseClass.java" token="#APP_MAIN_ACTIVITY_CLASS#" value="${tested.main_activity}" />
+		<replace file="${staging.dir}/src/${BASE_PACKAGE_FOLDER}/keywords/KeywordCaller.java" token="#FRAMEWORK#" value="${FRAMEWORK}" />
+		<replace file="${staging.dir}/src/${BASE_PACKAGE_FOLDER}/common/BotBotTestRunner.java" token="#DATA_DRIVEN_TESTS#" value="${DATA_DRIVEN_TESTS}" />
+		<replace file="${staging.dir}/src/${BASE_PACKAGE_FOLDER}/common/BotBotTestRunner.java" token="#APP_TEST_PACKAGE#" value="${tested.package_name}" />
 		<exec executable="${env.ANDROID_HOME}/platform-tools/aapt" failonerror="true" output="${staging.dir}/assets/ids.txt">
 			<arg value="dump" />
 			<arg value="resources" />
@@ -146,7 +147,7 @@
 	</target>
 
 	<target name="-installtestapk" description="Install the test apk file onto the device or simulator">
-		<echo>Installing ${out.final.file} onto default emulator or device...</echo>
+		<echo>Installing bot-bot test apk onto default emulator or device...</echo>
 		<exec executable="${env.ANDROID_HOME}/platform-tools/adb" failonerror="true">
 			<arg line="${adb.device.arg}" />
 			<arg value="install" />
@@ -156,7 +157,7 @@
 
 	</target>
 	<target name="-installappapk" description="Install the original app apk file onto the device or simulator">
-		<echo>Installing ${out.final.file} onto default emulator or device...</echo>
+		<echo>Installing application under test apk onto default emulator or device...</echo>
 		<exec executable="${env.ANDROID_HOME}/platform-tools/adb" failonerror="true">
 			<arg line="${adb.device.arg}" />
 			<arg value="install" />

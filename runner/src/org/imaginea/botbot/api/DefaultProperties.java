@@ -1,4 +1,4 @@
-package org.selenium.androframework.api;
+package org.imaginea.botbot.api;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;

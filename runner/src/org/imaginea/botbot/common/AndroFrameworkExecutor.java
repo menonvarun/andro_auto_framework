@@ -1,12 +1,12 @@
-package org.selenium.androframework.common;
+package org.imaginea.botbot.common;
 
 import java.io.InputStream;
 import java.util.ArrayList;
 
 import junit.framework.Assert;
 
-import org.selenium.androframework.api.TestCSVReader;
-import org.selenium.androframework.keywords.KeywordCaller;
+import org.imaginea.botbot.api.TestCSVReader;
+import org.imaginea.botbot.keywords.KeywordCaller;
 
 import com.google.android.testing.nativedriver.client.AndroidNativeDriver;
 import com.google.android.testing.nativedriver.client.AndroidNativeDriverBuilder;

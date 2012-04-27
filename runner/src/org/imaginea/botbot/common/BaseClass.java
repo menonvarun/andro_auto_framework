@@ -1,7 +1,7 @@
-package org.selenium.androframework.common;
+package org.imaginea.botbot.common;
 
 
-import org.selenium.androframework.api.DefaultProperties;
+import org.imaginea.botbot.api.DefaultProperties;
 import org.testng.annotations.*;
 
 import com.google.android.testing.nativedriver.client.AndroidNativeDriver;

@@ -25,7 +25,7 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestListener;
 
-import org.selenium.androframework.common.DataDrivenTestCase;
+import org.imaginea.botbot.common.DataDrivenTestCase;
 import org.xmlpull.v1.XmlSerializer;
 
 import java.io.File;

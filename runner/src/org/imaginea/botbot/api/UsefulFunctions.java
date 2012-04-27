@@ -1,4 +1,4 @@
-package org.selenium.androframework.api;
+package org.imaginea.botbot.api;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
