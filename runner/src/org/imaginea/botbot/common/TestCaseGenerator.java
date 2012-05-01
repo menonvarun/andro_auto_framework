@@ -16,67 +16,70 @@ public class TestCaseGenerator {
     HashMap<String, ArrayList<String>> hm = new HashMap<String, ArrayList<String>>();
     private static String baseFolder="";
     //private static String baseFolder=new File("runner").getPath()+File.separatorChar;
-    public void listDirectory(File f, String directoryName,
-            HashMap<String, ArrayList<String>> fileList) {
-        String testcaseFolder="testcases"+File.separatorChar;
-        File[] listOfFiles = f.listFiles();
-        if (directoryName.equalsIgnoreCase("") && f.isDirectory()) {
-            directoryName = f.getPath().split(testcaseFolder)[1];
-        } else if (directoryName.equalsIgnoreCase("") && f.isFile()) {
-            directoryName = new File(f.getParent()).getPath().split(
-                    testcaseFolder)[1];
-        }
-        for (int i = 0; i < listOfFiles.length; i++) {
-            if (listOfFiles[i].isFile()
-&& listOfFiles[i].getName().endsWith(".csv")
-&& !listOfFiles[i].getName().startsWith(".")) {
-                if (fileList.containsKey(directoryName)) {
-                    fileList.get(directoryName).add(
-                            listOfFiles[i].getAbsolutePath());
-                } else {
-                    ArrayList<String> ar = new ArrayList<String>();
-                    ar.add(listOfFiles[i].getAbsolutePath());
-                    fileList.put(directoryName, ar);
-                }
-            } else if (listOfFiles[i].isDirectory()) {
-
-                listDirectory(listOfFiles[i],
-                        listOfFiles[i].getPath().split(testcaseFolder)[1],
-                        fileList);
-            }
-        }
-    }
-
-    public void listAbsoluteDirectory(File f, String directoryName,    HashMap<String, ArrayList<String>> fileList) {
+    public void listDirectory(File f, String directoryName, HashMap<String, ArrayList<String>> fileList,final String fileType, final boolean absolute) {
         char pathSeparator=File.separatorChar;
         String testcaseFolder=baseFolder+"testcases"+pathSeparator;
         File[] listOfFiles = f.listFiles();
 
         if (directoryName.equalsIgnoreCase("") && f.isDirectory()) {
-            String path=f.getPath();
+            String path=getPath(f,absolute);
                 directoryName=getDirectoryName(testcaseFolder,path);
         } else if (directoryName.equalsIgnoreCase("") && f.isFile()) {
-            directoryName = getDirectoryName(testcaseFolder,new File(f.getParent()).getPath()                 );
+            directoryName = getDirectoryName(testcaseFolder,getPath(new File(f.getParent()),absolute)                 );
         }
         for (int i = 0; i < listOfFiles.length; i++) {
-            if (listOfFiles[i].isFile()
-&& listOfFiles[i].getName().endsWith(".csv")
-&& !listOfFiles[i].getName().startsWith(".")) {
+            if (shouldBeFiltered(listOfFiles[i], fileType)) {
                 if (fileList.containsKey(directoryName)) {
-                    fileList.get(directoryName).add(
-                            listOfFiles[i].getPath().replace("\\", "/"));
+                    List<String> flist=fileList.get(directoryName);
+                    String fPath=getPath(listOfFiles[i],absolute);
+                    fPath=filterPath(fPath, absolute);
+                    flist.add(fPath);
                 } else {
-                    ArrayList<String> ar = new ArrayList<String>();
-                    ar.add(listOfFiles[i].getPath().replace("\\", "/"));
-                    fileList.put(directoryName, ar);
+                    ArrayList<String> flist = new ArrayList<String>();
+                    String fPath=getPath(listOfFiles[i],absolute);
+                    fPath=filterPath(fPath, absolute);
+                    flist.add(fPath);
+                    fileList.put(directoryName, flist);
                 }
             } else if (listOfFiles[i].isDirectory()) {
-                listAbsoluteDirectory(listOfFiles[i],
-                        getDirectoryName(testcaseFolder,listOfFiles[i].getPath()),
-                        fileList);
+            	listDirectory(listOfFiles[i],
+                        getDirectoryName(testcaseFolder,getPath(listOfFiles[i],absolute)),
+                        fileList,fileType,absolute);
             }
         }
     }
+    
+    private boolean shouldBeFiltered(File f,String filetype){
+    	boolean isRequired=false;
+    	if(f.isDirectory()){
+    		return isRequired;
+    	}
+    	if(f.getName().startsWith(".")){
+    		return isRequired;
+    	}
+    	if(f.getName().endsWith("."+filetype)){
+    		return true;
+    	}
+    	return isRequired;
+    }
+    
+    private String getPath(File f, boolean absolute){
+    	if(absolute){
+    		return f.getAbsolutePath();
+    	}else{
+    		return f.getPath();
+    	}
+    }
+    
+    private String filterPath(String fPath,boolean absolute){
+    	if(absolute){
+        	fPath.replace("\\", "\\\\");
+        }else{
+        	fPath.replace("\\", "/");
+        }
+    	return fPath;
+    }
+    
     private String getDirectoryName(String path,String testFolder){
         String directoryName = "";
         if (String.valueOf(File.separatorChar).contentEquals("\\")) {
@@ -102,17 +105,6 @@ public class TestCaseGenerator {
         return directoryName;
     }
 
-    public void listDirectory1(File f, ArrayList<File> fileList) {
-        File[] listOfFiles = f.listFiles();
-
-        for (int i = 0; i < listOfFiles.length; i++) {
-            if (listOfFiles[i].isFile()) {
-                fileList.add(listOfFiles[i]);
-            } else if (listOfFiles[i].isDirectory()) {
-                listDirectory1(listOfFiles[i], fileList);
-            }
-        }
-    }
 
     public void classGenerator(HashMap<String, ArrayList<String>> hm,String template)
             throws Exception {
@@ -150,6 +142,7 @@ public class TestCaseGenerator {
         TestCaseGenerator tc = new TestCaseGenerator();
         HashMap<String, ArrayList<String>> hm1 = new HashMap<String, ArrayList<String>>();
         DefaultProperties prop = DefaultProperties.getDefaultProperty();
+        boolean absolute=false;
         boolean isRobotium=false;
         String template ="Template";
         char pathSeparator=File.separatorChar;
@@ -160,18 +153,11 @@ public class TestCaseGenerator {
             isRobotium=true;
             template="RobotiumTemplate";
         }
-        if(isRobotium){
-            tc.listAbsoluteDirectory(new File(testFolderPath
-                    + prop.getValueFromProperty("TESTCASE_FOLDER")), "",
-            hm1);
+        if(!isRobotium){
+            absolute=true;
         }
-        else{
-            tc.listDirectory(
-                    new File(testFolderPath
-                            + prop.getValueFromProperty("TESTCASE_FOLDER")), "",
-                    hm1);
-
-        }
+        tc.listDirectory(new File(testFolderPath
+                + prop.getValueFromProperty("TESTCASE_FOLDER")), "",hm1, "csv", absolute);
         System.out.println(hm1);
         try {
             tc.classGenerator(hm1,template);
