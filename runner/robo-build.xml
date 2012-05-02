@@ -226,5 +226,35 @@
 	<target name="-sign">
 		<signjar jar="${test.app.unsigned}" signedjar="${test.app.signed}" keystore="${key.store}" storepass="${key.store.password}" alias="${key.alias}" keypass="${key.alias.password}" verbose="false" />
 	</target>
+	<target name="robo-junit-report" description="Get the junit report from emulator and generate report for it.">
+		<delete dir="${REPORT}/Junit" />
+						<mkdir dir="${REPORT}/Junit" />
+		<echo>Installing application under test apk onto default emulator or device...</echo>
+		<!--<exec executable="${env.ANDROID_HOME}/platform-tools/adb" failonerror="true">
+			<arg line="${adb.device.arg}" />
+			<arg value="pull" />
+			<arg value="/data/data/${tested.package_name}/files/junit-report.xml" />
+			<arg path="." />
+		</exec>
+			<path id="xslt-classpath">
+						<fileset dir="${LIB}">
+							<include name="SaxonLiaison.jar"/>
+							<include name="saxon-8.7.jar"/>
+						</fileset>
+				</path>		
+		<xslt in="junit-report.xml" style="junit/junit-noframes.xsl" out="${REPORT}/Junit/index.html" classpathref="xslt-classpath" processor="SaxonLiaison">
+					
+				</xslt>
+		-->
+		<junitreport todir="${REPORT}/Junit">
+							<fileset dir="${basedir}">
+								<include name="junit-report.xml" />
+							</fileset>
+
+							<report format="noframes" styledir="junit" todir="${REPORT}/Junit" />
+						</junitreport>
+	
+
+	</target>
 
 </project>
