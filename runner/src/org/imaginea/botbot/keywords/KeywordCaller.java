@@ -1,13 +1,14 @@
-package org.selenium.androframework.keywords;
+package org.imaginea.botbot.keywords;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import junit.framework.Assert;
 
-import org.selenium.androframework.api.DefaultProperties;
-import org.selenium.androframework.common.Command;
-import org.selenium.androframework.common.Prefrences;
+import org.imaginea.botbot.api.DefaultProperties;
+import org.imaginea.botbot.common.Command;
+import org.imaginea.botbot.common.Prefrences;
+
 import com.google.android.testing.nativedriver.client.AndroidNativeDriver;
 import com.jayway.android.robotium.solo.Solo;
 

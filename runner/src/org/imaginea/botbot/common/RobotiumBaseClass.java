@@ -1,4 +1,4 @@
-package org.selenium.androframework.common;
+package org.imaginea.botbot.common;
 
 import java.io.IOException;
 import java.io.InputStream;

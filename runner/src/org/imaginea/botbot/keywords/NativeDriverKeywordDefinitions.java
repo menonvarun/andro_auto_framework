@@ -1,13 +1,13 @@
-package org.selenium.androframework.keywords;
+package org.imaginea.botbot.keywords;
 
 import java.util.Arrays;
 import java.util.List;
 
+import org.imaginea.botbot.api.IdentifyByType;
+import org.imaginea.botbot.api.UsefulFunctions;
+import org.imaginea.botbot.common.Command;
+import org.imaginea.botbot.common.Prefrences;
 import org.openqa.selenium.WebElement;
-import org.selenium.androframework.api.IdentifyByType;
-import org.selenium.androframework.api.UsefulFunctions;
-import org.selenium.androframework.common.Command;
-import org.selenium.androframework.common.Prefrences;
 //import org.sikuli.script.FindFailed;
 //import org.sikuli.script.Screen;
 import org.testng.Assert;

@@ -3,6 +3,7 @@
 	<import file="robo-build.xml"/>
 	<property name="RELEASE_ROOT" value="." />
 	<property environment="env"/> 
+	<property name="BASE_PACKAGE" value="org.imaginea.botbot" />
 	<property name="SRC" value="${RELEASE_ROOT}/src" />
 	<property name="LIB" value="${RELEASE_ROOT}/lib" />
 	<property name="BIN" value="${RELEASE_ROOT}/bin1" />
@@ -37,10 +38,11 @@
 			</classpath>
 		</javac>
 	</target>
-	<target name="generate-java-code" depends="compile">
+	<target name="generate-java-code">
 		<delete dir="${TESTPACKAGE}" />
 		<mkdir dir="${TESTPACKAGE}" />
-		<java classname="org.selenium.androframework.common.TestCaseGenerator" failonerror="true" classpathref="test.classpath">
+		<antcall target="compile"/>
+		<java classname="${BASE_PACKAGE}.common.TestCaseGenerator" failonerror="true" classpathref="test.classpath">
 		</java>
 	</target>
 	<taskdef resource="testngtasks" classpath="${LIB}/testng-6.1.1.jar" />

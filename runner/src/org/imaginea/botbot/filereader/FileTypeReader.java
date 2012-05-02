@@ -1,4 +1,4 @@
-package org.selenium.androframework.filereader;
+package org.imaginea.botbot.filereader;
 
 import java.io.File;
 import java.util.ArrayList;
