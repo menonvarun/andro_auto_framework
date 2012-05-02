@@ -18,7 +18,7 @@ public class TestCaseGenerator {
     //private static String baseFolder=new File("runner").getPath()+File.separatorChar;
     public void listDirectory(File f, String directoryName, HashMap<String, ArrayList<String>> fileList,final String fileType, final boolean absolute) {
         char pathSeparator=File.separatorChar;
-        String testcaseFolder=baseFolder+"testcases"+pathSeparator;
+        String testcaseFolder=getPath(new File(baseFolder+"testcases"+pathSeparator),absolute);
         File[] listOfFiles = f.listFiles();
 
         if (directoryName.equalsIgnoreCase("") && f.isDirectory()) {
@@ -72,12 +72,13 @@ public class TestCaseGenerator {
     }
     
     private String filterPath(String fPath,boolean absolute){
+    	String path;
     	if(absolute){
-        	fPath.replace("\\", "\\\\");
+    		path=fPath.replace("\\", "\\\\");
         }else{
-        	fPath.replace("\\", "/");
+        	path=fPath.replace("\\", "/");
         }
-    	return fPath;
+    	return path;
     }
     
     private String getDirectoryName(String path,String testFolder){
@@ -100,7 +101,7 @@ public class TestCaseGenerator {
             }
             directoryName = directoryName.substring(1);
         } else {
-            directoryName = testFolder.split(path)[1];
+            directoryName = testFolder.split(path+File.separatorChar)[1];
         }
         return directoryName;
     }
