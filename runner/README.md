@@ -49,6 +49,7 @@ https://github.com/Imaginea/bot-bot/downloads
 	- TEST_APK_FILENAME -> Apk file path of the application that needs to be tested.
 	- APP_PACKAGE -> The app package name.
 	- DEFAULT_ACTIVITY -> Default lanch activity
+ 	- ANDROID_VERSION -> The version of the android platform that you had downloaded using android sdk. This can be found out by going to the platforms under your **Android SDK** installation directory.
  	- key.store -> path to your keystore file to be used for signing the andorid application. Once you had installed Androdi SDK and configured a simulator this key store file will be automatically generated in your user home directory under *android* fodler.
 	- key.store.password -> password of your keystore
 	- key.alias -> Alias for you keystore file
