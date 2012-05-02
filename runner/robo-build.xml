@@ -55,7 +55,7 @@
 	</path>
 
 	<path id="android.target.classpath">
-		<fileset dir="${env.ANDROID_HOME}/platforms/android-8/" includes="*.jar" />
+		<fileset dir="${env.ANDROID_HOME}/platforms/${ANDROID_VERSION}/" includes="*.jar" />
 	</path>
 
 	<target name="robo-test" description="Run test features" depends="package">
