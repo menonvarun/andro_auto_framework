@@ -1,0 +1,50 @@
+import java.util.HashMap;
+import org.imaginea.botbot.common.AndroFrameworkExecutor;
+import org.imaginea.botbot.common.AndroFrameworkExecutorDataDriven;
+import org.imaginea.botbot.common.DataDrivenTestCase;
+import org.imaginea.botbot.utility.DataDrivenDataGenerator;
+import android.util.Log;
+import junit.framework.Test;
+import junit.framework.TestSuite;
+
+public class TestClassName extends DataDrivenTestCase {
+	HashMap<String, String> testCaseData;
+
+	public TestClassName() {
+		super();
+	}
+
+	public TestClassName(HashMap<String, String> testCaseData, int count) {
+		super();
+		this.testCaseData = testCaseData;
+		this.setName("tempFunction");
+		this.setCustomTestName("test" + count);
+	}
+
+	public static Test suite() {		
+		TestSuite suite = new TestSuite();
+
+		DataDrivenDataGenerator dataGenerator = new DataDrivenDataGenerator(
+				"dataFile");
+		int dataCount = dataGenerator.getNumberOfRows();
+
+		for (int tempCount = 1; tempCount <= dataCount; tempCount++) {
+			suite.addTest(new TestClassName(dataGenerator
+					.getHashMapForRow(tempCount), tempCount));
+		}
+
+		return suite;
+
+	}
+
+	public void tempFunction() {
+		
+		AndroFrameworkExecutorDataDriven afe = new AndroFrameworkExecutorDataDriven(prefrences);
+					
+			afe.androExecutor(
+					getFile("filePath"),
+					testCaseData);
+		
+	}
+
+}
