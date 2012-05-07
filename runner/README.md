@@ -123,7 +123,7 @@ Steps and conventions to be followed for data-driven tests:
 
 4. Data files (_data.csv) should have first row as identifiers saperated by commas and other rows as set of data saperated by comma(in same order as identifiers). Each row is taken as data for a test case.
 
-5. For example see datadriven folder present in testcases/wordpress/datadriven 
+5. For sample test case with datadriven approach see createNewPost_datadriven.csv and createNewPost_data.csv in datadriven folder present in testcases/wordpress/datadriven 
 
 
 ------------------
