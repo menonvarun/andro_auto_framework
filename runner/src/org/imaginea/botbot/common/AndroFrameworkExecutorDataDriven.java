@@ -29,7 +29,7 @@ public class AndroFrameworkExecutorDataDriven extends AndroFrameworkExecutor{
 			this.execute(testData);
 		}
 		
-		//For Data driven test cases executing test cases with putting data in paramters. 
+		//For Data driven test cases executing test cases with putting data in parameters. 
 		
 		private void execute(HashMap<String, String> testData){
 			Log.e("Keys", testData.keySet().toString());
@@ -43,7 +43,8 @@ public class AndroFrameworkExecutorDataDriven extends AndroFrameworkExecutor{
 				}else if(row.length==2 && row[1]==""){
 					parameters=new String[0];
 				}else{
-					for(int count=0;count<row.length;count++)
+					//Skipping Command check
+					for(int count=1;count<row.length;count++)
 					{
 						if(row[count].startsWith("$"))
 						{				

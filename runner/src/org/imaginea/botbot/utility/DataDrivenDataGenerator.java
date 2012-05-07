@@ -16,17 +16,17 @@ public class DataDrivenDataGenerator {
 	String[] keySet = null;
 	TestCSVReader csvReader = null;
 
-	static Context targetContext;
+	static Context context;
 
-	public static void setTargetContext(Context targetContext) {
-		DataDrivenDataGenerator.targetContext = targetContext;
+	public static void setContext(Context context) {
+		DataDrivenDataGenerator.context = context;
 	}
 
 	public DataDrivenDataGenerator(String csvFilePath) {
 		this.csvFilePath = csvFilePath;
 		try {
-			Log.e("context", targetContext.getPackageName());
-			Resources res = targetContext.getResources();
+			Log.e("context", context.getPackageName());
+			Resources res = context.getResources();
 
 			AssetManager asset = res.getAssets();
 			csvReader = new TestCSVReader(asset.open(csvFilePath));

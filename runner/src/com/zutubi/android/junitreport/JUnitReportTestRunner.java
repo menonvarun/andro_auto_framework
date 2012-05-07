@@ -144,7 +144,7 @@ public class JUnitReportTestRunner extends InstrumentationTestRunner {
 	/** you can subclass and override this if you want to use a different TestRunner */
 	protected AndroidTestRunner makeAndroidTestRunner() {
 		//setting context so data generator can read files from assets
-		DataDrivenDataGenerator.setTargetContext(getContext());
+		DataDrivenDataGenerator.setContext(getContext());
 		return new BotBotTestRunner(getTargetContext());
 	}
 	
