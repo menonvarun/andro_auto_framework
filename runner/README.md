@@ -121,7 +121,7 @@ Steps and conventions to be followed for data-driven tests:
 
 3. Values which are to be provided from data.csv at run time should start with $ followed by identifier which would be present in data.csv eg. $title
 
-4. Data files (_data.csv) files should have first row as identifiers saperated by commas and other rows as set of data saperated by comma(in same order as identifiers). Each row is taken as data for a test case.
+4. Data files (_data.csv) should have first row as identifiers saperated by commas and other rows as set of data saperated by comma(in same order as identifiers). Each row is taken as data for a test case.
 
 5. For example see datadriven folder present in testcases/wordpress/datadriven 
 
