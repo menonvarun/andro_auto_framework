@@ -4,8 +4,9 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
-
 
 import au.com.bytecode.opencsv.CSVReader;
 
@@ -14,12 +15,32 @@ public class TestCSVReader {
 	List<String[]> rows=null;
 	public TestCSVReader(String filePath) throws Exception{
 		reader = new CSVReader((new FileReader(filePath)),',');
-		rows=reader.readAll();
+		List<String[]> rowsTemp = reader.readAll();
+		rows = new ArrayList<String[]>();
+		Iterator<String[]> rowsIterator = rowsTemp.iterator();
+		// handling empty lines from csv by adding only non-empty lines to rows
+		while (rowsIterator.hasNext()) {
+			String tempList[] = rowsIterator.next();
+			if (!(tempList.length == 1 && tempList[0].equals(""))) {
+				rows.add(tempList);
+			}
+		}
+		
 	}
 	
 	public TestCSVReader(InputStream ipPath) throws Exception{
-		reader = new CSVReader(new InputStreamReader(ipPath),',');
-		rows=reader.readAll();
+		reader = new CSVReader(new InputStreamReader(ipPath),',');	
+		List<String[]> rowsTemp = reader.readAll();
+		rows = new ArrayList<String[]>();
+		Iterator<String[]> rowsIterator = rowsTemp.iterator();
+		// handling empty lines from csv by adding only non-empty lines to rows
+		while (rowsIterator.hasNext()) {
+			String tempList[] = rowsIterator.next();
+			if (!(tempList.length == 1 && tempList[0].equals(""))) {
+				rows.add(tempList);
+			}
+		}
+		
 	}
 	
 	public String getData(int row,int column){
