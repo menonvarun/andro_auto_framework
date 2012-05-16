@@ -41,8 +41,11 @@ public class DataDrivenDataGenerator {
 
 	public HashMap<String, String> getHashMapForRow(int rowNumber) {
 		HashMap<String, String> data = new HashMap<String, String>();
-		for (int count = 0; count < keySet.length; count++) {
-			data.put(keySet[count], csvReader.getData(rowNumber, count));
+		//setting test case name by taking the first parameter in the row
+		data.put("TestCaseName", csvReader.getData(rowNumber, 0));
+		//creating hashmap with identifiers as keys and data in parameters as values 
+		for (int count = 1; count < keySet.length+1; count++) {
+			data.put(keySet[count-1], csvReader.getData(rowNumber, count));
 		}
 		return data;
 

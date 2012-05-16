@@ -18,7 +18,11 @@ public class TestClassName extends DataDrivenTestCase {
 		super();
 		this.testCaseData = testCaseData;
 		this.setName("tempFunction");
-		this.setCustomTestName("test" + count);
+		if (testCaseData.get("TestCaseName").equals("")) {
+			this.setCustomTestName("TestClassName" + count);
+		} else {
+			this.setCustomTestName(testCaseData.get("TestCaseName"));
+		}
 	}
 
 	public static Test suite() {		

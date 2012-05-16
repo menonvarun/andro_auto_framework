@@ -3,7 +3,6 @@ checklocatorpresent,dashboard_newpost_btn
 clickbyid,dashboard_newpost_btn
 entertext,title,$title
 entertext,postContent,$content
-clickback
 clickspinner,status,Publish
 clickbyid,postFormat
 scrollup,10

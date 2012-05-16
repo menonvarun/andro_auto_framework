@@ -32,7 +32,6 @@ public class AndroFrameworkExecutorDataDriven extends AndroFrameworkExecutor{
 		//For Data driven test cases executing test cases with putting data in parameters. 
 		
 		private void execute(HashMap<String, String> testData){
-			Log.e("Keys", testData.keySet().toString());
 			String[] parameters;
 			int rows = reader.getLines();
 			for (int i = 1; i < rows; i++) {
@@ -44,23 +43,31 @@ public class AndroFrameworkExecutorDataDriven extends AndroFrameworkExecutor{
 					parameters=new String[0];
 				}else{
 					//Skipping Command check
-					for(int count=1;count<row.length;count++)
-					{
-						if(row[count].startsWith("$"))
-						{				
-							Log.e("Parameters",row[count].substring(1));
-							row[count]=testData.get(row[count].substring(1));
-							
-						
+				for (int count = 1; count < row.length; count++) {
+					//Checking for $ sign so as to find value for the identifier 
+					//Replacing identifier from data file if not present failing the case
+					if (row[count].startsWith("$")) {
+						if (testData.keySet().contains(row[count].substring(1))) {
+							row[count] = testData.get(row[count].substring(1));
+						} else {
+							Log.e("In side null ", "Insude null");
+							Assert.fail("Unable to find value for \""
+									+ row[count].substring(1)
+									+ "\" Please recheck your indentifiers in the data file");
 						}
+
 					}
+				}
 					parameters=new String[row.length-1];
 					System.arraycopy(row, 1, parameters, 0, row.length-1);
 				}
 				
+				
 				command.setName(row[0]);
-				command.setParameters(parameters);
+				command.setParameters(parameters);				
 				kc.execute(command);
+				
+				
 			}
 		}
 
