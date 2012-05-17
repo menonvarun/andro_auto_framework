@@ -28,6 +28,7 @@ import junit.framework.TestSuite;
 
 import org.imaginea.botbot.common.BotBotTestRunner;
 import org.imaginea.botbot.common.DataDrivenTestCase;
+import org.imaginea.botbot.utility.DataDrivenDataGenerator;
 
 import dalvik.system.DexFile;
 import dalvik.system.PathClassLoader;
@@ -142,6 +143,8 @@ public class JUnitReportTestRunner extends InstrumentationTestRunner {
 
 	/** you can subclass and override this if you want to use a different TestRunner */
 	protected AndroidTestRunner makeAndroidTestRunner() {
+		//setting context so data generator can read files from assets
+		DataDrivenDataGenerator.setContext(getContext());
 		return new BotBotTestRunner(getTargetContext());
 	}
 	

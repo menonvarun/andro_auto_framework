@@ -55,7 +55,10 @@
 	</path>
 
 	<path id="android.target.classpath">
+
 		<fileset dir="${env.ANDROID_HOME}/platforms/${ANDROID_VERSION}/" includes="*.jar" />
+
+
 	</path>
 
 	<target name="robo-test" description="Run test features" depends="package">
@@ -112,12 +115,14 @@
 	</target>
 
 	<target name="-prepare.testserver" description="Makes sure the testserver matches the tested application by looking at its manifest file">
+		<property file="resources/datadriven.properties" />
 		<replace file="${staging.dir}/src/${BASE_PACKAGE_FOLDER}/common/RobotiumBaseClass.java" token="#APP_TEST_PACKAGE#" value="${tested.package_name}" />
 
 		<replace file="${staging.dir}/src/${BASE_PACKAGE_FOLDER}/common/RobotiumBaseClass.java" token="#APP_MAIN_ACTIVITY_CLASS#" value="${tested.main_activity}" />
 		<replace file="${staging.dir}/src/${BASE_PACKAGE_FOLDER}/keywords/KeywordCaller.java" token="#FRAMEWORK#" value="${FRAMEWORK}" />
-		<replace file="${staging.dir}/src/${BASE_PACKAGE_FOLDER}/common/BotBotTestRunner.java" token="#DATA_DRIVEN_TESTS#" value="${DATA_DRIVEN_TESTS}" />
+		<replace file="${staging.dir}/src/${BASE_PACKAGE_FOLDER}/common/BotBotTestRunner.java" token="#DATA_DRIVEN_TESTS#" value="${DATA_CLASSES}" />
 		<replace file="${staging.dir}/src/${BASE_PACKAGE_FOLDER}/common/BotBotTestRunner.java" token="#APP_TEST_PACKAGE#" value="${tested.package_name}" />
+		
 		<exec executable="${env.ANDROID_HOME}/platform-tools/aapt" failonerror="true" output="${staging.dir}/assets/ids.txt">
 			<arg value="dump" />
 			<arg value="resources" />

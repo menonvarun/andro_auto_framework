@@ -11,10 +11,13 @@ import junit.framework.Assert;
 
 import org.imaginea.botbot.api.DefaultProperties;
 
+
+
 public class TestCaseGenerator {
 
     HashMap<String, ArrayList<String>> hm = new HashMap<String, ArrayList<String>>();
     private static String baseFolder="";
+    private String dataDrivenClasses = "";
     //private static String baseFolder=new File("runner").getPath()+File.separatorChar;
     public void listDirectory(File f, String directoryName, HashMap<String, ArrayList<String>> fileList,final String fileType, final boolean absolute) {
         char pathSeparator=File.separatorChar;
@@ -120,6 +123,63 @@ public class TestCaseGenerator {
             String javaClassFile = new File(packagePath).getName();
             String javaClassName = javaClassFile.substring(0, 1).toUpperCase()
                     + javaClassFile.substring(1);
+            
+            //checking if folder name is datadriven 
+			if (javaClassFile.equalsIgnoreCase("datadriven")&&template.contentEquals("RobotiumTemplate")) {
+				try {
+					packagePath = packagePath.substring(0,
+							packagePath.lastIndexOf(pathSeparator));
+				} catch (StringIndexOutOfBoundsException e) {
+					System.out.println("Exception out of bounds");
+					packagePath = "";
+				}
+				//creating package folder 
+				new File(testSource + packagePath + pathSeparator
+						+ javaClassFile).mkdirs();
+				
+				//For iterating through classes 
+				
+				ArrayList<String> ar = hm.get(classPath);
+				
+				
+
+				Iterator<String> dataDrivenIterator = ar.iterator();
+				while (dataDrivenIterator.hasNext()) {
+					String testFilePath = dataDrivenIterator.next();
+					String fileName = new File(testFilePath).getName();
+					fileName = fileName.substring(0, fileName.indexOf(".csv"));
+					
+					//Creating java classes for data driven test cases & ignoring other files 
+					if (fileName.endsWith("_datadriven")) {
+						String dataDrivenJavaFileName = fileName.replace(
+								"_datadriven", "");
+						dataDrivenJavaFileName = dataDrivenJavaFileName
+								.substring(0, 1).toUpperCase()
+								+ dataDrivenJavaFileName.substring(1);
+						Writer output = new BufferedWriter(new FileWriter(
+								testSource + packagePath + pathSeparator
+										+ "datadriven" + pathSeparator
+										+ dataDrivenJavaFileName + ".java"));
+						String packageString = packagePath + pathSeparator
+								+ "datadriven";
+						dataDrivenClassWriter(dataDrivenJavaFileName, output,
+								"RobotiumDataDrivenTemplate", testFilePath, packageString);
+						dataDrivenClasses += "test."
+								+ packageString
+										.replace(pathSeparator + "", ".")
+								+ "."+dataDrivenJavaFileName + ",";
+						output.close();
+
+					}
+
+				}
+				
+				
+
+			}
+            
+            //Java class generation for non-datadriven cases
+            else {
             try{
             packagePath = packagePath
                     .substring(0, packagePath.lastIndexOf(pathSeparator));}
@@ -135,11 +195,58 @@ public class TestCaseGenerator {
 
             classWriter(classPath, ar, output,template);
             output.close();
+            }
         }
 
     }
+    
+    //Class writer for data driven csv
+    private void dataDrivenClassWriter(String fileName, Writer output,
+			String template,String testFilePath,String packagePath) {
+    	
+    	try{
+    	char pathSeparator=File.separatorChar;
+    	FileInputStream fstream;
+    	String resourcesPath=baseFolder+"resources"+pathSeparator;
+    	fstream = new FileInputStream(resourcesPath+template);
+        DataInputStream in = new DataInputStream(fstream);
+        BufferedReader br = new BufferedReader(new InputStreamReader(in));
+        boolean flag = false;
+        String importString=packagePath.replace(pathSeparator+"", ".");
+        String javaClass ="package test."+importString+";\n";
+        String tempString="";
+        while ((tempString = br.readLine()) != null) {
+            if (tempString.contains("TestClassName")){
+            		javaClass+=tempString.replace("TestClassName", fileName)+"\n";
+            }
+            else if (tempString.contains("filePath")){
+        		javaClass+=tempString.replace("filePath", testFilePath)+"\n";
+        		
+            }
+            else if (tempString.contains("dataFile")){
+            	String dataFile=testFilePath.substring(0,testFilePath.indexOf("_datadriven.csv"));
+            
+            	javaClass+=tempString.replace("dataFile", dataFile+"_data.csv")+"\n";
+            }
+            else{
+            	javaClass+=tempString+"\n";
+            }
 
-    public static void main(String[] args) {
+
+        }
+       
+        output.write(javaClass);
+    	}
+    	catch(IOException e) {
+    		
+    		System.out.println("Exception  "+e);
+    		
+    	}
+    	
+		
+	}
+
+	public static void main(String[] args) {
         TestCaseGenerator tc = new TestCaseGenerator();
         HashMap<String, ArrayList<String>> hm1 = new HashMap<String, ArrayList<String>>();
         DefaultProperties prop = DefaultProperties.getDefaultProperty();
@@ -162,6 +269,10 @@ public class TestCaseGenerator {
         System.out.println(hm1);
         try {
             tc.classGenerator(hm1,template);
+            //Creating a properties file specifying data driven classes 
+            Writer dataDrivenPropertiesWriter = new BufferedWriter(new FileWriter(baseFolder+"resources"+pathSeparator+"datadriven.properties"));
+			dataDrivenPropertiesWriter.write("DATA_CLASSES="+tc.dataDrivenClasses);
+			dataDrivenPropertiesWriter.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
