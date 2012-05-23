@@ -15,8 +15,6 @@ public class WebViewHandler {
 	// Clicking on link in web view
 	public static void clickOnLinkInWebView(WebView browser, String link,
 			Solo solo) {
-		Log.e("click", "click inside webview");
-		solo.sleep(3000);
 		browser.getSettings().setJavaScriptEnabled(true);
 
 		// Javascript to click on anchor link in web view
@@ -65,7 +63,6 @@ public class WebViewHandler {
 		Iterator<View> iterator = listViews.iterator();
 		while (iterator.hasNext()) {
 			View view = iterator.next();
-			Log.e("out", view.getClass().getName());
 			if (view instanceof WebView) {
 				return (WebView) view;
 			}
@@ -109,7 +106,6 @@ public class WebViewHandler {
 		}
 
 		void setFinalText(String text) {
-			Log.e("setText", text);
 			finalText = text;
 			isTextPresent = false;
 		}
