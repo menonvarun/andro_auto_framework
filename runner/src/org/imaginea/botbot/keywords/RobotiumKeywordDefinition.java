@@ -9,10 +9,13 @@ import junit.framework.Assert;
 
 import org.imaginea.botbot.common.Command;
 import org.imaginea.botbot.common.Prefrences;
+import org.imaginea.botbot.utility.WebViewHandler;
 
 import android.content.Context;
+import android.os.SystemClock;
 import android.util.Log;
 import android.view.View;
+import android.webkit.WebView;
 import android.widget.EditText;
 import android.widget.RadioButton;
 
@@ -91,7 +94,15 @@ public class RobotiumKeywordDefinition extends BaseKeywordDefinitions implements
 	@Override
 	public void assertpartialtextpresent(String text) {
 		boolean found = solo.searchText(text);
-		Assert.assertTrue("Unable to find button with the said text.",found);
+		// checking for text in web view
+		if (!found) {
+			if (WebViewHandler.getInstanceOfWebView(solo) != null) {
+				WebView browser = WebViewHandler.getInstanceOfWebView(solo);
+				found = WebViewHandler.isTextPresentInWebView(browser, text,
+						solo);				
+			}
+		}
+		Assert.assertTrue("Unable to find text." + text, found);
 	}
 
 	@Override
@@ -115,8 +126,16 @@ public class RobotiumKeywordDefinition extends BaseKeywordDefinitions implements
 
 	@Override
 	public void asserttextpresent(String text) {
-		boolean found =solo.searchText(text);
-		Assert.assertTrue("Unable to find said text: "+text,found);
+		boolean found =solo.searchText(text);		
+		// checking text in webview
+		if (!found) {
+			if (WebViewHandler.getInstanceOfWebView(solo) != null) {
+				WebView browser = WebViewHandler.getInstanceOfWebView(solo);
+				found = WebViewHandler.isTextPresentInWebView(browser, text,
+						solo);				
+			}
+		}
+		Assert.assertTrue("Unable to find said text: "+text,found);		
 	}
 
 	@Override
@@ -154,6 +173,15 @@ public class RobotiumKeywordDefinition extends BaseKeywordDefinitions implements
 	@Override
 	public void checktextpresent(String text) {
 		boolean found =solo.searchText(text);
+		// checking for text in web view
+		if (!found) {
+			if (WebViewHandler.getInstanceOfWebView(solo) != null) {
+				WebView browser = WebViewHandler.getInstanceOfWebView(solo);
+				found = WebViewHandler.isTextPresentInWebView(browser, text,
+						solo);
+			}
+
+		}
 		if (!found) {
 			System.out.println("Unable to find said text: "
 					+ text + ". Continuing with the execution.");
@@ -210,7 +238,20 @@ public class RobotiumKeywordDefinition extends BaseKeywordDefinitions implements
 
 	@Override
 	public void clicktext(String text) {
-		solo.clickOnText(text);
+		try {
+			solo.clickOnText(text);
+		}
+
+		// Trying to click text in web view
+		catch (junit.framework.AssertionFailedError e) {
+			if (WebViewHandler.getInstanceOfWebView(solo) != null) {
+				WebView browser = WebViewHandler.getInstanceOfWebView(solo);
+				// ClickOnLinkInWebView throws exception if unable to click
+				WebViewHandler.clickOnLinkInWebView(browser, text, solo);
+			} else {
+				throw e;
+			}
+		}
 	}
 
 	@Override
