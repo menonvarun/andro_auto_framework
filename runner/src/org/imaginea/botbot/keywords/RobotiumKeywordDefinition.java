@@ -12,7 +12,6 @@ import org.imaginea.botbot.common.Prefrences;
 import org.imaginea.botbot.utility.WebViewHandler;
 
 import android.content.Context;
-import android.os.SystemClock;
 import android.util.Log;
 import android.view.View;
 import android.webkit.WebView;
