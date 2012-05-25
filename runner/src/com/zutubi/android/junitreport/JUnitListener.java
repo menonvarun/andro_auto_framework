@@ -17,6 +17,7 @@
 package com.zutubi.android.junitreport;
 
 import android.content.Context;
+import android.os.Environment;
 import android.util.Log;
 import android.util.Xml;
 
@@ -109,7 +110,7 @@ public class JUnitListener implements TestListener {
     private XmlSerializer mSerializer;
     private String mCurrentSuite;
     private HashMap<String, HashMap<String, TestKeeper>> suiteMap=new HashMap<String, HashMap<String,TestKeeper>>();
-    private HashMap<String,SuiteKeeper> suiteDetails= new HashMap<String, JUnitListener.SuiteKeeper>();
+    private HashMap<String,SuiteKeeper> suiteDetails= new HashMap<String, SuiteKeeper>();
     // simple time tracking
     private boolean mTimeAlreadyWritten = false;
     private long mTestStartTime;
@@ -161,14 +162,22 @@ public class JUnitListener implements TestListener {
     	}else{
     		suiteTests=new HashMap<String, TestKeeper>();
     	}
+    	if(suiteDetails.containsKey(suiteName)){
+    		SuiteKeeper sKeeper= suiteDetails.get(suiteName);
+    		sKeeper.setEndTime(testKeeper.getEndTime());
+    		suiteDetails.put(suiteName, sKeeper);
+    	}
     	suiteTests.put(getTestName(test), testKeeper);
+    	suiteMap.put(suiteName, suiteTests);
     }
     
     private void checkSuiteDetails(Test test){
     	TestCase testcase=(TestCase)test;
     	String suiteName=testcase.getClass().getName();
     	if(!suiteDetails.containsKey(suiteName)){
-    		suiteDetails.put(suiteName, new SuiteKeeper());
+    		SuiteKeeper sKeeper= new SuiteKeeper();
+    		sKeeper.setStartTime(System.currentTimeMillis());
+    		suiteDetails.put(suiteName, sKeeper);
     	}
     }
     
@@ -197,15 +206,14 @@ public class JUnitListener implements TestListener {
 		}
 		return testName;
 	}
-	private void createNewSuite(){
-		
-	}
-    private void checkForNewSuite(String suiteName) throws IOException {
-        if (mCurrentSuite == null || !mCurrentSuite.equals(suiteName)) {
-            if (mCurrentSuite != null) {
+
+	private void checkForNewSuite(String suiteName) throws IOException {
+    	if (mCurrentSuite == null || !mCurrentSuite.equals(suiteName)) {
+        	if (mCurrentSuite != null) {
+        		System.out.println(mCurrentSuite.toString());
                 if (mMultiFile) {
                     closeSuite();
-                } else {
+                } else if(mSerializer!=null){
                     mSerializer.endTag("", TAG_SUITE);
                 }
             }
@@ -217,8 +225,22 @@ public class JUnitListener implements TestListener {
             mCurrentSuite = suiteName;
         }
     }
-
+    private boolean deleteDir(File dir) {
+        if (dir.isDirectory()) {
+            String[] children = dir.list();
+            for (int i=0; i<children.length; i++) {
+                boolean success = deleteDir(new File(dir, children[i]));
+                if (!success) {
+                    return false;
+                }
+            }
+        }
+    
+        // The directory is now empty so delete it
+        return dir.delete();
+    }
     private void openIfRequired(String suiteName) throws IOException {
+    	String state = Environment.getExternalStorageState();
         if (mSerializer == null) {
             String fileName = mReportFile;
             if (mMultiFile) {
@@ -226,9 +248,10 @@ public class JUnitListener implements TestListener {
             }
 
             if (mReportDir == null) {
-                if (mContext.getFilesDir() != null) {
-                    mOutputStream = mContext.openFileOutput(fileName, 0);
-                } else {
+                if(Environment.MEDIA_MOUNTED.equals(state)&&!Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)){
+                	File f = mContext.getExternalFilesDir("junit");
+                	mOutputStream=new FileOutputStream(new File(f,fileName));
+                }else {
                     mOutputStream = mTargetContext.openFileOutput(fileName, 0);
                 }
             } else {
@@ -302,6 +325,14 @@ public class JUnitListener implements TestListener {
     }
     public void close(){
 		Iterator<String> suiteIterator = suiteMap.keySet().iterator();
+		String state = Environment.getExternalStorageState();
+		if(Environment.MEDIA_MOUNTED.equals(state)&&!Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)){
+        	File f = mContext.getExternalFilesDir("junit");
+        	if(f.exists()){
+        		deleteDir(f);
+        		f.mkdirs();
+        	}
+		}
 		while (suiteIterator.hasNext()) {
 			try {
 				String suiteName = suiteIterator.next();
@@ -310,8 +341,8 @@ public class JUnitListener implements TestListener {
 				checkForNewSuite(suiteName);
 				addAttribute(ATTRIBUTE_ERRORS, suiteKeeper.getErrorCount());
 				addAttribute(ATTRIBUTE_FAILURES, suiteKeeper.getFailureCount());
-				addAttribute(ATTRIBUTE_NAME, suiteName);
 				addAttribute(ATTRIBUTE_TESTS, String.valueOf(suiteTests.size()));
+				addAttribute(ATTRIBUTE_TIME, String.valueOf(suiteKeeper.getEndTime()-suiteKeeper.getStartTime()));
 				Iterator<String> testIterator=suiteTests.keySet().iterator();
 				while(testIterator.hasNext()){
 					String testName=testIterator.next();
@@ -335,6 +366,7 @@ public class JUnitListener implements TestListener {
 						mSerializer.text(w.toString());
 						mSerializer.endTag("", tag);
 					}
+					mSerializer.endTag("", TAG_CASE);
 					
 				}
 			} catch (IOException e) {
@@ -402,6 +434,22 @@ public class JUnitListener implements TestListener {
 private class SuiteKeeper{
 	private int failureCount=0;
 	private int errorCount=0;
+	private long startTime=0;
+	private long endTime=0;
+	public long getStartTime() {
+		return startTime;
+	}
+	public void setStartTime(long startTime) {
+		this.startTime = startTime;
+	}
+	public long getEndTime() {
+		return endTime;
+	}
+	public void setEndTime(long endTime) {
+		if(this.endTime<endTime){
+			this.endTime = endTime;
+		}
+	}
 	public String getFailureCount() {
 		return String.valueOf(failureCount);
 	}
@@ -414,6 +462,7 @@ private class SuiteKeeper{
 	public void setErrorCount() {
 		errorCount++;
 	}
+	
 }
 }
 
