@@ -1,8 +1,8 @@
 ,,
 checklocatorpresent,dashboard_newpost_btn
 clickbyid,dashboard_newpost_btn
-entertext,title,Test title
-entertext,postContent,Adding the Content
+entertext,title,$title
+entertext,postContent,$content
 clickspinner,status,Publish
 clickbyid,postFormat
 scrollup,10

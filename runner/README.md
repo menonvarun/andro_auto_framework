@@ -49,6 +49,7 @@ https://github.com/Imaginea/bot-bot/downloads
 	- TEST_APK_FILENAME -> Apk file path of the application that needs to be tested.
 	- APP_PACKAGE -> The app package name.
 	- DEFAULT_ACTIVITY -> Default lanch activity
+ 	- ANDROID_VERSION -> The version of the android platform that you had downloaded using android sdk. This can be found out by going to the platforms under your **Android SDK** installation directory.
  	- key.store -> path to your keystore file to be used for signing the andorid application. Once you had installed Androdi SDK and configured a simulator this key store file will be automatically generated in your user home directory under *android* fodler.
 	- key.store.password -> password of your keystore
 	- key.alias -> Alias for you keystore file
@@ -105,6 +106,28 @@ Here the {app package name} needs to be replaced with the name of the package as
 	<pre style="font-family: Helvetica, Arial, FreeSans, san-serif; color: #000000; background-color: #eee;font-size: 15px;border: 1px dashed #999999;line-height: 15px;padding: 5px; overflow: auto; width: 100%"><code>ant</code></pre>
 
 	This will compile your code and execute your test cases. Currently TestNG , Junit & TestNG-xslt report are generated for the test execution.
+
+
+-----------
+##Data-Driven Tests
+
+Currently Data-driven testing is only supported for Robotium platform & data can be provided only from csv files.
+
+Steps and conventions to be followed for data-driven tests:
+
+1. Data-driven tests should be placed under folder named as 'datadriven'.
+
+2. Data-driven test cases should end with '_datadriven.csv' eg. {testcasename}_datadriven.csv and Data files should end with '_data.csv'  
+   eg {testcasename}_data.csv. Note:data file should be named as {testcasename}_data.csv 
+
+3. Values which are to be provided from data.csv at run time should start with $ followed by identifier which would be present in data.csv eg. $title
+
+4. Data files (_data.csv) should have first row as identifiers saperated by commas and other rows as set of data saperated by comma.
+
+5. The first value in the row is considered as testcase name for generation of report, if left blank name of datadriven test case will be considered. Each row is taken as data for a test case.
+
+6. For sample test case with datadriven approach see createNewPost_datadriven.csv and createNewPost_data.csv in datadriven folder present in testcases/wordpress/datadriven 
+
 
 ------------------
 ##Keywords

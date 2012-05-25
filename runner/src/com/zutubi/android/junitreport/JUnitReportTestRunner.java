@@ -28,6 +28,7 @@ import junit.framework.TestSuite;
 
 import org.imaginea.botbot.common.BotBotTestRunner;
 import org.imaginea.botbot.common.DataDrivenTestCase;
+import org.imaginea.botbot.utility.DataDrivenDataGenerator;
 
 import dalvik.system.DexFile;
 import dalvik.system.PathClassLoader;
@@ -114,7 +115,7 @@ public class JUnitReportTestRunner extends InstrumentationTestRunner {
     private String mReportFile;
     private String mReportDir;
     private boolean mFilterTraces = true;
-    private boolean mMultiFile = false;
+    private boolean mMultiFile = true;
 
     @Override
     public void onCreate(Bundle arguments) {
@@ -143,13 +144,15 @@ public class JUnitReportTestRunner extends InstrumentationTestRunner {
 
 	/** you can subclass and override this if you want to use a different TestRunner */
 	protected AndroidTestRunner makeAndroidTestRunner() {
+		//setting context so data generator can read files from assets
+		DataDrivenDataGenerator.setContext(getContext());
 		return new BotBotTestRunner(getTargetContext());
 	}
 	
     @Override
     protected AndroidTestRunner getAndroidTestRunner() {
         AndroidTestRunner runner = makeAndroidTestRunner();
-        mListener = new JUnitReportListener(getContext(), getTargetContext(), mReportFile, mReportDir, mFilterTraces, mMultiFile);
+        mListener = new JUnitReportListener(getContext(), getTargetContext(), "junit-report-$(suite).xml", mReportDir, mFilterTraces, true);
         runner.addTestListener(mListener);
         tstNgListener = new TestngReportListener(getContext(), getTargetContext(), "testng-report.xml", mReportDir, mFilterTraces, mMultiFile);
         runner.addTestListener(tstNgListener);

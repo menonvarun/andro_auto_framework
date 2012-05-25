@@ -55,7 +55,10 @@
 	</path>
 
 	<path id="android.target.classpath">
-		<fileset dir="${env.ANDROID_HOME}/platforms/android-8/" includes="*.jar" />
+
+		<fileset dir="${env.ANDROID_HOME}/platforms/${ANDROID_VERSION}/" includes="*.jar" />
+
+
 	</path>
 
 	<target name="robo-test" description="Run test features" depends="package">
@@ -67,6 +70,7 @@
 			<arg value="-w" />
 			<arg value="${tested.package_name}.test/com.zutubi.android.junitreport.JUnitReportTestRunner" />
 		</exec>
+		<antcall target="-robo-junit-report"/>
 	</target>
 
 
@@ -112,12 +116,14 @@
 	</target>
 
 	<target name="-prepare.testserver" description="Makes sure the testserver matches the tested application by looking at its manifest file">
+		<property file="resources/datadriven.properties" />
 		<replace file="${staging.dir}/src/${BASE_PACKAGE_FOLDER}/common/RobotiumBaseClass.java" token="#APP_TEST_PACKAGE#" value="${tested.package_name}" />
 
 		<replace file="${staging.dir}/src/${BASE_PACKAGE_FOLDER}/common/RobotiumBaseClass.java" token="#APP_MAIN_ACTIVITY_CLASS#" value="${tested.main_activity}" />
 		<replace file="${staging.dir}/src/${BASE_PACKAGE_FOLDER}/keywords/KeywordCaller.java" token="#FRAMEWORK#" value="${FRAMEWORK}" />
-		<replace file="${staging.dir}/src/${BASE_PACKAGE_FOLDER}/common/BotBotTestRunner.java" token="#DATA_DRIVEN_TESTS#" value="${DATA_DRIVEN_TESTS}" />
+		<replace file="${staging.dir}/src/${BASE_PACKAGE_FOLDER}/common/BotBotTestRunner.java" token="#DATA_DRIVEN_TESTS#" value="${DATA_CLASSES}" />
 		<replace file="${staging.dir}/src/${BASE_PACKAGE_FOLDER}/common/BotBotTestRunner.java" token="#APP_TEST_PACKAGE#" value="${tested.package_name}" />
+		
 		<exec executable="${env.ANDROID_HOME}/platform-tools/aapt" failonerror="true" output="${staging.dir}/assets/ids.txt">
 			<arg value="dump" />
 			<arg value="resources" />
@@ -169,6 +175,7 @@
 	<target name="clean" description="clean up">
 		<delete dir="${staging.dir}" />
 		<delete dir="${bin.dir}" />
+		<delete dir="${REPORT}" />
 	</target>
 
 	<target name="-aapt">
@@ -225,6 +232,27 @@
 
 	<target name="-sign">
 		<signjar jar="${test.app.unsigned}" signedjar="${test.app.signed}" keystore="${key.store}" storepass="${key.store.password}" alias="${key.alias}" keypass="${key.alias.password}" verbose="false" />
+	</target>
+	<target name="-robo-junit-report" description="Get the junit report from emulator and generate report for it.">
+		<delete dir="${REPORT}/Junit-report" />
+		<delete dir="${REPORT}/junit" />
+		<mkdir dir="${REPORT}/Junit-report" />
+		<echo>Installing application under test apk onto default emulator or device...</echo>
+		<exec executable="${env.ANDROID_HOME}/platform-tools/adb" failonerror="true">
+			<arg line="${adb.device.arg}" />
+			<arg value="pull" />
+			<arg value="/mnt/sdcard/Android/data/${tested.package_name}.test/files/junit" />
+			<arg path="${REPORT}/junit" />
+		</exec>
+		<junitreport todir="${REPORT}/Junit-report">
+							<fileset dir="${REPORT}/junit">
+								<include name="junit-*.xml" />
+							</fileset>
+
+							<report format="noframes" todir="${REPORT}/Junit-report" />
+						</junitreport>
+	
+		<echo>Junit report succesfully generated at location ${REPORT}/Junit-report </echo>
 	</target>
 
 </project>
