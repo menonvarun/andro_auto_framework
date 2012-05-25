@@ -65,7 +65,7 @@ import java.util.Locale;
  * possible. The report is streamed as the tests run, making it impossible to,
  * e.g. include the case count in a &lt;testsuite&gt; element.
  */
-public class JUnitListener implements TestListener {
+public class JUnitReportListener implements TestListener {
     private static final String LOG_TAG = "JUnitReportListener";
 
     private static final String ENCODING_UTF_8 = "utf-8";
@@ -128,7 +128,7 @@ public class JUnitListener implements TestListener {
      *            framework methods) omitted for clarity
      * @param multiFile if true, use a separate file for each test suite
      */
-    public JUnitListener(Context context, Context targetContext, String reportFile, String reportDir, boolean filterTraces, boolean multiFile) {
+    public JUnitReportListener(Context context, Context targetContext, String reportFile, String reportDir, boolean filterTraces, boolean multiFile) {
         this.mContext = context;
         this.mTargetContext = targetContext;
         this.mReportFile = reportFile;

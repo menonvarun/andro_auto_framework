@@ -110,7 +110,7 @@ public class JUnitReportTestRunner extends InstrumentationTestRunner {
      */
     private static final String DEFAULT_MULTI_REPORT_FILE = "junit-report-$(suite).xml";
 
-    private JUnitListener mListener;
+    private JUnitReportListener mListener;
     private String mReportFile;
     private String mReportDir;
     private boolean mFilterTraces = true;
@@ -151,7 +151,7 @@ public class JUnitReportTestRunner extends InstrumentationTestRunner {
     @Override
     protected AndroidTestRunner getAndroidTestRunner() {
         AndroidTestRunner runner = makeAndroidTestRunner();
-        mListener = new JUnitListener(getContext(), getTargetContext(), "junit-report-$(suite).xml", mReportDir, mFilterTraces, true);
+        mListener = new JUnitReportListener(getContext(), getTargetContext(), "junit-report-$(suite).xml", mReportDir, mFilterTraces, true);
         runner.addTestListener(mListener);
         return runner;
     }
