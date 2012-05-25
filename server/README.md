@@ -53,14 +53,13 @@ java -jar bot-bot-server-standalone.jar
 2. On an servlet supported webserver:
 
 	Bot-bot server can be deployed to any of the servlet container like *Apache Tomcat*, *Jboss*, etc.To deploy the war do the following:
-
 	- Create the war as mentioned in the *Build the war* section.
 	- Copy the war from the target folder under the bot-bot/server to the webapps folder of your serrvlet container.
 	- Start your server.
 	- Access the server using the following URL
+
 	
 	http://&lt;localhost or systemip&gt;:&lt;port&gt;/bot-bot-server/index.html
-
 
 	Note: In case you are deploying the war on a servlet container server. You need update the "SERVER_NAME" under the recorder.properties file in the "recorder" section. The recorder is currently configured to record on the standalone bot-bot server deployment.
 
