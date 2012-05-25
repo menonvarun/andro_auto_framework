@@ -152,9 +152,6 @@ public class RecordSessionResource {
      */
     private void deleteEntity(RecordSession entity) {
         EntityManager em = PersistenceService.getInstance().getEntityManager();
-        if (!entity.getRecordEntries().isEmpty()) {
-            throw new WebApplicationException(new Throwable("Cannot delete entity because records is not empty."));
-        }
         em.remove(entity);
     }
 
