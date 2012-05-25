@@ -75,3 +75,57 @@ tr.newRow{background-color: #FFFF91;}
 .rightFloater{
 	float:right;
 }
+.web_dialog_overlay
+        {
+            position: fixed;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            background: #000000;
+            opacity: .15;
+            filter: alpha(opacity=15);
+            -moz-opacity: .15;
+            z-index: 101;
+            display: none;
+        }
+ .confirm_dialog
+        {
+            display: none;
+            position: fixed;
+            width: 400px;
+            height: 160px;
+            top: 50%;
+            left: 50%;
+            margin-left: -190px;
+            margin-top: -100px;
+            background-color: #ffffff;
+            border: 1px solid #336699;
+            padding: 0px;
+            z-index: 102;
+            font-family: Verdana;
+            font-size: 10pt;
+        }
+        .confirm_dialog_title
+        {
+            border-bottom: solid 2px #336699;
+            background-color: #0064CD;
+            padding: 4px;
+            color: White;
+            font-weight:bold;
+        }
+        .confirm_dialog_title a
+        {
+            color: White;
+            text-decoration: none;
+        }
+	.align_right
+        {
+            text-align: right;
+        }
+
+

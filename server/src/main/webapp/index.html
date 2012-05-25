@@ -40,10 +40,41 @@
 </div>  
 <div id="footer">
 <p>a product of Imaginea</p>
+<div id="overlay" class="web_dialog_overlay"></div>
 </div>
+    <div id="dialog" class="confirm_dialog">
+        <table style="width: 100%; border: 0px;" cellpadding="4" cellspacing="0">
+            <tr>
+                <td class="confirm_dialog_title">Delete Confirmation</td>
+                <td class="confirm_dialog_title align_right">
+                    <a href="#" id="btnClose">Close</a>
+                </td>
+            </tr>
+            <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td colspan="2" style="text-align: center;">
+                    <b>Are you sure you want to delete the session?</br> All the records inside the session will be deleted. </b>
+                </td>
+            </tr>
+            <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td colspan="2" style="text-align: center;">
+                    <input id="btnContinue" type="button" value="Continue" />
+ 		<input id="btnCancel" type="button" value="Cancel" />
+                </td>
+            </tr>
+        </table>
+    </div>
 <script>
 	var maxEntryNo = 0;
 	var prevEntryNo = 0;
+	var deleteSessionAttr=null;
 	$(".holderDiv").css('height', window.innerHeight - 280);
 	function getSessions() {
 		$("#sessionsHolder").show();
@@ -251,16 +282,8 @@
 	});
 			
 	$(".deleteSession").live("click", function(){	
-		var deleteURI = $(this).attr("title");
-		$.ajax({
-			url: deleteURI,
-			type: 'DELETE',            
-			contentType: "application/json",
-			dataType: "json",  
-			success: function(json) {
-				getSessions(); 
-			}
-		});
+		deleteSessionAttr=$(this);	
+		ShowDialog(false);
 	});
 			
 	$(".editRecords").live("click", function(){	
@@ -478,6 +501,60 @@ function rearrangeJSONArray(srcArray) {
 			}
 		}			
 	}
+
+	$("#btnClose").click(function (e)
+            {
+                HideDialog();
+                e.preventDefault();
+            });
+	$("#btnCancel").click(function (e)
+            {
+                HideDialog();
+                e.preventDefault();
+            });
+
+            $("#btnContinue").click(function (e)
+            {
+                var deleteURI = deleteSessionAttr.attr("title");
+		$.ajax({
+			url: deleteURI,
+			type: 'DELETE',            
+			contentType: "application/json",
+			dataType: "json",  
+			success: function(json) {
+				getSessions(); 
+			}
+		});
+                HideDialog();
+                e.preventDefault();
+            });
+
+function ShowDialog(modal)
+        {
+            $("#overlay").show();
+            $("#dialog").fadeIn(300);
+
+            if (modal)
+            {
+                $("#overlay").unbind("click");
+            }
+            else
+            {
+                $("#overlay").click(function (e)
+                {
+                    HideDialog();
+                });
+            }
+        }
+
+        function HideDialog()
+        {
+	    deleteSessionAttr=null;
+            $("#overlay").hide();
+            $("#dialog").fadeOut(300);
+        } 
+
+
 
 function getEntryNoArray(){
 var entryNoArray = new Array();
