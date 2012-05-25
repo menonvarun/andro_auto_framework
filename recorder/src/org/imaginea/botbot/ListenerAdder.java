@@ -23,9 +23,6 @@ public class ListenerAdder {
 	static Set<View> processedView = new HashSet<View>();
 	private static Context context;
 	public void processView(View view) {
-		if(view instanceof Button){
-			System.out.println("found button");
-		}
 		if (!processedView.contains(view)) {
 			if(context==null){
 				context=view.getContext();
