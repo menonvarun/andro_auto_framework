@@ -342,7 +342,8 @@ public class JUnitListener implements TestListener {
 				addAttribute(ATTRIBUTE_ERRORS, suiteKeeper.getErrorCount());
 				addAttribute(ATTRIBUTE_FAILURES, suiteKeeper.getFailureCount());
 				addAttribute(ATTRIBUTE_TESTS, String.valueOf(suiteTests.size()));
-				addAttribute(ATTRIBUTE_TIME, String.valueOf(suiteKeeper.getEndTime()-suiteKeeper.getStartTime()));
+				String suiteTime = String.format(Locale.ENGLISH, "%.3f",(suiteKeeper.getEndTime()- suiteKeeper.getStartTime()) / 1000.);
+				addAttribute(ATTRIBUTE_TIME, suiteTime);
 				Iterator<String> testIterator=suiteTests.keySet().iterator();
 				while(testIterator.hasNext()){
 					String testName=testIterator.next();
