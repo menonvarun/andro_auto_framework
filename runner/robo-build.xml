@@ -71,6 +71,7 @@
 			<arg value="${tested.package_name}.test/com.zutubi.android.junitreport.JUnitReportTestRunner" />
 		</exec>
 		<antcall target="-robo-junit-report"/>
+		<antcall target="-robo-testng-report"/>
 	</target>
 
 
@@ -235,17 +236,17 @@
 	</target>
 	<target name="-robo-junit-report" description="Get the junit report from emulator and generate report for it.">
 		<delete dir="${REPORT}/Junit-report" />
-		<delete dir="${REPORT}/junit" />
+		<delete dir="${REPORT}/junit-xml" />
 		<mkdir dir="${REPORT}/Junit-report" />
-		<echo>Installing application under test apk onto default emulator or device...</echo>
+		<echo>Fetching junit report files from emulator or device...</echo>
 		<exec executable="${env.ANDROID_HOME}/platform-tools/adb" failonerror="true">
 			<arg line="${adb.device.arg}" />
 			<arg value="pull" />
 			<arg value="/mnt/sdcard/Android/data/${tested.package_name}.test/files/junit" />
-			<arg path="${REPORT}/junit" />
+			<arg path="${REPORT}/junit-xml" />
 		</exec>
 		<junitreport todir="${REPORT}/Junit-report">
-							<fileset dir="${REPORT}/junit">
+							<fileset dir="${REPORT}/junit-xml">
 								<include name="junit-*.xml" />
 							</fileset>
 
@@ -254,5 +255,37 @@
 	
 		<echo>Junit report succesfully generated at location ${REPORT}/Junit-report </echo>
 	</target>
+	<target name="-robo-testng-report" >
+			<delete dir="${basedir}/testng-xslt" />
+			<mkdir dir="${basedir}/testng-xslt" />
+		<delete dir="${REPORT}/TestNG-XSLT-report" />
+		<echo>Fetching testng-results file from emulator or device...</echo>
+				<exec executable="${env.ANDROID_HOME}/platform-tools/adb" failonerror="true">
+					<arg line="${adb.device.arg}" />
+					<arg value="pull" />
+					<arg value="/mnt/sdcard/Android/data/${tested.package_name}.test/files/testng" />
+					<arg path="${REPORT}/testng-xml" />
+				</exec>
+			<path id="xslt-classpath">
+					<fileset dir="${LIB}">
+						<include name="SaxonLiaison.jar"/>
+						<include name="saxon-8.7.jar"/>
+					</fileset>
+			</path>		
+			<xslt in="${REPORT}/testng-xml/testng-report.xml" style="${basedir}/testng-results.xsl" out="${basedir}/testng-xslt/index.html" classpathref="xslt-classpath" processor="SaxonLiaison">
+				<param name="testNgXslt.outputDir" expression="${basedir}/testng-xslt/" />
+				<param name="testNgXslt.sortTestCaseLinks" expression="true" />
+				<param name="testNgXslt.testDetailsFilter" expression="FAIL,SKIP,PASS,CONF,BY_CLASS" />
+				<param name="testNgXslt.showRuntimeTotals" expression="true" />
+			</xslt>
+			
+			<mkdir dir="${REPORT}/TestNG-XSLT-report" />
+
+			<copy todir="${REPORT}/TestNG-XSLT-report">
+				<fileset dir="${basedir}/testng-xslt" />
+			</copy>
+			<delete dir="${basedir}/testng-xslt" />
+		<echo>TestNG xslt report succesfully generated at location ${REPORT}/TestNG-XSLT-report </echo>
+		</target>
 
 </project>

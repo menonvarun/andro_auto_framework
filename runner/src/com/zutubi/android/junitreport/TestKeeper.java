@@ -6,7 +6,7 @@ public class TestKeeper {
 	private String testname;
 	private long startTime;
 	private long endTime;
-	private String status;
+	private String status="PASS";
 	private Throwable error;
 	private TestCase test;
 	private boolean isFailed=false;

@@ -154,7 +154,7 @@ public class JUnitReportTestRunner extends InstrumentationTestRunner {
         AndroidTestRunner runner = makeAndroidTestRunner();
         mListener = new JUnitReportListener(getContext(), getTargetContext(), "junit-report-$(suite).xml", mReportDir, mFilterTraces, true);
         runner.addTestListener(mListener);
-        tstNgListener = new TestngReportListener(getContext(), getTargetContext(), "testng-report.xml", mReportDir, mFilterTraces, mMultiFile);
+        tstNgListener = new TestngReportListener(getContext(), getTargetContext(), "testng-report.xml", mReportDir, mFilterTraces, false);
         runner.addTestListener(tstNgListener);
         return runner;
     }
