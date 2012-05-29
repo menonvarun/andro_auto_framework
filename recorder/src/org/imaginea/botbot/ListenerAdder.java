@@ -1,6 +1,7 @@
 package org.imaginea.botbot;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -12,6 +13,7 @@ import android.util.Log;
 import android.view.*;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
@@ -21,7 +23,6 @@ public class ListenerAdder {
 	static Set<View> processedView = new HashSet<View>();
 	private static Context context;
 	public void processView(View view) {
-
 		if (!processedView.contains(view)) {
 			if(context==null){
 				context=view.getContext();
@@ -37,22 +38,33 @@ public class ListenerAdder {
 		}
 
 	}
-
+	
+	//Returns whether Click Listner is added or not
 	public boolean containOnClikListener(View v) {
 		Object temp = null;
 		Class klass = v.getClass();
-
+		//Checking for View Class
 		while (!klass.equals(View.class)) {
 			klass = klass.getSuperclass();
-		}
-
+		}		
 		try {
+			//Checking for mOnClickListner higher Android version do not have this field, handling NoSuchField
 			Field f = klass.getDeclaredField("mOnClickListener");
 			f.setAccessible(true);
 			temp = f.get(v);
 			Log.i("debugger", "Found temp: " + temp.toString());
-		} catch (Exception e) {
+		} catch (NoSuchFieldException e) {
+			try {
+				//Checking for method hasOnClickListners if present
+				Method methodHasOnClickListner=klass.getMethod("hasOnClickListeners");
+				return (Boolean)methodHasOnClickListner.invoke(v, new Object[] {});
+				} catch (Exception exception) {
+					System.out.println("Exception in "+exception);
+				}
 		}
+		catch (IllegalAccessException e) {
+			Log.e("Illegal Access", "Found Excpetion: " + e);
+		}		
 		return temp != null;
 	}
 
@@ -76,7 +88,6 @@ public class ListenerAdder {
 
 	public void addListeners(View view) {
 		boolean containsClick = containOnClikListener(view);
-		// Log.i("debugger", "Found View: " + view);
 		if (containsClick || (view instanceof ImageView)) {
 			processedView.add(view);
 			return;
