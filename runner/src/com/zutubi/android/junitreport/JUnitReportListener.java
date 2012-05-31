@@ -246,7 +246,6 @@ public class JUnitReportListener implements TestListener {
             if (mMultiFile) {
                 fileName = fileName.replace("$(suite)", suiteName);
             }
-
             if (mReportDir == null) {
                 if(Environment.MEDIA_MOUNTED.equals(state)&&!Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)){
                 	File f = mContext.getExternalFilesDir("junit");
