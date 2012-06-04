@@ -51,8 +51,7 @@ public class ListenerAdder {
 			//Checking for mOnClickListner higher Android version do not have this field, handling NoSuchField
 			Field f = klass.getDeclaredField("mOnClickListener");
 			f.setAccessible(true);
-			temp = f.get(v);
-			Log.i("debugger", "Found temp: " + temp.toString());
+			temp = f.get(v);			
 		} catch (NoSuchFieldException e) {
 			try {
 				//Checking for method hasOnClickListners if present
