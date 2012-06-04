@@ -45,7 +45,7 @@ public class WebViewHandler {
 		browser.getSettings().setJavaScriptEnabled(true);
 		client.setFinalText(text);
 		// Passing entire html doc to console log
-		browser.loadUrl("javascript:console.log('ConsoleMessage'+document.getElementsByTagName('html')[0].innerHTML);");
+		browser.loadUrl("javascript:console.log('ConsoleMessage'+document.body.innerText);");
 		browser.setWebChromeClient(client);
 		// waiting for console message for 30 seconds
 		while (client.isTextPresent == false) {
