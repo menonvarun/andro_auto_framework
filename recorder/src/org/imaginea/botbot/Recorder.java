@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Spinner;
 import android.widget.TextView;
 /**
@@ -29,6 +30,12 @@ public class Recorder {
 	 */
 	public static void record(String userAction, Object view, Object... args) {
 		if (view instanceof Spinner){
+			Object arg = args[0];
+			if(arg instanceof TextView){
+				String text = ((TextView) arg).getText().toString();
+				args[0]=text;
+			}
+		}else if (view.getClass().isAssignableFrom(AdapterView.class)){
 			Object arg = args[0];
 			if(arg instanceof TextView){
 				String text = ((TextView) arg).getText().toString();
