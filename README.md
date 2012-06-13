@@ -20,4 +20,11 @@ For further information on each component, please go to the respective folders [
 
 Please go to the download page on github to download the latest version of bot-bot.
 
-https://github.com/Imaginea/bot-bot/downloads
+https://github.com/Imaginea/bot-bot/downloads+
+
+------------
+##Google group
+
+For discussions and queries you can join bot-bot google group
+
+http://groups.google.com/group/bot-bot-users
