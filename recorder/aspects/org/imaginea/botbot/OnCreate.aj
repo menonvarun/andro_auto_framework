@@ -17,27 +17,34 @@ import org.imaginea.botbot.*;
 aspect OnCreate
 {
 	
-	String firstActivity;
-
+	static String firstActivity;
+	static int count=0;
     pointcut captureOnCreate() : (execution(* onCreate(Bundle)));
-
+    
     before(): captureOnCreate()
+   	{
+   		Object target = thisJoinPoint.getTarget();
+   		count++;
+   		if (firstActivity == null) firstActivity = target.getClass().getName();
+   	}
+    
+	after(): captureOnCreate()
 	{
 		Object target = thisJoinPoint.getTarget();
 
-		if (firstActivity == null) firstActivity = target.getClass().getName();
+		if (!(target instanceof Activity))
+			return;
+		if (firstActivity == null)
+			return;
+		if (firstActivity.contentEquals(target.getClass().getName()) && count==1) {
+			Activity a = (Activity) target;
+
+			ListenerAdder la = new ListenerAdder();
+			la.processView(a.getWindow().getDecorView().getRootView());
+			firstActivity = null;
+		}
+		count--;
 	}
-
-    after(): captureOnCreate()
-	{
-		Object target = thisJoinPoint.getTarget();
-
-		if (!(target instanceof Activity)) return;
-
-		Activity a = (Activity) target;
-
-		ListenerAdder la = new ListenerAdder();
-		la.processView(a.getWindow().getDecorView().getRootView());    }
     
     pointcut captureCreate() : (call(* create()));
 
