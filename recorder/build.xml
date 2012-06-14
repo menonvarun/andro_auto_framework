@@ -121,7 +121,7 @@
 		<echo
 			message="Weaving aspects to .class files before dex converts .class files to .dex file" />
 		<iajc destDir="${aop}" Xlintwarnings="true" showWeaveInfo="true"
-			target="1.5" source="1.5">
+			target="1.6" source="1.6">
 			<sourceRoots>
 				<pathelement location="${recorder.dir}/aspects" />
 			</sourceRoots>
@@ -131,6 +131,9 @@
 			<classpath>
 				<pathelement location="./lib/aspectjrt.jar" />
 				<path refid="android.target.classpath" />
+				<fileset dir="./lib/extra-libs">
+        				<include name="**/*.jar"/>
+      				</fileset>
 			</classpath>
 		</iajc>
 		<copy file="./lib/aspectjrt.jar" todir="${aop}/libs" />
