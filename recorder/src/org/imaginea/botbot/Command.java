@@ -76,8 +76,8 @@ public class Command {
 		String rid = "";
 		String tmp = (String) view.getContext().getResources()
 				.getResourceName(id);
-		if (tmp.contains(":id")) {
-			rid = tmp.substring(tmp.lastIndexOf(":id") + 4);
+		if (tmp.contains("/")) {
+			rid = tmp.substring(tmp.lastIndexOf("/") + 1);
 		}
 		return rid;
 	}
