@@ -21,8 +21,13 @@ aspect OnItemClick
 		int rowNum = (Integer) thisJoinPoint.getArgs()[2];
 		long rowID = (Long) thisJoinPoint.getArgs()[3];
 		Object target = thisJoinPoint.getTarget();
-
-		Recorder.record("click",parent,view,rowNum,rowID,target);
+		try{
+		View tmpview=(View) parent.getItemAtPosition(rowNum);
+		Recorder.record("click",tmpview);
+		}catch(ClassCastException e){
+			Object obj = parent.getItemAtPosition(rowNum);
+			Recorder.record("click",obj,"");
+		}
 
     }
 }
