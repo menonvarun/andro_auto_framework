@@ -44,6 +44,10 @@ public abstract class BaseKeywordDefinitions {
 				&& (params[0].isAssignableFrom(String.class) && params[1]
 						.isAssignableFrom(String.class)))
 			return true;
+		if (paramLength == 3
+				&& (params[0].isAssignableFrom(String.class) && params[1]
+						.isAssignableFrom(String.class) && params[2].isAssignableFrom(String.class)))
+			return true;
 
 		return false;
 	}

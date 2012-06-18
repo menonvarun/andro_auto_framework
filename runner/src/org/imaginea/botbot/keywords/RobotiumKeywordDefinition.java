@@ -143,6 +143,19 @@ public class RobotiumKeywordDefinition extends BaseKeywordDefinitions implements
 		}
 		Assert.assertTrue("Unable to find said text: "+text,found);		
 	}
+	
+	public void asserttextnotpresent(String text) {
+		boolean found =solo.searchText(text);		
+		// checking text in webview
+		if (!found) {
+			if (WebViewHandler.getInstanceOfWebView(solo) != null) {
+				WebView browser = WebViewHandler.getInstanceOfWebView(solo);
+				found = WebViewHandler.isTextPresentInWebView(browser, text,
+						solo);				
+			}
+		}
+		Assert.assertTrue("Unable to find said text: "+text,!found);		
+	}
 
 	@Override
 	public void checkbuttonpresent(String buttonText) {
@@ -217,6 +230,12 @@ public class RobotiumKeywordDefinition extends BaseKeywordDefinitions implements
 		View view = solo.getView(idvalue);
 		solo.clickOnView(view);
 	}
+	
+	public void waitfortext(String text,String noOftimes,String timeout){
+		int times=Integer.parseInt(noOftimes);
+		long tOut=Long.parseLong(timeout);
+		solo.waitForText(text, times, tOut);
+	}
 
 	@Override
 	public void clickmenu() {
@@ -245,7 +264,12 @@ public class RobotiumKeywordDefinition extends BaseKeywordDefinitions implements
 		clickbyid(rid);
 		clicktext(value);
 	}
-
+	
+	public void clicktext(int text){
+		String sText=String.valueOf(text);
+		clicktext(sText);
+	}
+	
 	@Override
 	public void clicktext(String text) {
 		try {
@@ -273,6 +297,9 @@ public class RobotiumKeywordDefinition extends BaseKeywordDefinitions implements
 	public void entertext(String locator, String text) {
 		if(rmap.containsKey(locator)){
 			EditText textView=(EditText)solo.getView(rmap.get(locator));
+			solo.enterText(textView, text);
+		}else if(drawmap.containsKey(locator)){
+			EditText textView=(EditText)solo.getView(drawmap.get(locator));
 			solo.enterText(textView, text);
 		}else{
 		int index;
