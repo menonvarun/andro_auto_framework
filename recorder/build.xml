@@ -183,14 +183,8 @@
 		</exec>
 	</target>
 	<target name ="-signapp" description="Signs the app under test">
-			<signjar
-		  jar="${app.unsigned}"
-		  signedjar="${app.signed}"
-		  keystore="${key.store}"
-		  storepass="${key.store.password}"
-		  alias="${key.alias}"
-		  keypass="${key.alias.password}"
-		  verbose="false"/>
+		<signjar jar="${app.unsigned}" signedjar="${app.signed}" keystore="${key.store}" storepass="${key.store.password}" alias="${key.alias}" keypass="${key.alias.password}" verbose="false" sigalg="MD5withRSA" digestalg="SHA1"/>
+
 	</target>
 	<target name="installappapk" depends="resign-apk" description="Install the original app apk file onto the device or simulator">
 		<echo>Installing ${app.signed} onto default emulator or device...</echo>
