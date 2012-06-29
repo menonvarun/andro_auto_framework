@@ -5,177 +5,99 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
+
 import junit.framework.Assert;
 import junit.framework.AssertionFailedError;
 import org.imaginea.botbot.common.Command;
 
 public abstract class BaseKeywordDefinitions {
+
+	protected HashMap<String, HashMap<Integer, ArrayList<Method>>> methodMap = new HashMap<String, HashMap<Integer, ArrayList<Method>>>();
 	
-    protected HashMap<String, ArrayList<MethodMapper>> mMapper= new HashMap<String, ArrayList<MethodMapper>>();
-    protected HashMap<String, HashMap<Integer,ArrayList<Method>>> expMap=new HashMap<String, HashMap<Integer,ArrayList<Method>>>();
+	abstract public boolean methodSUpported(Command command);
 
-    abstract public boolean methodSUpported(Command command);
-    
-    //Creates Hashmap of keywords as key and arraylist of methods with keyword
-    protected void collectSupportedMethods(Class c) {
-        Iterator<Method> it = Arrays.asList(c.getMethods()).iterator();
-        while (it.hasNext()) {
-            Method method = it.next();
-            addToMethodMapper(method);
-            
-        }
-    }
-    
-    //Adds methods to the hashmap
-    private void addToMethodMapper(Method method){
-        String methodName= method.getName();
-        HashMap<Integer,ArrayList<Method>> tempHashMap;
-        
-        ArrayList<MethodMapper> mList;
-        if(mMapper.containsKey(methodName)){
-            mList= mMapper.get(methodName);
-        }else{
-            mList= new ArrayList<MethodMapper>();
-        }
-        MethodMapper mapper= new MethodMapper();
-        mapper.setmObject(method);
-        mList.add(mapper);
-        mMapper.put(methodName, mList);
-        
-        
-        
-        ArrayList<Method> expMethodList;
-        if(expMap.containsKey(methodName))
-        {
-        	tempHashMap=expMap.get(methodName);
-        	int lenghtParam=method.getParameterAnnotations().length;
-        	if(tempHashMap.containsKey(lenghtParam))
-        	{
-        		expMethodList=tempHashMap.get(lenghtParam);
-        		expMethodList.add(method);
-        		tempHashMap.put(lenghtParam,expMethodList);
-        	}
-        	else
-        	{
-        		expMethodList=new ArrayList<Method>();
-        		expMethodList.add(method);
-        		tempHashMap.put(lenghtParam,expMethodList);
-        	}
-        }
-        else
-        {
-        	tempHashMap=new HashMap<Integer, ArrayList<Method>>();
-        	expMethodList=new ArrayList<Method>();
-        	expMethodList.add(method);
-        	tempHashMap.put(method.getParameterTypes().length, expMethodList);
-        	expMap.put(methodName, tempHashMap);
-        	
-        }
-        
-    }
+	// Creates Hashmap of keywords as key and arraylist of methods with keyword
+	protected void collectSupportedMethods(Class c) {
+		Iterator<Method> it = Arrays.asList(c.getMethods()).iterator();
+		while (it.hasNext()) {
+			Method method = it.next();
+			addToMethodMapper(method);
 
-   
-    //Invokes method by converting parameters into required types.
-    //And also checks for number of parameters and type of parameters
-	protected void invoker(Object obj, String methodName, List<String> parameters) {
-		
-		try {	
-			boolean methodExist=false;
-			boolean parameterLengthCheck=false;
-			boolean parameterTypeCheck=true;
-			Method methodToBeExecuted=null;
-			int paramLength=0;
-			
-			ArrayList<MethodMapper> mappers=mMapper.get(methodName); 
-			
-			//Selection of method to be executed based on number of parameter. 
-			for(MethodMapper mapper:mappers){
-	            if(mapper.getLength()==parameters.size()){
-	            	methodToBeExecuted=mapper.getmObject();
-	            	parameterLengthCheck = true;
-	            	paramLength=mapper.pLength;
-	                break;
-	            }else if(mapper.getLength()<parameters.size()){
-	            	methodToBeExecuted=mapper.getmObject();
-	            	parameterLengthCheck = true;
-	            	paramLength=mapper.pLength;	            	
-	            }
-	        } 
-			
-			/*
-			int multipleSameParameterLength=0;
-			for(MethodMapper mapper:mappers){
-				if(mapper.pLength==paramLength)
-					multipleSameParameterLength++;
-			}
-			
-			if(multipleSameParameterLength>1)
-			{
-					
-			}*/
-			
-			
-			Assert.assertTrue(methodName
-					+ " number of parameters required are not present ",
-					parameterLengthCheck);
-			
-			
-			Class<?>[] methodToBeExecutedParams = methodToBeExecuted
-					.getParameterTypes();
-			Object[] objectArray = new Object[methodToBeExecutedParams.length];
-			for (int count = 0; count < methodToBeExecutedParams.length; count++) {
-				//Asserting type cast of string to required parameter type
-				if(typecastOfParameter(parameters.get(count),
-						methodToBeExecutedParams[count].getSimpleName())==null)
-				{
-					parameterTypeCheck=false;
-					break;
-				}
-				//Assert.assertNotNull(
-				//		"Paramater type not matching, expected:"
-				//				+ methodToBeExecutedParams[count]
-				//						.getSimpleName() + " in command "
-				//				+ methodName,
-				//		typecastOfParameter(parameters.get(count),
-				//				methodToBeExecutedParams[count].getSimpleName()));
-				
-				
-				objectArray[count] = typecastOfParameter(parameters.get(count),
-						methodToBeExecutedParams[count].getSimpleName());
+		}
+	}
 
-			}
-			if(!parameterTypeCheck)
-			{
-				HashMap<Integer,ArrayList<Method>> methodHash=expMap.get(methodName);
-				ArrayList<Method> methods=methodHash.get(methodToBeExecutedParams.length);
-				
-			}
-			methodToBeExecuted.invoke(obj, objectArray);			
-		} 
-		
-		catch (Exception e) {
-			if (e instanceof InvocationTargetException) {
-				InvocationTargetException invocationTargetException = (InvocationTargetException) e;
-				Throwable targetException = invocationTargetException
-						.getTargetException();
-				if (targetException instanceof AssertionFailedError) {
-					Assert.fail(targetException.getMessage());
-				} else {
-					Assert.fail(targetException.getMessage());
-				}
+	// Adds methods to the hashmap
+	private void addToMethodMapper(Method method) {
+		String methodName = method.getName();
+		HashMap<Integer, ArrayList<Method>> tempHashMap;
+		ArrayList<Method> tempMethodList;
+
+		if (methodMap.containsKey(methodName)) {
+			tempHashMap = methodMap.get(methodName);
+			int lengthParam = method.getParameterAnnotations().length;
+			if (tempHashMap.containsKey(lengthParam)) {
+				tempMethodList = tempHashMap.get(lengthParam);
+				tempMethodList.add(method);
+				tempHashMap.put(lengthParam, tempMethodList);
 			} else {
-				Assert.fail("Excpetion: "+e.toString());
+				tempMethodList = new ArrayList<Method>();
+				tempMethodList.add(method);
+				tempHashMap.put(lengthParam, tempMethodList);
 			}
+		} else {
+			tempHashMap = new HashMap<Integer, ArrayList<Method>>();
+			tempMethodList = new ArrayList<Method>();
+			tempMethodList.add(method);
+			tempHashMap.put(method.getParameterTypes().length, tempMethodList);
+			methodMap.put(methodName, tempHashMap);
+
 		}
 
 	}
 
+	// Invokes method by converting parameters into required types.
+	// And also checks for number of parameters and type of parameters
+	protected void invoker(Object obj, String methodName,
+			List<String> parameters) {
+
+		boolean parameterLengthCheck = false;
+		int paramLength = 0;
+
+		Set<Integer> paramCountMethodSet = methodMap.get(methodName).keySet();
+		//Selecting number of parameters that should be considered
+		if (paramCountMethodSet.contains(parameters.size())) {
+			paramLength = parameters.size();
+			parameterLengthCheck = true;
+		} else {
+			Iterator<Integer> iterator = paramCountMethodSet.iterator();
+			while (iterator.hasNext()) {
+				int tempParamLength = (Integer) iterator.next();
+				if (tempParamLength < parameters.size()) {
+					paramLength = tempParamLength;
+					parameterLengthCheck = true;
+				}
+			}
+
+		}
+
+		Assert.assertTrue(methodName
+				+ " number of parameters required are not present ",
+				parameterLengthCheck);
+
+		// Getting methods with required parameters length
+		ArrayList<Method> methods = methodMap.get(methodName).get(paramLength);
+		//Invoking suitable method with compatible parameters
+		methodInvoker(obj, methods, parameters);
+
+	}
+
 	abstract public void execute(Command command);
-	
-	//Typecasts Srting input to the mentioned parameter type 
+
+	// Typecasts Srting input to the mentioned parameter type.
+	// Returns null in case of incompatible types
 	private Object typecastOfParameter(String parameter, String parameterType) {
 		HashMap<String, Integer> parameterKeyValue = new HashMap<String, Integer>() {
 			{
@@ -190,59 +112,83 @@ public abstract class BaseKeywordDefinitions {
 		if (parameterKeyValue.get(parameterType) == null) {
 			Assert.fail("Parameter type not supported : " + parameterType);
 		}
+		try {
+			switch (parameterKeyValue.get(parameterType)) {
 
-		switch (parameterKeyValue.get(parameterType)) {
-		
-		case 0:
-			return Integer.parseInt(parameter);
-		case 1:
-			return Long.parseLong(parameter);
-		case 2:
-			return parameter;
-		case 3:
-			return new Float(parameter);
-		case 4:
-			if (parameter.equalsIgnoreCase("true"))
-				return true;
-			else if (parameter.equalsIgnoreCase("false"))
-				return false;
-			else
+			case 0:
+				return Integer.parseInt(parameter);
+			case 1:
+				return Long.parseLong(parameter);
+			case 2:
+				return parameter;
+			case 3:
+				return new Float(parameter);
+			case 4:
+				if (parameter.equalsIgnoreCase("true"))
+					return true;
+				else if (parameter.equalsIgnoreCase("false"))
+					return false;
+				else
+					return null;
+			default:
 				return null;
-		default:
-			return null;
 
+			}
+		} catch (Exception e) {
+			return null;
 		}
 
 	}
-	
-	//Method holder 
-	private class MethodMapper{
-        private Method mObject;
-        private int pLength;
-        private ArrayList<Class<?>> mClass = new ArrayList<Class<?>>();
 
-        public Method getmObject() {
-            return mObject;
-        }
-        public void setmObject(Method mObject) {
-            this.mObject = mObject;
-            mClass=new ArrayList<Class<?>>(Arrays.asList(mObject.getParameterTypes()));
-            pLength=mClass.size();
-        }
+	// selects the method based on compatibility of parameters and invokes it
+	private void methodInvoker(Object obj, ArrayList<Method> methods,
+			List<String> parameters) {
 
-        public ArrayList<Class<?>> getParams(){
-            return mClass;
-        }
+		boolean canBeexecuted = false;
+		String actualParamType = "";
+		String expectedParamType = "";
+		try {
+			for (Method method : methods) {
+				canBeexecuted = true;
+				Class<?>[] methodParams = method.getParameterTypes();
+				Object[] paramObjectArray = new Object[methodParams.length];
+				for (int count = 0; count < methodParams.length; count++) {
+					// Checking type cast of string to required parameter type
+					if (typecastOfParameter(parameters.get(count),
+							methodParams[count].getSimpleName()) == null) 
+					{
+						actualParamType = parameters.get(count);
+						expectedParamType = methodParams[count].getSimpleName();
+						canBeexecuted = false;
+						break;
+					}
+					paramObjectArray[count] = typecastOfParameter(
+							parameters.get(count),
+							methodParams[count].getSimpleName());
+				}
+				if (canBeexecuted) {
+					method.invoke(obj, paramObjectArray);
+					break;
+				}
 
-        public int getLength(){
-            return pLength;
-        }
+			}
+		} catch (Exception e) {
+			if (e instanceof InvocationTargetException) {
+				InvocationTargetException invocationTargetException = (InvocationTargetException) e;
+				Throwable targetException = invocationTargetException
+						.getTargetException();
+				if (targetException instanceof AssertionFailedError) {
+					Assert.fail(targetException.getMessage());
+				} else {
+					Assert.fail(targetException.getMessage());
+				}
+			} else {
+				Assert.fail("Excpetion: " + e.toString());
+			}
+		}
 
-    } 
-	
-	Method methodSelector(Method inputMethod,List<String> parameters)
-	{
-		
+		Assert.assertTrue("Parameter passed is incorrect Required-type:"
+				+ expectedParamType + "..Value passed is:" + actualParamType, canBeexecuted);
 	}
 
 }

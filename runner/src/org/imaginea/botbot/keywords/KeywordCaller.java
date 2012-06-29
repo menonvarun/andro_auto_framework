@@ -9,6 +9,8 @@ import org.imaginea.botbot.api.DefaultProperties;
 import org.imaginea.botbot.common.Command;
 import org.imaginea.botbot.common.Prefrences;
 
+import android.util.Log;
+
 import com.google.android.testing.nativedriver.client.AndroidNativeDriver;
 import com.jayway.android.robotium.solo.Solo;
 
@@ -32,19 +34,17 @@ public class KeywordCaller {
 		System.out.println(prefrences.getExecutionContext().getClass().getName());
 		initializeDefinitions();
 	}
-	
+
 	public void execute(Command command){
 		boolean found=false;
-		System.out.println("Got method: "+command.getName());
-		System.out.println("Got method params: "+ command.getParameters());
 		for(BaseKeywordDefinitions definition:keywordDefinitions){
-			if(definition.methodSUpported(command)){
+			if(definition.methodSUpported(command)){				
 				definition.execute(command);
 				found=true;
 				break;
 			}
 		}
-		Assert.assertTrue("Unable to find definition for the command: "+command.getName()+" and parameters: "+command.getParameters(),found);
+		Assert.assertTrue("Unable to find definition for the command: "+command.getName(),found);
 	}
 
 }
