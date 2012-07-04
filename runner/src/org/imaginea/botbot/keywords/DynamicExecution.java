@@ -5,8 +5,6 @@ import java.util.Arrays;
 import org.imaginea.botbot.common.Command;
 import org.imaginea.botbot.common.Prefrences;
 
-import android.util.Log;
-
 
 public class DynamicExecution extends BaseKeywordDefinitions{
 	private Prefrences prefrences;

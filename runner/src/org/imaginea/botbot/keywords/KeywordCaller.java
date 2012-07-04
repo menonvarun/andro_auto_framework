@@ -5,14 +5,8 @@ import java.util.List;
 
 import junit.framework.Assert;
 
-import org.imaginea.botbot.api.DefaultProperties;
 import org.imaginea.botbot.common.Command;
 import org.imaginea.botbot.common.Prefrences;
-
-import android.util.Log;
-
-import com.google.android.testing.nativedriver.client.AndroidNativeDriver;
-import com.jayway.android.robotium.solo.Solo;
 
 
 public class KeywordCaller {

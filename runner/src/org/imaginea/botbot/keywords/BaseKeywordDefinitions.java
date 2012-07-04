@@ -7,7 +7,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 import java.util.TreeSet;
 
 import junit.framework.Assert;
@@ -64,8 +63,10 @@ public abstract class BaseKeywordDefinitions {
 
 	}
 
-	// Invokes method by converting parameters into required types.
-	// And also checks for number of parameters and type of parameters
+	/*
+	 * It checks for method for the supplied keyword. Also selects method with
+	 * parameter length. It calls methodInvoker which invokes the method
+	 */
 	protected void invoker(Object obj, String methodName,
 			List<String> parameters) {
 
@@ -157,7 +158,7 @@ public abstract class BaseKeywordDefinitions {
 		}
 
 		Assert.assertTrue("Parameter passed is incorrect Required-type:"
-				+ expectedParamType + "..Value passed is:" + actualParamType, canBeexecuted);
+				+ expectedParamType + "..Value passed is:" + actualParamType,canBeexecuted);
 	}
 
 	// Typecasts Srting input to the mentioned parameter type.
