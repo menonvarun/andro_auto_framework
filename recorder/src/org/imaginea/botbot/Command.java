@@ -99,7 +99,7 @@ public class Command {
 
 	public void add(String command) {
 		this.userAction = command;
-
+		this.arguments= new ArrayList<Object>();
 	}
 
 	@Override

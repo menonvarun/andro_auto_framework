@@ -65,9 +65,9 @@
 	</path>
 	
 	<path id="compilation.libs.ref">
-		<fileset dir="./lib">
-			<include name="**/*.jar" />
-		</fileset>
+		<pathelement location="./lib/asm-4.0.jar" />
+		<pathelement location="./lib/asm-util-4.0.jar" />
+		<pathelement location="./lib/aspectjrt.jar" />
 	</path>
 
 	<path id="android.target.classpath">
@@ -115,8 +115,7 @@
         <arg value="${mode.bin.dir}/"/>
         <classpath>
             <pathelement location="${code.bin.dir}"/>
-            <pathelement location="./lib/asm-4.0.jar" />
-			<pathelement location="./lib/asm-util-4.0.jar" />
+            <path refid="compilation.libs.ref" />
         </classpath>
   		 </java>
 	</target>
@@ -130,11 +129,8 @@
 		</copy>
 
 		<javac srcdir="${recorder.dir}/src" destdir="${aopjava}" verbose="${verbose}"
-			bootclasspathref="android.target.classpath" classpath="${extensible.classpath}">
-			<classpath>
-			<pathelement location="./lib/asm-4.0.jar" />
-			<pathelement location="./lib/asm-util-4.0.jar" />
-		</classpath>
+			bootclasspathref="android.target.classpath" classpath="${compilation.libs.ref}">
+			<classpath refid="compilation.libs.ref" />
 		</javac>
 		<copy todir="${code.bin.dir}">
 			<fileset dir="${aopjava}" />
@@ -153,11 +149,11 @@
 				<pathelement location="${mode.bin.dir}" />
 			</inpath>
 			<classpath>
-				<pathelement location="./lib/aspectjrt.jar" />
+				<path refid="compilation.libs.ref" />
 				<path refid="android.target.classpath" />
 				<fileset dir="./lib/extra-libs">
         				<include name="**/*.jar"/>
-      				</fileset>
+      			</fileset>
 			</classpath>
 		</iajc>
 		<copy file="./lib/aspectjrt.jar" todir="${aop}/libs" />

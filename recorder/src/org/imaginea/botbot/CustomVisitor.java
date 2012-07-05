@@ -8,7 +8,7 @@ import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 
-import static org.objectweb.asm.Opcodes.ICONST_0;
+import static org.objectweb.asm.Opcodes.*;
 import static org.objectweb.asm.Opcodes.ACC_PUBLIC;
 import static org.objectweb.asm.Opcodes.IRETURN;
 import static org.objectweb.asm.Opcodes.ASM4;
@@ -29,56 +29,40 @@ public class CustomVisitor extends ClassVisitor {
 			String superName, String[] interfaces) {
 		extendsActivity = false;
 		if (superName.contentEquals("android/app/Activity")) {
-			System.out.println(name + " extends " + superName + " {");
+			//System.out.println(name + " extends " + superName + " {");
 			extendsActivity = true;
 		}
-	}
-
-	public void visitSource(String source, String debug) {
-	}
-
-	public void visitOuterClass(String owner, String name, String desc) {
-	}
-
-	public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
-		return null;
-	}
-
-	public void visitAttribute(Attribute attr) {
-	}
-
-	public void visitInnerClass(String name, String outerName,
-			String innerName, int access) {
-	}
-
-	public FieldVisitor visitField(int access, String name, String desc,
-			String signature, Object value) {
-		// System.out.println("    " + desc + " " + name);
-		return null;
+		cv.visit(version, access, name, signature, superName, interfaces);
 	}
 
 	public MethodVisitor visitMethod(int access, String name, String desc,
 			String signature, String[] exceptions) {
 		if (extendsActivity) {
-			System.out
-					.println("    " + "name is:" + name + " desc is: " + desc);
+			//System.out
+				//	.println("    " + "name is:" + name + " desc is: " + desc);
 			if (name.equals("onKeyDown")
 					&& desc.equals("(ILandroid/view/KeyEvent;)Z")) {
 				isMethodPresent = true;
+				
 			}
-
+			//System.out.println("method not present");
 		}
+		
 		return cv.visitMethod(access, name, desc, signature, exceptions);
 	}
 
 	public void visitEnd() {
-		if (!isMethodPresent) {
+		if (extendsActivity && !isMethodPresent) {
+			System.out.println("Adding method");
 			MethodVisitor mv = cv.visitMethod(ACC_PUBLIC, "onKeyDown",
 					"(ILandroid/view/KeyEvent;)Z", null, null);
 			mv.visitCode();
-			mv.visitInsn(ICONST_0);
+			mv.visitVarInsn(ALOAD, 0);
+			mv.visitVarInsn(ILOAD, 1);
+			mv.visitVarInsn(ALOAD, 2);
+			mv.visitMethodInsn(INVOKESPECIAL, "android/app/Activity", "onKeyDown", "(ILandroid/view/KeyEvent;)Z");
 			mv.visitInsn(IRETURN);
-			mv.visitMaxs(1, 1);
+			mv.visitMaxs(3, 3);
 			mv.visitEnd();
 		}
 		cv.visitEnd();

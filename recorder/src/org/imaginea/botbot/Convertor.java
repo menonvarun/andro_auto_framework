@@ -27,7 +27,7 @@ public class Convertor {
 	public static void main(String[] args) throws IOException {
 		Convertor con = new Convertor();
 		con.rewriteCode(args[0],args[1]);
-		//con.showFile(args[0]);
+		con.showFile(args[1]);
 	}
 
 	public void rewriteCode(String dirPath,String outPath) throws FileNotFoundException,
@@ -45,10 +45,10 @@ public class Convertor {
 			CustomVisitor cv = new CustomVisitor(cw);
 			ClassReader cr = new ClassReader(new FileInputStream(f));
 			cr.accept(cv, 0);
-			// cr.accept(new TraceClassVisitor(new PrintWriter(System.out)), 0);
+			//cr.accept(new TraceClassVisitor(new PrintWriter(System.out)), 0);
 			filePath = outPath;
 			filePath = f.getAbsolutePath().replace(dirPath, filePath);
-			System.out.println("Out filepath is: "+filePath);
+			//System.out.println("Out filepath is: "+filePath);
 			new File(filePath).getParentFile().mkdirs();
 			FileOutputStream fo = new FileOutputStream(filePath);
 			fo.write(cw.toByteArray());
@@ -62,11 +62,11 @@ public class Convertor {
 		File afterDir = new File(outPath);
 		this.listDirectory(afterDir, afterList);
 		for (File f : afterList) {
-			System.out.println(f.getAbsolutePath());
+			//System.out.println(f.getAbsolutePath());
 			ClassWriter cw = new ClassWriter(0);
 			CustomVisitor cv = new CustomVisitor(cw);
 			ClassReader cr = new ClassReader(new FileInputStream(f));
-			cr.accept(new TraceClassVisitor(new PrintWriter(System.out)), 0);
+			cr.accept(cv, 0);
 		}
 	}
 
