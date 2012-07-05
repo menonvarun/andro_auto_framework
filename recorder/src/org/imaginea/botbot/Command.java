@@ -23,9 +23,18 @@ public class Command {
 	public void add(String command, Object view, Object... args) {
 		this.userAction = command;
 		this.view = view;
-		this.arguments = Arrays.asList(args);
+		if(args.length==1 && args[0].equals("")){
+			this.arguments= new ArrayList<Object>();
+		}
+		else{
+			this.arguments = new ArrayList<Object>(Arrays.asList(args));
+		}
 		if (view.getClass().getName().contains("Button")) {
 			this.userAction = "clickbutton";
+		}
+		if(String.class.isAssignableFrom(view.getClass())){
+			arguments.add(0, (String)view);
+			this.userAction="clicktext";
 		}
 
 	}
@@ -67,8 +76,8 @@ public class Command {
 		String rid = "";
 		String tmp = (String) view.getContext().getResources()
 				.getResourceName(id);
-		if (tmp.contains(":id")) {
-			rid = tmp.substring(tmp.lastIndexOf(":id") + 4);
+		if (tmp.contains("/")) {
+			rid = tmp.substring(tmp.lastIndexOf("/") + 1);
 		}
 		return rid;
 	}

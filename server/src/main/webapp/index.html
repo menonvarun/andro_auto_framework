@@ -167,7 +167,9 @@
 				var className = '';
 				var args0 = $nxt.find('.args0').html();
 				var args1 = $nxt.find('.args1').html();	
-				var args2 = $nxt.find('.args2').html();	
+				var args2 = $nxt.find('.args2').html();
+				var oldArgs=[args0,args1,args2]
+				var finalOldData=getArgsPostData(oldArgs);
 				var recordID = $nxt.find('.recordID').html();
 				var entryNo = $nxt.find('.entryNo').html();
 				if((recordURI!==undefined)&&(recordURI.match('/'+"$")=='/')){
@@ -177,7 +179,7 @@
 				var templast=recordURI.lastIndexOf('/');		
 				recordID=recordURI.substr(templast+1,recordURI.length);
 				}	
-				var sibblingData = '{"entryNo":"'+entryNo+'","prevEntryNo":"'+newRecodEntryNo+'","id":"'+recordID+'","payload":"{\\\"command\\\":\\\"'+command+'\\\",\\\"viewClassName\\\":\\\"'+className+'\\\",\\\"args[0]\\\":\\\"'+args0+'\\\",\\\"args[1]\\\":\\\"'+args1+'\\\",\\\"args[2]\\\":\\\"'+args2+'\\\"}","recordSession":{"@uri":"'+recordSession+'"}}';
+				var sibblingData = '{"entryNo":"'+entryNo+'","prevEntryNo":"'+newRecodEntryNo+'","id":"'+recordID+'","payload":"{\\\"command\\\":\\\"'+command+'\\\",\\\"viewClassName\\\":\\\"'+className+finalOldData+'\\\"}","recordSession":{"@uri":"'+recordSession+'"}}';
 				//console.log(recordURI+" -- "+sibblingData);
 				
 		

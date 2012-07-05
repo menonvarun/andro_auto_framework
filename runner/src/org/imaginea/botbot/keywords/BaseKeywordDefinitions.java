@@ -63,6 +63,7 @@ public abstract class BaseKeywordDefinitions {
 
 	}
 
+
 	/*
 	 * It checks for method for the supplied keyword. Also selects method with
 	 * parameter length. It calls methodInvoker which invokes the method
@@ -98,7 +99,6 @@ public abstract class BaseKeywordDefinitions {
 		ArrayList<Method> methods = methodMap.get(methodName).get(paramLength);
 		//Invoking suitable method with compatible parameters
 		methodInvoker(obj, methods, parameters);
-
 	}
 
 	abstract public void execute(Command command);	

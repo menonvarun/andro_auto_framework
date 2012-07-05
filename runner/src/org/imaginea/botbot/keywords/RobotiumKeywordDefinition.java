@@ -23,6 +23,7 @@ import com.jayway.android.robotium.solo.Solo;
 public class RobotiumKeywordDefinition extends BaseKeywordDefinitions implements IKeywords {
 	private Solo solo;
 	private static HashMap<String, Integer> rmap=new HashMap<String, Integer>();
+	private static HashMap<String, Integer> drawmap=new HashMap<String, Integer>();
 	
 	public RobotiumKeywordDefinition(Prefrences prefrences) {
 		Object executionContext=prefrences.getExecutionContext();
@@ -36,22 +37,28 @@ public class RobotiumKeywordDefinition extends BaseKeywordDefinitions implements
 	
 	public static void storeRId(Context context,String basePackage){
 		try {
-			Class<?> cls=null;
 			Class<?> rcls=Class.forName(basePackage+".R", true, context.getClassLoader());
 			Class<?> decLaredClasses[]=rcls.getDeclaredClasses();
 			for(Class<?> declaredClass:decLaredClasses){
 				if(declaredClass.getName().endsWith("id")){
-					cls=declaredClass;
-					break;
+					Object instance=declaredClass.newInstance();
+					Field variables[]=declaredClass.getDeclaredFields();
+					for(Field variable:variables){
+						String name = variable.getName();
+						int value=variable.getInt(instance);
+						rmap.put(name, value);
+					}
+				}else if(declaredClass.getName().endsWith("drawable")){
+					Object instance=declaredClass.newInstance();
+					Field variables[]=declaredClass.getDeclaredFields();
+					for(Field variable:variables){
+						String name = variable.getName();
+						int value=variable.getInt(instance);
+						drawmap.put(name, value);
+					}
 				}
 			}
-			Object instance=cls.newInstance();
-			Field variables[]=cls.getDeclaredFields();
-			for(Field variable:variables){
-				String name = variable.getName();
-				int value=variable.getInt(instance);
-				rmap.put(name, value);
-			}
+			
 			Log.i("bot-bot", rmap.toString());
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
@@ -136,6 +143,19 @@ public class RobotiumKeywordDefinition extends BaseKeywordDefinitions implements
 		}
 		Assert.assertTrue("Unable to find said text: "+text,found);		
 	}
+	
+	public void asserttextnotpresent(String text) {
+		boolean found =solo.searchText(text);		
+		// checking text in webview
+		if (!found) {
+			if (WebViewHandler.getInstanceOfWebView(solo) != null) {
+				WebView browser = WebViewHandler.getInstanceOfWebView(solo);
+				found = WebViewHandler.isTextPresentInWebView(browser, text,
+						solo);				
+			}
+		}
+		Assert.assertTrue("Unable to find said text: "+text,!found);		
+	}
 
 	@Override
 	public void checkbuttonpresent(String buttonText) {
@@ -199,12 +219,22 @@ public class RobotiumKeywordDefinition extends BaseKeywordDefinitions implements
 
 	@Override
 	public void clickbyid(String id) {
-		if(!rmap.containsKey(id)){
-		Assert.fail("The said id was not found");
+		int idvalue=-1;
+		if(rmap.containsKey(id)){
+			idvalue=rmap.get(id);
+		}else if(drawmap.containsKey(id)){
+			idvalue=drawmap.get(id);
+		}else{
+			Assert.fail("The said id was not found");
 		}
-		int idvalue=rmap.get(id);
 		View view = solo.getView(idvalue);
 		solo.clickOnView(view);
+	}
+	
+	public void waitfortext(String text,String noOftimes,String timeout){
+		int times=Integer.parseInt(noOftimes);
+		long tOut=Long.parseLong(timeout);
+		solo.waitForText(text, times, tOut);
 	}
 
 	@Override
@@ -234,7 +264,12 @@ public class RobotiumKeywordDefinition extends BaseKeywordDefinitions implements
 		clickbyid(rid);
 		clicktext(value);
 	}
-
+	
+	public void clicktext(int text){
+		String sText=String.valueOf(text);
+		clicktext(sText);
+	}
+	
 	@Override
 	public void clicktext(String text) {
 		try {
@@ -262,6 +297,9 @@ public class RobotiumKeywordDefinition extends BaseKeywordDefinitions implements
 	public void entertext(String locator, String text) {
 		if(rmap.containsKey(locator)){
 			EditText textView=(EditText)solo.getView(rmap.get(locator));
+			solo.enterText(textView, text);
+		}else if(drawmap.containsKey(locator)){
+			EditText textView=(EditText)solo.getView(drawmap.get(locator));
 			solo.enterText(textView, text);
 		}else{
 		int index;

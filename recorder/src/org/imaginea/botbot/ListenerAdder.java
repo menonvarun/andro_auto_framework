@@ -12,6 +12,7 @@ import android.text.InputType;
 import android.util.Log;
 import android.view.*;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Button;
 import android.widget.EditText;
@@ -71,7 +72,7 @@ public class ListenerAdder {
 		Object temp = null;
 		Class klass = v.getClass();
 
-		while (!klass.equals(View.class)) {
+		while (!klass.equals(AdapterView.class)) {
 			klass = klass.getSuperclass();
 		}
 
@@ -79,10 +80,28 @@ public class ListenerAdder {
 			Field f = klass.getDeclaredField("mOnItemSelectedListener");
 			f.setAccessible(true);
 			temp = f.get(v);
-			Log.i("debugger", "Found temp: " + temp.toString());
 		} catch (Exception e) {
+			return null;
 		}
 		return (OnItemSelectedListener) temp;
+	}
+	
+	public OnItemClickListener containOnItemClickListener(View v) {
+		Object temp = null;
+		Class klass = v.getClass();
+
+		while (!klass.equals(AdapterView.class)) {
+			klass = klass.getSuperclass();
+		}
+
+		try {
+			Field f = klass.getDeclaredField("mOnItemClickListener");
+			f.setAccessible(true);
+			temp = f.get(v);
+		} catch (Exception e) {
+			return null;
+		}
+		return (OnItemClickListener) temp;
 	}
 
 	public void addListeners(View view) {
@@ -100,12 +119,14 @@ public class ListenerAdder {
 								tmp, dPos));
 				processedView.add(view);
 				return;
-			} else if (view instanceof AdapterView) {
+			} else if (AdapterView.class.isAssignableFrom(view.getClass())) {
+				/*OnItemClickListener tmp = containOnItemClickListener(view);
 				((AdapterView) view)
-						.setOnItemClickListener(new OnItemClickListenerTest());
+						.setOnItemClickListener(new OnItemClickListenerTest(tmp));*/
 				processedView.add(view);
 				return;
 			}
+			System.out.println("Adding onClickListener for :"+ view.getClass().getName());
 			view.setOnClickListener(new OnClickListenerTest());
 			if (view instanceof EditText) {
 				((EditText) view).setInputType(InputType.TYPE_NULL);
