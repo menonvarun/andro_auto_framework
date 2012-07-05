@@ -9,6 +9,7 @@
 	<property file="default.properties"/>
 	<property name="bin.dir" location="robo-bin"/>
 	<property name="code.bin.dir" location="${bin.dir}/code-bin"/>
+	<property name="mode.bin.dir" location="${bin.dir}/mode-bin"/>
 	<property name="staging.dir" location="${bin.dir}/staging"/>
 	<property name="main.dir" location="."/>
 	<property name="dex.dir" location="${bin.dir}/dex"/>
@@ -62,6 +63,12 @@
 	<path id="jar.libs.ref">
 		<fileset dir="${staging.dir}/libs/" includes="*.jar" />
 	</path>
+	
+	<path id="compilation.libs.ref">
+		<fileset dir="./lib">
+			<include name="**/*.jar" />
+		</fileset>
+	</path>
 
 	<path id="android.target.classpath">
 		<fileset dir="${env.ANDROID_HOME}/platforms/${ANDROID_VERSION}/" includes="*.jar"/>
@@ -91,6 +98,7 @@
 		<unzip src="${resign.folder}/testapp.zip" dest="${staging.dir}" />
 		<delete dir="${staging.dir}/META-INF" />
 		<antcall target="compile-aopjava" />
+		<antcall target="run_convertor" />
 		<antcall target="aop" />
 		<antcall target="dex" />
 		<delete dir="${staging.dir}/classes.dex" />
@@ -99,7 +107,19 @@
 		<zip destfile="${app.unsigned}" basedir="${staging.dir}" />
 		<antcall target="-signapp" />
 	</target>
-
+	<target name="run_convertor" description="--> runs main method of class YourMainClass">
+  		 <java classname="org.imaginea.botbot.Convertor"
+          failonerror="true"
+          fork="true">
+        <arg value="${code.bin.dir}"/>
+        <arg value="${mode.bin.dir}/"/>
+        <classpath>
+            <pathelement location="${code.bin.dir}"/>
+            <pathelement location="./lib/asm-4.0.jar" />
+			<pathelement location="./lib/asm-util-4.0.jar" />
+        </classpath>
+  		 </java>
+	</target>
 	<target name="compile-aopjava">
 		<delete dir="${code.bin.dir}" />
 		<mkdir dir="${code.bin.dir}" />
@@ -111,6 +131,10 @@
 
 		<javac srcdir="${recorder.dir}/src" destdir="${aopjava}" verbose="${verbose}"
 			bootclasspathref="android.target.classpath" classpath="${extensible.classpath}">
+			<classpath>
+			<pathelement location="./lib/asm-4.0.jar" />
+			<pathelement location="./lib/asm-util-4.0.jar" />
+		</classpath>
 		</javac>
 		<copy todir="${code.bin.dir}">
 			<fileset dir="${aopjava}" />
@@ -126,7 +150,7 @@
 				<pathelement location="${recorder.dir}/aspects" />
 			</sourceRoots>
 			<inpath>
-				<pathelement location="${code.bin.dir}" />
+				<pathelement location="${mode.bin.dir}" />
 			</inpath>
 			<classpath>
 				<pathelement location="./lib/aspectjrt.jar" />
