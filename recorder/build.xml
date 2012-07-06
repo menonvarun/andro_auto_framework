@@ -140,8 +140,8 @@
 	<target name="aop">
 		<echo
 			message="Weaving aspects to .class files before dex converts .class files to .dex file" />
-		<iajc destDir="${aop}" Xlintwarnings="true" showWeaveInfo="true"
-			target="1.6" source="1.6">
+		<iajc destDir="${aop}" proceedOnError="true"
+			target="1.6" source="1.6" failonerror="false">
 			<sourceRoots>
 				<pathelement location="${recorder.dir}/aspects" />
 			</sourceRoots>
