@@ -17,9 +17,8 @@ public class DynamicExecution extends BaseKeywordDefinitions{
 	
 	@Override
 	public boolean methodSUpported(Command command) {
-		if(methodMap.containsKey(command.getName())){
-			if(methodMap.get(command.getName())==command.noOfParameters())
-				return true;
+		if (methodMap.containsKey(command.getName())) {
+			return true;
 		}
 		return false;
 	}
