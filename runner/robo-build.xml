@@ -208,7 +208,7 @@
 	</target>
 
 	<target name="-stage.libs">
-		<copy file="${staging.dir}/libs/robotium-solo-3.1.jar" todir="${bin.dir}/libs" />
+		<copy file="${staging.dir}/libs/robotium-solo-3.3.jar" todir="${bin.dir}/libs" />
 		<copy file="${staging.dir}/libs/opencsv-2.3.jar" todir="${bin.dir}/libs" />
 		<copy file="${staging.dir}/libs/testng-6.1.1.jar" todir="${bin.dir}/libs" />
 		<copy file="${staging.dir}/libs/client-standalone.jar" todir="${bin.dir}/libs" />
