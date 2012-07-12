@@ -6,10 +6,10 @@
 
 	<property name="adb.device.arg" value="" />
 	<property environment="env" />
-	<property file="resources/default.properties" />
+	<property file="../default.properties" />
 	<property name="tested.package_name" value="${APP_PACKAGE}" />
 	<property name="tested.main_activity" value="${DEFAULT_ACTIVITY}" />
-	<property name="tested.project.apk" value="${TEST_APK_FILENAME}" />
+	<property name="tested.project.apk" value="../${TEST_APK_FILENAME}" />
 	<property name="staging.dir" location="staging" />
 	<property name="main.dir" location="." />
 	<property name="test.app.dir" location="resources/robotium-files/bot-bot-test" />
