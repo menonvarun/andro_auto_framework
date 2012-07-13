@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="bot-bot-root">
+
+	<import file="runner/build.xml"/>
+	<import file="recorder/build.xml"/>
+
+	<target name="runner">
+		<ant antfile="runner/build.xml" inheritAll="false">
+			<reference refid="RELEASE_ROOT"/>
+		</ant>
+	</target>
+
+	<target name="recorder">
+		<ant antfile="recorder/build.xml" inheritAll="false"/>
+	</target>
+
+	<target name="server">
+		<java dir="./server/" fork="true" jar="bot-bot-server-standalone.jar"/>
+	</target>
+
+</project>
