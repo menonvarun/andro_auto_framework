@@ -38,6 +38,16 @@ public class Command {
 		}
 
 	}
+	
+	public void add(String command, String... args) {
+		this.userAction = command;
+		if(args.length==1 && args[0].equals("")){
+			this.arguments= new ArrayList<Object>();
+		}
+		else{
+			this.arguments = new ArrayList<Object>(Arrays.asList(args));
+		}
+	}
 
 	public void add(String command, View view, Object... args) {
 		this.userAction = command;
@@ -106,14 +116,16 @@ public class Command {
 	public String toString() {
 		String retText;
 		try {
-			retText = "command =" + this.userAction + "; view=" + view.toString()
-					+ "; viewClassName=" + this.viewClassName + "; id=" + id
+			retText = "command =" + this.userAction + ";";
+					if(view!=null) retText=retText+"view=" + view.toString();
+					retText=retText+ "; viewClassName=" + this.viewClassName + "; id=" + id
 					+ "; args[0]=" + arguments.get(0).toString()
 					+ "; args[1]=" + arguments.get(1).toString()
 					+ "; args[2]=" + arguments.get(2).toString();
 		} catch (IndexOutOfBoundsException e) {
-			retText = "command =" + this.userAction + "; view=" + view.toString()
-					+ "; viewClassName=" + this.viewClassName + "; id=" + id
+			retText = "command =" + this.userAction + ";";
+			if(view!=null) retText=retText+"view=" + view.toString();
+			retText=retText	+ "; viewClassName=" + this.viewClassName + "; id=" + id
 					+ "; args=" + arguments.toString();
 		}
 		return retText;

@@ -114,4 +114,15 @@ public class Recorder {
 		ct.publish(command);
 		commandList.add(command);
 	}
+	
+	
+	public static void record(String userAction, String... args) {
+		
+		Command command = new Command();
+		command.add(userAction, args);
+
+		publishCommand(command);
+		commandList.add(command);
+		Log.i(LOG_TAG, "command received: " + command.toString());
+	}
 }

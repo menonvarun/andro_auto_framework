@@ -6,11 +6,14 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.imaginea.botbot.OnClickListenerTest;
+import org.imaginea.botbot.webview.EventAdderClient;
+import org.imaginea.botbot.webview.RecorderInterface;
 
 import android.content.Context;
 import android.text.InputType;
 import android.util.Log;
 import android.view.*;
+import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
@@ -106,6 +109,11 @@ public class ListenerAdder {
 
 	public void addListeners(View view) {
 		boolean containsClick = containOnClikListener(view);
+		if(view instanceof WebView){
+			((WebView)view).addJavascriptInterface(new RecorderInterface(), "irecorder");
+			((WebView)view).setWebViewClient(new EventAdderClient());
+			return;
+		}
 		if (containsClick || (view instanceof ImageView)) {
 			processedView.add(view);
 			return;
