@@ -23,6 +23,16 @@ public abstract class BaseKeywordDefinitions {
 	protected HashMap<String, HashMap<Integer, ArrayList<Method>>> methodMap = new HashMap<String, HashMap<Integer, ArrayList<Method>>>();
 	
 	abstract public boolean methodSUpported(Command command);
+	
+	private HashMap<String, Integer> supportedParameterMap = new HashMap<String, Integer>() {
+		{
+			put("int", 0);
+			put("long", 1);
+			put("String", 2);
+			put("float", 3);
+			put("boolean", 4);
+		}
+	};
 
 	// Creates Hashmap of keywords as key and arraylist of methods with keyword
 	protected void collectSupportedMethods(Class c) {
@@ -156,29 +166,30 @@ public abstract class BaseKeywordDefinitions {
 				Assert.fail("Excpetion: " + e.toString());
 			}
 		}
+		
+		if (!canBeexecuted) {
 
-		Assert.assertTrue("Parameter passed is incorrect Required-type:"
-				+ expectedParamType + "..Value passed is:" + actualParamType,canBeexecuted);
+			if (supportedParameterMap.get(expectedParamType) == null) {
+				Assert.fail("Parameter type not supported : "
+						+ expectedParamType);
+			}
+
+			Assert.assertTrue("Parameter passed is incorrect Required-type:"
+					+ expectedParamType + "..Value passed is:"
+					+ actualParamType, canBeexecuted);
+
+		}
 	}
 
 	// Typecasts Srting input to the mentioned parameter type.
 	// Returns null in case of incompatible types
-	private Object typecastOfParameter(String parameter, String parameterType) {
-		HashMap<String, Integer> parameterKeyValue = new HashMap<String, Integer>() {
-			{
-				put("int", 0);
-				put("long", 1);
-				put("String", 2);
-				put("float", 3);
-				put("boolean", 4);
-			}
-		};
+	private Object typecastOfParameter(String parameter, String parameterType) {		
 
-		if (parameterKeyValue.get(parameterType) == null) {
-			Assert.fail("Parameter type not supported : " + parameterType);
+		if (supportedParameterMap.get(parameterType) == null) {
+			return null;
 		}
 		try {
-			switch (parameterKeyValue.get(parameterType)) {
+			switch (supportedParameterMap.get(parameterType)) {
 
 			case 0:
 				return Integer.parseInt(parameter);
