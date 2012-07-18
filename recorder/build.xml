@@ -103,7 +103,7 @@
 		<antcall target="dex" />
 		<delete dir="${staging.dir}/classes.dex" />
 		<copy file="${dex.file}" todir="${staging.dir}" />
-		<copy file="${recorder.dir}/recorder.properties" todir="${staging.dir}/assets" />
+		<copydir src="${recorder.dir}/resources" dest="${staging.dir}/assets" />
 		<zip destfile="${app.unsigned}" basedir="${staging.dir}" />
 		<antcall target="-signapp" />
 	</target>
