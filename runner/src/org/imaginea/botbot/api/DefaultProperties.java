@@ -13,7 +13,7 @@ public class DefaultProperties {
 
 	private DefaultProperties() {
 		try {
-			prop.load(new FileInputStream("resources/default.properties"));
+			prop.load(new FileInputStream("../default.properties"));
 		} catch (FileNotFoundException e1) {
 			Assert.fail("Unable to load file due to error :" + e1.toString());
 		} catch (IOException e1) {
