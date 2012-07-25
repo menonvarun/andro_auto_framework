@@ -237,7 +237,7 @@
 	
 	<target name="-robo-junit-report" description="Get the junit report from emulator and generate report for it.">
 		<delete dir="${REPORT}/Junit-report" />
-		<delete dir="${REPORT}/junit" />
+		<delete dir="${REPORT}/junit-xml" />
 		<mkdir dir="${REPORT}/Junit-report" />
 		<antcall target="checkexist" >
 			<param name="testframe" value="junit"/>
