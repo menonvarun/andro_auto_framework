@@ -1,10 +1,6 @@
 
 package org.imaginea.botbot;
-
-import android.app.Activity;
 import android.view.Menu;
-
-import org.imaginea.botbot.*;
  
 aspect OnCreateOptionsMenu
 {
@@ -13,7 +9,7 @@ aspect OnCreateOptionsMenu
     before(): captureOnCreateOptionsMenu()
  	{   
 		Menu menu = (Menu) thisJoinPoint.getArgs()[0];
-		Recorder.record("clickmenuitem",menu);
+		Recorder.record("clickmenu",menu);
 		
     }
 }

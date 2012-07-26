@@ -2,10 +2,7 @@
 package org.imaginea.botbot; 
 import android.view.MotionEvent;
 import android.view.View;
-import android.util.Log;
-import android.widget.*;
 
-import org.imaginea.botbot.*;
 aspect OnTouch
 {
     pointcut captureOnTouch() : (execution(* onTouch(View, MotionEvent)));

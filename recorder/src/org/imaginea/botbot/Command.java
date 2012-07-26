@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import android.content.res.Resources.NotFoundException;
+import android.view.MenuItem;
 import android.view.View;
 
 public class Command {
@@ -70,6 +71,14 @@ public class Command {
 			//Escaping in case the rid resource is not found
 		}
 	}
+	
+	public void add(String command, MenuItem item) {
+		this.view = item;		
+		this.arguments= new ArrayList<Object>();
+		this.userAction="clicktext";
+		arguments.add(item.getTitle());
+	}
+	
 
 	private String getStringIdFromResource(View view, int id)
 			throws NotFoundException {

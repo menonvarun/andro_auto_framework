@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Spinner;
@@ -114,4 +115,14 @@ public class Recorder {
 		ct.publish(command);
 		commandList.add(command);
 	}
+	
+	public static void record(String userAction, MenuItem item) {
+		Command command = new Command();
+		command.add(userAction,item);
+		publishCommand(command);
+		ct.publish(command);
+		commandList.add(command);
+	}
+	
+	
 }
