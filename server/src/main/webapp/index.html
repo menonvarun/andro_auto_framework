@@ -22,7 +22,6 @@
   
   <div id="recordsHolder" style="display:none;">
 	<a id="exportcsv" target="_blank" href="#" style="position:absolute;right:80px;">Export as CSV</a>	
-	<font size="6" class="add" id="addFirstRecord">+</font>
 	<h3>Records of session:  <span id="recordsHeading"></span></h3>
 	<div class="holderDiv">
 		<table width="100%" id="Records" cellpadding="5"></table>
@@ -240,7 +239,7 @@
 		}
 		else
 		{	
-			prevEntryNo = $("#recordsCombo option:selected").prev().text();
+			prevEntryNo = $("#recordsCombo option:selected").prev().text()=="" ? '0' :$("#recordsCombo option:selected").prev().text();
 			$(record).before("<tr class='newRow'><td></td><td class='command'><input type='text'/></td><td class='args0'><input type='text'/></td><td class='args1'><input type='text'/><td class='args2'><input type='text'/></td></td><td><a href='#' id='saveNewRecord'>Save</a>&nbsp;|&nbsp;<a href='#' id='cancelNewRecord'>Cancel</a></td></tr>");
 		}			
 	});	
