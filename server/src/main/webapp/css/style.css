@@ -61,6 +61,31 @@ tr.newRow{background-color: #FFFF91;}
 	cursor:pointer;
 }
 
+.ui-menu {
+	list-style:none;
+	padding: 2px;
+	margin: 0;
+	display:block;
+	float: left;
+}
+
+.ui-menu-item a{
+text-decoration: none;
+background-color: #E7EEF5;
+display: block;
+padding: .2em .4em;
+line-height: 1.5;
+zoom: 1;
+}
+
+a.ui-state-hover{
+font-weight: normal;
+margin: -1px;
+background-color: #D8D8D8;
+color: #000000;
+}
+
+
 #popup {
    width: 500px;
    height: 300px;
