@@ -1,14 +1,7 @@
 
 package org.imaginea.botbot;
- 
-import org.aspectj.lang.Signature;
-import org.aspectj.lang.JoinPoint;
-
-import android.text.format.DateFormat;
-import android.view.View;
 import android.widget.DatePicker;
 
-import org.imaginea.botbot.*; 
 aspect OnDateChanged
 {
     pointcut captureOnDateChanged() : (execution(* onDateChanged(DatePicker, int, int, int)));

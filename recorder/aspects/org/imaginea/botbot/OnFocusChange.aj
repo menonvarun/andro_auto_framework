@@ -1,8 +1,5 @@
-import org.aspectj.lang.Signature;
-import android.util.Log;
-import org.aspectj.lang.JoinPoint;
 
-import android.content.DialogInterface;
+import android.util.Log;
 import android.view.View;
 import android.widget.*;
 

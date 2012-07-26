@@ -42,7 +42,7 @@
 		<delete dir="${TESTPACKAGE}" />
 		<mkdir dir="${TESTPACKAGE}" />
 		<antcall target="compile"/>
-		<java classname="${BASE_PACKAGE}.common.TestCaseGenerator" failonerror="true" classpathref="test.classpath">
+		<java classname="${BASE_PACKAGE}.common.TestCaseGenerator" failonerror="true" classpathref="test.classpath" fork="true" dir="${RELEASE_ROOT}">
 		</java>
 	</target>
 	<taskdef resource="testngtasks" classpath="${LIB}/testng-6.1.1.jar" />

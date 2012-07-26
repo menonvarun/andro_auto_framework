@@ -6,7 +6,7 @@
 
 	<property name="adb.device.arg" value="" />
 	<property environment="env"/>
-	<property file="default.properties"/>
+	<property file="../default.properties"/>
 	<property name="bin.dir" location="robo-bin"/>
 	<property name="code.bin.dir" location="${bin.dir}/code-bin"/>
 	<property name="mode.bin.dir" location="${bin.dir}/mode-bin"/>
@@ -19,7 +19,7 @@
 	<property name="app.signed" location="${resign.folder}/app_signed.apk"/>
 	<property name="aop" location="${bin.dir}/aop"/>
 	<property name="aopjava" location="${bin.dir}/aopjava"/>
-	<property name="tested.project.apk" value="${TEST_APK_FILENAME}"/>
+	<property name="tested.project.apk" value="../${TEST_APK_FILENAME}"/>
 	
 	<!-- Tells adb which device to target. You can change this from the command line
 	         by invoking "ant -Dadb.device.arg=-d" for device "ant -Dadb.device.arg=-e" for
