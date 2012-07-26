@@ -1,12 +1,8 @@
 
 package org.imaginea.botbot; 
-import org.aspectj.lang.Signature;
-import android.util.Log;
-import org.aspectj.lang.JoinPoint;
 
 import android.view.View;
 import android.widget.*;
-import org.imaginea.botbot.*;
 
 aspect OnItemClick
 {
