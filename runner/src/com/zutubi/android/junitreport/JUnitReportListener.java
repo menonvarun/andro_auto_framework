@@ -17,6 +17,7 @@
 package com.zutubi.android.junitreport;
 
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.os.Environment;
 import android.util.Log;
 import android.util.Xml;
@@ -239,6 +240,15 @@ public class JUnitReportListener implements TestListener {
         // The directory is now empty so delete it
         return dir.delete();
     }
+    
+  //Checks for the write to external storage condition
+    private boolean checkWriteExternalPermission()
+	{
+	    String permission = "android.permission.WRITE_EXTERNAL_STORAGE";
+	    int res = mContext.checkCallingOrSelfPermission(permission);
+	    return res == PackageManager.PERMISSION_GRANTED;            
+	}
+    
     private void openIfRequired(String suiteName) throws IOException {
     	String state = Environment.getExternalStorageState();
         if (mSerializer == null) {
@@ -247,7 +257,7 @@ public class JUnitReportListener implements TestListener {
                 fileName = fileName.replace("$(suite)", suiteName);
             }
             if (mReportDir == null) {
-                if(Environment.MEDIA_MOUNTED.equals(state)&&!Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)){
+                if(Environment.MEDIA_MOUNTED.equals(state)&&!Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)&&checkWriteExternalPermission()){
                 	File f = mContext.getExternalFilesDir("junit");
                 	mOutputStream=new FileOutputStream(new File(f,fileName));
                 }else {
@@ -325,12 +335,21 @@ public class JUnitReportListener implements TestListener {
     public void close(){
 		Iterator<String> suiteIterator = suiteMap.keySet().iterator();
 		String state = Environment.getExternalStorageState();
-		if(Environment.MEDIA_MOUNTED.equals(state)&&!Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)){
+		if(Environment.MEDIA_MOUNTED.equals(state)&&!Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)&&checkWriteExternalPermission()){
         	File f = mContext.getExternalFilesDir("junit");
         	if(f.exists()){
         		deleteDir(f);
         		f.mkdirs();
         	}
+		}
+		else {
+			String [] files=mTargetContext.fileList();
+			for(int i=0;i<files.length;i++)
+			{
+				if(files[i].startsWith("junit")) {
+					mTargetContext.deleteFile(files[i]);					
+				}
+			}
 		}
 		while (suiteIterator.hasNext()) {
 			try {

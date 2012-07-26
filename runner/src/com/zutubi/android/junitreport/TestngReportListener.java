@@ -17,6 +17,7 @@
 package com.zutubi.android.junitreport;
 
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.os.Environment;
 import android.util.Log;
 import android.util.Xml;
@@ -253,7 +254,7 @@ public class TestngReportListener implements TestListener {
 			}
 			if (mReportDir == null) {
 				if (Environment.MEDIA_MOUNTED.equals(state)
-						&& !Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
+						&& !Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)&&checkWriteExternalPermission()) {
 					File f = mContext.getExternalFilesDir("testng");
 					mOutputStream = new FileOutputStream(new File(f, fileName));
 				} else {
@@ -337,16 +338,35 @@ public class TestngReportListener implements TestListener {
 	private void addAttribute(String tag, String value) throws IOException {
 		mSerializer.attribute("", tag, value);
 	}
-
+	
+	//Checks for the write to external storage condition
+	private boolean checkWriteExternalPermission()
+	{
+	    String permission = "android.permission.WRITE_EXTERNAL_STORAGE";
+	    int res = mContext.checkCallingOrSelfPermission(permission);
+	    return res == PackageManager.PERMISSION_GRANTED;            
+	}
+	
 	public void close() {
 		Iterator<String> suiteIterator = suiteMap.keySet().iterator();
 		String state = Environment.getExternalStorageState();
 		if (Environment.MEDIA_MOUNTED.equals(state)
-				&& !Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
+				&& !Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)&&checkWriteExternalPermission()) {
+			
+			
 			File f = mContext.getExternalFilesDir("testng");
 			if (f.exists()) {
 				deleteDir(f);
 				f.mkdirs();
+			}
+		}
+		else {
+			String [] files=mTargetContext.fileList();
+			for(int i=0;i<files.length;i++)
+			{
+				if(files[i].startsWith("testng")) {
+					mTargetContext.deleteFile(files[i]);					
+				}
 			}
 		}
 		try {

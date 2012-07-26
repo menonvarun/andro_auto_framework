@@ -124,7 +124,7 @@
 		<replace file="${staging.dir}/src/${BASE_PACKAGE_FOLDER}/keywords/KeywordCaller.java" token="#FRAMEWORK#" value="${FRAMEWORK}" />
 		<replace file="${staging.dir}/src/${BASE_PACKAGE_FOLDER}/common/BotBotTestRunner.java" token="#DATA_DRIVEN_TESTS#" value="${DATA_CLASSES}" />
 		<replace file="${staging.dir}/src/${BASE_PACKAGE_FOLDER}/common/BotBotTestRunner.java" token="#APP_TEST_PACKAGE#" value="${tested.package_name}" />
-		
+
 		<exec executable="${env.ANDROID_HOME}/platform-tools/aapt" failonerror="true" output="${staging.dir}/assets/ids.txt">
 			<arg value="dump" />
 			<arg value="resources" />
@@ -234,58 +234,76 @@
 	<target name="-sign">
 		<signjar jar="${test.app.unsigned}" signedjar="${test.app.signed}" keystore="${key.store}" storepass="${key.store.password}" alias="${key.alias}" keypass="${key.alias.password}" verbose="false" />
 	</target>
+	
 	<target name="-robo-junit-report" description="Get the junit report from emulator and generate report for it.">
 		<delete dir="${REPORT}/Junit-report" />
 		<delete dir="${REPORT}/junit-xml" />
 		<mkdir dir="${REPORT}/Junit-report" />
-		<echo>Fetching junit report files from emulator or device...</echo>
-		<exec executable="${env.ANDROID_HOME}/platform-tools/adb" failonerror="true">
-			<arg line="${adb.device.arg}" />
-			<arg value="pull" />
-			<arg value="/mnt/sdcard/Android/data/${tested.package_name}.test/files/junit" />
-			<arg path="${REPORT}/junit-xml" />
-		</exec>
+		<antcall target="checkexist" >
+			<param name="testframe" value="junit"/>
+		</antcall>
 		<junitreport todir="${REPORT}/Junit-report">
-							<fileset dir="${REPORT}/junit-xml">
-								<include name="junit-*.xml" />
-							</fileset>
+			<fileset dir="${REPORT}/junit-xml">
+				<include name="junit-*.xml" />
+			</fileset>
 
-							<report format="noframes" todir="${REPORT}/Junit-report" />
-						</junitreport>
-	
+			<report format="noframes" todir="${REPORT}/Junit-report" />
+		</junitreport>
+
 		<echo>Junit report succesfully generated at location ${REPORT}/Junit-report </echo>
 	</target>
-	<target name="-robo-testng-report" >
-			<delete dir="${basedir}/testng-xslt" />
-			<mkdir dir="${basedir}/testng-xslt" />
-		<delete dir="${REPORT}/TestNG-XSLT-report" />
-		<echo>Fetching testng-results file from emulator or device...</echo>
-				<exec executable="${env.ANDROID_HOME}/platform-tools/adb" failonerror="true">
-					<arg line="${adb.device.arg}" />
-					<arg value="pull" />
-					<arg value="/mnt/sdcard/Android/data/${tested.package_name}.test/files/testng" />
-					<arg path="${REPORT}/testng-xml" />
-				</exec>
-			<path id="xslt-classpath">
-					<fileset dir="${LIB}">
-						<include name="SaxonLiaison.jar"/>
-						<include name="saxon-8.7.jar"/>
-					</fileset>
-			</path>		
-			<xslt in="${REPORT}/testng-xml/testng-report.xml" style="${basedir}/testng-results.xsl" out="${basedir}/testng-xslt/index.html" classpathref="xslt-classpath" processor="SaxonLiaison">
-				<param name="testNgXslt.outputDir" expression="${basedir}/testng-xslt/" />
-				<param name="testNgXslt.sortTestCaseLinks" expression="true" />
-				<param name="testNgXslt.testDetailsFilter" expression="FAIL,SKIP,PASS,CONF,BY_CLASS" />
-				<param name="testNgXslt.showRuntimeTotals" expression="true" />
-			</xslt>
-			
-			<mkdir dir="${REPORT}/TestNG-XSLT-report" />
 
-			<copy todir="${REPORT}/TestNG-XSLT-report">
-				<fileset dir="${basedir}/testng-xslt" />
-			</copy>
-			<delete dir="${basedir}/testng-xslt" />
+	<target name="-robo-testng-report" >
+		<delete dir="${basedir}/testng-xslt" />
+		<mkdir dir="${basedir}/testng-xslt" />
+		<delete dir="${REPORT}/TestNG-XSLT-report" />
+		<antcall target="checkexist" >
+			<param name="testframe" value="testng"/>
+		</antcall>
+		<path id="xslt-classpath">
+			<fileset dir="${LIB}">
+				<include name="SaxonLiaison.jar"/>
+				<include name="saxon-8.7.jar"/>
+			</fileset>
+		</path>
+		<xslt in="${REPORT}/testng-xml/testng-report.xml" style="${basedir}/testng-results.xsl" out="${basedir}/testng-xslt/index.html" classpathref="xslt-classpath" processor="SaxonLiaison">
+			<param name="testNgXslt.outputDir" expression="${basedir}/testng-xslt/" />
+			<param name="testNgXslt.sortTestCaseLinks" expression="true" />
+			<param name="testNgXslt.testDetailsFilter" expression="FAIL,SKIP,PASS,CONF,BY_CLASS" />
+			<param name="testNgXslt.showRuntimeTotals" expression="true" />
+		</xslt>
+
+		<mkdir dir="${REPORT}/TestNG-XSLT-report" />
+
+		<copy todir="${REPORT}/TestNG-XSLT-report">
+			<fileset dir="${basedir}/testng-xslt" />
+		</copy>
+		<delete dir="${basedir}/testng-xslt" />
 		<echo>TestNG xslt report succesfully generated at location ${REPORT}/TestNG-XSLT-report </echo>
-		</target>
+	</target>
+	
+	<target name="checkexist" depends="Pullfiles" description="Checking file exist or not" if="Resultfileexist">
+		<exec executable="${env.ANDROID_HOME}/platform-tools/adb" failonerror="false">
+			<arg line="${adb.device.arg}" />
+			<arg value="pull" />
+			<arg value="/data/data/${tested.package_name}/files/" />
+			<arg path="${REPORT}/${testframe}-xml" />
+		</exec>
+	</target>
+	
+	<target name="Pullfiles" description="Pull files from device.">
+		<echo>Pull files...${testframe}</echo>
+		<exec executable="${env.ANDROID_HOME}/platform-tools/adb" failonerror="false">
+			<arg line="${adb.device.arg}" />
+			<arg value="pull" />
+			<arg value="/mnt/sdcard/Android/data/${tested.package_name}.test/files/${testframe}" />
+			<arg path="${REPORT}/${testframe}-xml" />
+		</exec>
+		<condition property="Resultfileexist">
+			<not>
+				<available file="${REPORT}/${testframe}-xml" type="dir" />
+			</not>
+		</condition>
+	</target>
 
 </project>
