@@ -22,7 +22,6 @@ Following are some of the main features of bot-bot:
 - Emailable html report generation for test execution.
 
 -------------------
-Android automation testing tool with record and replay featuresAndroid automation testing tool with record and replay featuresAndroid automation testing tool with record and replay features
 ##Download
 
 Please go to the download page on github to download the latest version of bot-bot.
