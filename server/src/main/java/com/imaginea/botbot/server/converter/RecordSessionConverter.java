@@ -92,6 +92,25 @@ public class RecordSessionConverter {
     public void setName(String value) {
         entity.setName(value);
     }
+    
+    /**
+     * Getter for status.
+     *
+     * @return value for name
+     */
+    @XmlElement
+    public String getStatus() {
+        return (expandLevel > 0) ? entity.getStatus() : null;
+    }
+
+    /**
+     * Setter for status.
+     *
+     * @param value the value to set
+     */
+    public void setStatus(String value) {
+        entity.setStatus(value);
+    }
 
     /**
      * Getter for records.
