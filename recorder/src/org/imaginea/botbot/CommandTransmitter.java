@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintStream;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.Socket;
 import java.net.URL;
 import java.text.DateFormat;
@@ -27,6 +28,7 @@ public class CommandTransmitter {
 	PrintStream ps = null;
 	static ServerProperties sp = new ServerProperties();
 	static String sessionID = null;
+	static String tempSession=null;
 	String serverIP = sp.serverIP;
 	String port=sp.port;
 	String sessionName=sp.sessionName;
@@ -94,14 +96,125 @@ public class CommandTransmitter {
 		@Override
 		protected Void doInBackground(Void... nothing) {
 
-			// TODO Auto-generated method stub
 			// creating session
-			try {
 				System.out.println("In background");
 				recordID=1;
 				prevRecord=0;
+				
+			while (true) {
+
+				try {
+					String data=queue.take();
+					String session=getSession();
+					//it waits until queue is populated
+					postRecord(data,session);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+
+		}
+		//Performs writing data to the server
+
+		void postRecord(String data,String session) {
+			// TODO Auto-generated method stub
+			if (!session.equalsIgnoreCase("")) {
+				try {
+					DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+					String currentDateTime = df.format(new Date());
+
+					Log.i("bot-bot", "In create record Async task:- " + session
+							+ data);
+					String postData = "{\"entryNo\":\"" + recordID + "\","
+							+ "\"prevEntryNo\":\"" + prevRecord
+							+ "\",\"recordSession\":{\"id\":\"" + session
+							+ "\"},\"entryTime\":\"" + currentDateTime
+							+ "\",\"payload\":\"" + data + "\"}";
+					Log.i("bot-bot", postData);
+					URL url = null;
+					url = new URL(sUrl + "/api/recordentries");
+					HttpURLConnection connection = (HttpURLConnection) url
+							.openConnection();
+					connection.setDoOutput(true);
+					connection.setRequestProperty("Accept", "application/json");
+					connection.setRequestProperty("Content-Type",
+							"application/json; charset=UTF-8");
+					OutputStreamWriter out = new OutputStreamWriter(
+							connection.getOutputStream());
+
+					out.write(postData);
+					out.close();
+					prevRecord = recordID;
+					recordID++;
+					Map<String, List<String>> respHeaders = connection
+							.getHeaderFields();
+
+					if (connection.getResponseCode() == 201) {
+						Log.i("bot-bot", respHeaders.get("Location").toString());
+					} else {
+						Log.i("bot-bot", "Invalid Response");
+					}
+					BufferedReader in = new BufferedReader(
+							new InputStreamReader(connection.getInputStream()));
+					String inputLine;
+					while ((inputLine = in.readLine()) != null)
+						System.out.println(inputLine);
+					in.close();
+				} catch (Exception e) {
+					Log.i("bot-bot", "Exception occured in postMethod: "+e.getMessage());
+				}
+			} else {
+				Log.i("bot-bot",
+						"Inside post record. Data not posted as session was empty.");
+			}
+
+		}
+		
+		String getSession(){
+			String session = "";
+			if (CommandTransmitter.sessionID == null
+					|| CommandTransmitter.sessionID.contentEquals("")) {
+				CommandTransmitter.sessionID=createNewSession();
+				session = CommandTransmitter.sessionID;
+			} else {
+				try {
+					URL url = new URL(sUrl + "/api/recordsessions/"+CommandTransmitter.sessionID);
+					HttpURLConnection connection = (HttpURLConnection) url
+							.openConnection();
+					BufferedReader rd = new BufferedReader(
+							new InputStreamReader(connection.getInputStream()));
+					StringBuffer sb = new StringBuffer();
+					String line;
+					while ((line = rd.readLine()) != null) {
+						sb.append(line);
+					}
+					rd.close();
+					String result = sb.toString();
+					String status = result.substring(
+							result.indexOf("<status>") + 8,
+							result.indexOf("</status>"));
+					if (status.contentEquals("stopped")) {
+						recordID=1;
+						prevRecord=0;
+						CommandTransmitter.sessionID = createNewSession();
+						session = CommandTransmitter.sessionID;
+					} else if (status.contentEquals("started")) {
+						session = CommandTransmitter.sessionID;
+					}
+				} catch (IOException e) {
+					Log.i("bot-bot",
+							"Unable to get status of the record. Application will continue without recording");
+				}
+			}
+			return session;
+		}
+		
+		String createNewSession() {
+			String genSessionId = "";
+			try{
 				URL url = null;
-				url = new URL(sUrl+"/api/recordsessions");
+				url = new URL(sUrl + "/api/recordsessions");
 				HttpURLConnection connection = (HttpURLConnection) url
 						.openConnection();
 				connection.setDoOutput(true);
@@ -110,7 +223,7 @@ public class CommandTransmitter {
 						"application/json; charset=UTF-8");
 				OutputStreamWriter out = new OutputStreamWriter(
 						connection.getOutputStream());
-				out.write("{\n\"name\":\""+sessionName+"\"\n}");
+				out.write("{\n\"name\":\"" + sessionName + "\",\"status\":\"started\"\n}");
 				out.close();
 
 				Map<String, List<String>> respHeaders = connection
@@ -118,89 +231,19 @@ public class CommandTransmitter {
 
 				if (connection.getResponseCode() == 201) {
 					String temp = respHeaders.get("Location").get(0);
-					System.out.print(temp);
-
-					CommandTransmitter.sessionID = temp.substring(temp
+					genSessionId = temp.substring(temp
 							.lastIndexOf("/") + 1);
 					Log.i("TASK", "Session ID received: "
-							+ CommandTransmitter.sessionID);
-					System.out.println("Connected ......"
-							+ CommandTransmitter.sessionID);
+							+ genSessionId);
 				} else {
-					System.out.println("Invalid Response");
-
+					throw new Exception("Invalid responce");
 				}
-			} catch (Exception e) {
-				System.out.println("Unable to create session because of task:"
-						+ e);
-				System.out
-						.println("System will continue to work without recording.");
-
+			}catch(Exception e){
+				Log.i("bot-bot","Unable to create record because of :" + e);
+				Log.i("bot-bot","System will continue to work without recording.");
 			}
 
-			while (true) {
-
-				try {
-					//it waits until queue is populated
-					postRecord(queue.take());
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-
-			}
-
-		}
-		//Performs writing data to the server
-
-		void postRecord(String data) {
-			// TODO Auto-generated method stub
-			try {
-				DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-				String currentDateTime = df.format(new Date());
-				System.out.println("In create record Async task"
-						+ CommandTransmitter.sessionID + data);
-				Log.i("Async DAta", data);
-				String postData="{\"entryNo\":\""+recordID+"\","+"\"prevEntryNo\":\""+prevRecord+"\",\"recordSession\":{\"id\":\""
-						+ CommandTransmitter.sessionID
-						+ "\"},\"entryTime\":\""+currentDateTime+"\",\"payload\":\""
-						+ data + "\"}";	
-				Log.i("postdata",postData);
-				URL url = null;
-				url = new URL(sUrl+"/api/recordentries");
-				HttpURLConnection connection = (HttpURLConnection) url
-						.openConnection();
-				connection.setDoOutput(true);
-				connection.setRequestProperty("Accept", "application/json");
-				connection.setRequestProperty("Content-Type",
-						"application/json; charset=UTF-8");
-				OutputStreamWriter out = new OutputStreamWriter(
-						connection.getOutputStream());
-				
-				out.write(postData);
-				out.close();
-				prevRecord=recordID;
-				recordID++;
-				Map<String, List<String>> respHeaders = connection
-						.getHeaderFields();
-
-				if (connection.getResponseCode() == 201) {
-					System.out.print(respHeaders.get("Location"));
-				} else {
-					System.out.println("Invalid Response");
-				}
-				BufferedReader in = new BufferedReader(new InputStreamReader(
-						connection.getInputStream()));
-				String inputLine;
-				while ((inputLine = in.readLine()) != null)
-					System.out.println(inputLine);
-				in.close();
-			} catch (Exception e) {
-				System.out.println("Unable to create record because of :" + e);
-				System.out
-						.println("System will continue to work without recording.");
-			}
-
+			return genSessionId;
 		}
 	}
 

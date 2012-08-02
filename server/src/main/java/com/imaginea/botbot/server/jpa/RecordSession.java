@@ -26,6 +26,7 @@ public class RecordSession implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String name;
+    private String status;
     
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "recordSession")
     private List<RecordEntry> recordEntries;
@@ -45,13 +46,21 @@ public class RecordSession implements Serializable {
     public void setName(String name) {
         this.name = name;
     }
-
+    
     public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
+    }
+    
+    public String getStatus(){
+        return this.status;    
+    }
+    
+    public void setStatus(String status){
+        this.status=status;
     }
 
     @Override

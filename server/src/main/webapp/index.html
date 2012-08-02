@@ -21,14 +21,20 @@
   </div>
   
   <div id="recordsHolder" style="display:none;">
-	<a id="exportcsv" target="_blank" href="#" style="position:absolute;right:80px;">Export as CSV</a>	
-	<h3>Records of session:  <span id="recordsHeading"></span></h3>
-	<div class="holderDiv">
-		<table width="100%" id="Records" cellpadding="5"></table>
-	</div>
 	<a class="back" href="#">Back</a>
 	<a href="#"> | </a>
 	<a class="refresh" href="#">Refresh</a>
+	<a id="exportcsv" target="_blank" href="#" style="position:absolute;right:140px;">Export as CSV</a>
+	<a href="#" style="position:absolute;right:125px;"> &nbsp;|&nbsp;</a>
+	<span id="state" style="position:absolute;right:80px;"></span>
+	<a href="#" style="position:absolute;right:60px;"> &nbsp;|&nbsp;</a>
+	<span id="stop" style="position:absolute;right:25px;"></span>	
+
+	<h3>Records of session:  <span id="recordsHeading" sessionuri="" sessionname="" sessionid=""></span> | Session state:  <span id="sessionstate"></span></h3>
+	<div class="holderDiv">
+		<table width="100%" id="Records" cellpadding="5"></table>
+	</div>
+	
 	<span id="addRecordDiv" class="rightFloater">
 		Add a new record after &nbsp;
 		<input class="afterBeforeRadio" type="radio" name="addPlaceLocator" value="after" checked/> After &nbsp;
@@ -87,7 +93,7 @@
 			type: 'GET',           
 			dataType: "json", 
 			success: function (json) {
-				var sessions = "<tr class='gradientBackground'><th>ID</th><th>Name</th><th>View</th><th>Delete</th></tr>";
+				var sessions = "<tr class='gradientBackground'><th>ID</th><th>Name</th><th>View</th><th>Delete</th><th>State</th></tr>";
 				if (json.recordSession == undefined) {
 					sessions = sessions + "<tr align='center'><td colspan='4'>No sessions found</td></tr>";
 				} else
@@ -95,10 +101,11 @@
 				{	
 					var sessionID = json.recordSession.id;
 					var sessionName = json.recordSession.name;
+					var sessionState = json.recordSession.status==undefined ? "Not known" : json.recordSession.status.toUpperCase();
 					var linkForRecords = json.recordSession.recordEntries['@uri'];
 					var linkForDelete = json.recordSession['@uri'];
 					
-					sessions = sessions +"<tr><td class='sessionID'>"+sessionID+"</td><td class='sessionName'>"+sessionName+"</td><td><a href='#' class='viewRecords' title='"+linkForRecords+"'>view Records</a></td><td><a href='#' class='deleteSession' title='"+linkForDelete+"'>Delete</a></td></tr>"; 	
+					sessions = sessions +"<tr><td class='sessionID'>"+sessionID+"</td><td class='sessionName'>"+sessionName+"</td><td><a href='#' class='viewRecords' title='"+linkForRecords+"'>view Records</a></td><td><a href='#' class='deleteSession' title='"+linkForDelete+"'>Delete</a></td><td class='sessionState'>"+sessionState+"</td></tr>"; 	
 				}
 				else
 				{
@@ -106,13 +113,14 @@
 					{
 						var sessionID = json.recordSession[i].id;
 						var sessionName = json.recordSession[i].name;
+						var sessionState = json.recordSession[i].status==undefined ? "Not known" : json.recordSession[i].status.toUpperCase();
 						var linkForRecords = json.recordSession[i].recordEntries['@uri'];
 						var linkForDelete = json.recordSession[i]['@uri'];
 						
 						if(i % 2 == 0)
-						sessions = sessions +"<tr><td class='sessionID'>"+sessionID+"</td><td class='sessionName'>"+sessionName+"</td><td><a href='#' class='viewRecords' title='"+linkForRecords+"'>view Records</a></td><td><a href='#' class='deleteSession' title='"+linkForDelete+"'>Delete</a></td></tr>"; 	
+						sessions = sessions +"<tr><td class='sessionID'>"+sessionID+"</td><td class='sessionName'>"+sessionName+"</td><td><a href='#' class='viewRecords' title='"+linkForRecords+"'>view Records</a></td><td><a href='#' class='deleteSession' title='"+linkForDelete+"'>Delete</a></td><td class='sessionState'>"+sessionState+"</td></tr>"; 	
 						else
-						sessions = sessions +"<tr class='alt'><td class='sessionID'>"+sessionID+"</td><td class='sessionName'>"+sessionName+"</td><td><a href='#' class='viewRecords' title='"+linkForRecords+"'>view Records</a></td><td><a href='#' class='deleteSession' title='"+linkForDelete+"'>Delete</a></td></tr>"; 	
+						sessions = sessions +"<tr class='alt'><td class='sessionID'>"+sessionID+"</td><td class='sessionName'>"+sessionName+"</td><td><a href='#' class='viewRecords' title='"+linkForRecords+"'>view Records</a></td><td><a href='#' class='deleteSession' title='"+linkForDelete+"'>Delete</a></td><td class='sessionState'>"+sessionState+"</td></tr>"; 	
 					}
 				}	
 				$('#Sessions').html(sessions);
@@ -369,19 +377,100 @@
 	$(".viewRecords").live("click", function(){	
 		var sessionName = $(this).parent().siblings('.sessionName').html();
 		var sessionID = $(this).parent().siblings('.sessionID').html();
-		
+		var sessionState = $(this).parent().siblings('.sessionState').html();
+		var recordURI = $(this).attr('title');	
+
 		$("#recordsHeading").html("<i>"+sessionName+"</i>");
-		
+		$("#recordsHeading").attr('sessionuri',recordURI.replace('/recordentries/',''));
+		$("#recordsHeading").attr('sessionname',sessionName);
+		$("#recordsHeading").attr('sessionid',sessionID);
+		$("#sessionstate").html("<i>"+sessionState+"</i>");
 		$("#sessionsHolder").hide();
 		$('#recordsHolder').show();
                 $("#exportcsv").attr("href","DownloadCsv?id="+sessionID)
 		
-		var recordURI = $(this).attr('title');		
+			
 		
 		$("#Records").attr("recordURI",recordURI);
 		$("#Records").attr("sessionID",sessionID);
+		if(sessionState.toLowerCase()=='paused' || sessionState.toLowerCase()=='started'){
+			if(sessionState.toLowerCase()=='paused'){
+				$('#state').html('<a class="state" href="#" >Start</a>');
+			}else{
+				$('#state').html('<a class="state" href="#" >Pause</a>');
+			}
+			$('#stop').html('<a class="stop" href="#" >Stop</a>');
+		}
 		
 		getRecords(recordURI);
+	});
+
+	$(".state").live("click", function(){	
+		var status = $('#sessionstate').text().toLowerCase();
+		var sessionId=$("#recordsHeading").attr('sessionid');
+		var sessionUri=$("#recordsHeading").attr('sessionuri');
+		var sessionName=$("#recordsHeading").attr('sessionname');
+		var recordURI=$('#Records').attr('recordURI');
+		var data = "";
+		var newStatus="";
+		var statusText="";
+		if( status == 'started'){
+			newStatus='paused';
+			statusText='Start';			
+			
+		}else if( status == 'paused'){
+			newStatus='started';
+			statusText='Pause';
+		}
+		if(newStatus!=''){
+		data='{';
+			data=data+'"id":"'+sessionId+'",';
+			data=data+'"name":"'+sessionName+'",';
+			data=data+'"status":"'+newStatus+'"}';
+		$.ajax({
+					url: sessionUri,
+					data: data,
+					type: 'PUT',            
+					processData:false,
+					contentType: "application/json",
+					dataType: "json",  
+					success: function(json, textStatus, jqXHR) {
+						$("#sessionstate").html("<i>"+newStatus.toUpperCase()+"</i>");
+						$('#state').html('<a class="state" href="#" >'+statusText+'</a>');
+					}
+				});
+		}
+	
+	});
+
+	$(".stop").live("click", function(){	
+		var sessionId=$("#recordsHeading").attr('sessionid');
+		var sessionUri=$("#recordsHeading").attr('sessionuri');
+		var sessionName=$("#recordsHeading").attr('sessionname');
+		var recordURI=$('#Records').attr('recordURI');
+		var data = "";
+		var newStatus='stopped';
+		var statusText="";
+			
+		data='{';
+			data=data+'"id":"'+sessionId+'",';
+			data=data+'"name":"'+sessionName+'",';
+			data=data+'"status":"'+newStatus+'"}';
+		$.ajax({
+					url: sessionUri,
+					data: data,
+					type: 'PUT',            
+					processData:false,
+					contentType: "application/json",
+					dataType: "json",  
+					success: function(json, textStatus, jqXHR) {
+						$("#sessionstate").html("<i>"+newStatus.toUpperCase()+"</i>");
+						$('#state').html(statusText);
+						$('#stop').html('');
+					}
+				});
+		
+	
 	});
 	
 	// a and be are object elements of your array

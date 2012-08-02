@@ -128,20 +128,25 @@ public class RecordSessionResource {
         List<RecordEntry> recordEntries = entity.getRecordEntries();
         List<RecordEntry> recordEntriesNew = newEntity.getRecordEntries();
         entity = em.merge(newEntity);
-        for (RecordEntry value : recordEntries) {
-            if (!recordEntriesNew.contains(value)) {
-                throw new WebApplicationException(new Throwable("Cannot remove items from records"));
-            }
-        }
-        for (RecordEntry value : recordEntriesNew) {
-            if (!recordEntries.contains(value)) {
-                RecordSession oldEntity = value.getRecordSession();
-                value.setRecordSession(entity);
-                if (oldEntity != null && !oldEntity.equals(entity)) {
-                    oldEntity.getRecordEntries().remove(value);
+        if (!recordEntriesNew.isEmpty()) {
+              for (RecordEntry value : recordEntries) {
+                if (!recordEntriesNew.contains(value)) {
+                    throw new WebApplicationException(new Throwable("Cannot remove items from records"));
                 }
             }
+            for (RecordEntry value : recordEntriesNew) {
+                if (!recordEntries.contains(value)) {
+                    RecordSession oldEntity = value.getRecordSession();
+                    value.setRecordSession(entity);
+                    if (oldEntity != null && !oldEntity.equals(entity)) {
+                        oldEntity.getRecordEntries().remove(value);
+                    }
+                }
+            }
+        } else {
+            entity.setRecordEntries(recordEntries);
         }
+        
         return entity;
     }
 
