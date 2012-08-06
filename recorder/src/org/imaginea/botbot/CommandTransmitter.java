@@ -6,7 +6,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintStream;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.Socket;
 import java.net.URL;
 import java.text.DateFormat;
@@ -15,7 +14,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import android.os.AsyncTask;
@@ -151,7 +149,13 @@ public class CommandTransmitter {
 							.getHeaderFields();
 
 					if (connection.getResponseCode() == 201) {
-						Log.i("bot-bot", respHeaders.get("Location").toString());
+						if (respHeaders.containsKey("Location")) {
+							Log.i("bot-bot", respHeaders.get("Location")
+									.toString());
+						} else {
+							Log.i("bot-bot", respHeaders.get("location")
+									.toString());
+						}
 					} else {
 						Log.i("bot-bot", "Invalid Response");
 					}
@@ -230,7 +234,13 @@ public class CommandTransmitter {
 						.getHeaderFields();
 
 				if (connection.getResponseCode() == 201) {
-					String temp = respHeaders.get("Location").get(0);
+					String temp;
+					if (respHeaders.containsKey("Location")) {
+						temp = respHeaders.get("Location").get(0);
+					} else {
+						temp = respHeaders.get("location").get(0);
+					}
+
 					genSessionId = temp.substring(temp
 							.lastIndexOf("/") + 1);
 					Log.i("TASK", "Session ID received: "
