@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="bot-bot-root">
+<project name="bot-bot-root" default="usage">
 
 	<import file="runner/build.xml"/>
 	<import file="recorder/build.xml"/>
@@ -15,7 +15,18 @@
 	</target>
 
 	<target name="server">
-		<java dir="./server/" fork="true" jar="bot-bot-server-standalone.jar"/>
+		<java dir="./server/" fork="true" jar="./server/bot-bot-server-standalone.jar"/>
+	</target>
+
+	<target name="usage">
+		<echo message="Following targets are available:" />
+<echo message=""/>
+<echo message=" server - Run the command 'ant server'. This will start your server and you can access the server at 'http://localhost:8080/index.html'"/>
+<echo message=""/>
+<echo message=" recorder - Run the command 'ant recorder'. This will take the configuration from the default.properties integrates the recorder with apk and install it to device or simulator."/>
+<echo message=""/>
+<echo message=" runner - Run the command 'ant runner'. This will take the test-cases from the folder mentioned in default.propeties, run them on your said app on the device/emulator and generates html report for your test execution.
+		"/>
 	</target>
 
 </project>
