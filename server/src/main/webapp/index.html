@@ -405,6 +405,59 @@
 		getRecords(recordURI);
 	});
 
+	$(".deleteRecords").live("click", function(){
+		var currentRecordURI = $(this).attr("title");
+		var newPrevEntryNo=$(this).parent().parent().attr('preventryno');
+		var $nxt = $(this).parent().parent().next();
+		var nextRecordURI = $nxt.attr("id");
+		var recordSession = $nxt.attr("title");
+		//console.log(recordSession);
+		var entryNo = $nxt.find('.entryNo').html();
+		var command = $nxt.find('.command').html();	
+		var className = '';
+		var args0 = $nxt.find('.args0').html();
+		var args0Data = ($nxt.find('.args0').attr('autocomplete-source')== undefined || $nxt.find('.args0').attr('autocomplete-source')=='') ? '[]' : $nxt.find('.args0').attr('autocomplete-source').replace(/"/g,'\\"');
+		var args1 = $nxt.find('.args1').html();	
+		var args2 = $nxt.find('.args2').html();
+		var oldArgs=[args0,args1,args2]
+		var finalOldData=getArgsPostData(oldArgs);
+		var recordID = $nxt.find('.recordID').html();
+		if((nextRecordURI!==undefined)&&(nextRecordURI.match('/'+"$")=='/')){
+			nextRecordURI=nextRecordURI.substr(0,nextRecordURI.length-1);
+		}
+		if(nextRecordURI!==undefined){		
+			var templast=nextRecordURI.lastIndexOf('/');		
+		recordID=nextRecordURI.substr(templast+1,nextRecordURI.length);
+		}	
+		var sibblingData = '{"entryNo":"'+entryNo+'","prevEntryNo":"'+newPrevEntryNo+'","id":"'+recordID+'","payload":"{\\\"command\\\":\\\"'+command+'\\\",\\\"viewClassName\\\":\\\"'+className +finalOldData+'\\\",\\\"args[0]-data\\\":' +args0Data+'}","recordSession":{"@uri":"'+recordSession+'"}}';
+		$.ajax({
+			url: currentRecordURI,
+			type: 'DELETE',            
+			contentType: "application/json",
+			dataType: "json", 
+			success: function(res) {
+				if(nextRecordURI!=undefined){				
+				$.ajax({
+					url: nextRecordURI,
+					data: sibblingData,
+					type: 'PUT',            
+					processData:false,
+					contentType: "application/json",
+					dataType: "json",  
+					success: function(json, textStatus, jqXHR) {
+					}
+				});		
+				}
+				var refreshURI=$("#Records").attr("recordURI");						
+				getRecords(refreshURI);
+			},
+			error: function(jqXHR, textStatus, errorThrown) {
+			  console.log(textStatus, errorThrown);
+			}
+		});
+		
+	});
+
 	$(".state").live("click", function(){	
 		var status = $('#sessionstate').text().toLowerCase();
 		var sessionId=$("#recordsHeading").attr('sessionid');
@@ -502,6 +555,7 @@
 					var recordURI = json.record['@uri'];	
 					var recordID = json.record.id;
 					var recordEntryNo = json.record.entryNo;
+					var recordPrevEntryNo=json.record.prevEntryNo;
 					var recordPayLoad = json.record.payload;
 					var payloadJSON = JSON.parse(recordPayLoad);
 					var recordPayLoadCommand = payloadJSON.command == undefined ?"":payloadJSON.command;
@@ -518,7 +572,7 @@
 					if(recordEntryNo > maxEntryNo)
 						maxEntryNo = recordEntryNo;
 					
-					records = records + "<tr class='row"+recordEntryNo+"' id='"+recordURI+"' title='"+recordSession+"'><td class='entryNo'>"+recordEntryNo+"</td><td class='command'>"+recordPayLoadCommand+"</td><td class='args0' autocomplete-source='" + recordPayLoadArgs0Data + "'>" +recordPayLoadArgs0+"</td><td class='args1'>"+recordPayLoadArgs1+"</td><td class='args2'>"+recordPayLoadArgs2+"</td><td><a href='#' class='editRecords' title='"+recordURI+"'>Edit</a></td></tr>"; 	
+					records = records + "<tr class='row"+recordEntryNo+"' id='"+recordURI+"' title='"+recordSession+"' entryno='"+recordEntryNo+"' preventryno='"+recordPrevEntryNo+"'><td class='entryNo'>"+recordEntryNo+"</td><td class='command'>"+recordPayLoadCommand+"</td><td class='args0' autocomplete-source='" + recordPayLoadArgs0Data + "'>" +recordPayLoadArgs0+"</td><td class='args1'>"+recordPayLoadArgs1+"</td><td class='args2'>"+recordPayLoadArgs2+"</td><td><a href='#' class='editRecords' title='"+recordURI+"'>Edit</a>&nbsp;|&nbsp;<a href='#' class='deleteRecords' title='"+recordURI+"'>Delete</a></td></tr>"; 	
 				}
 				else
 				{		
@@ -530,6 +584,7 @@
 						var recordURI = prevsorted[i]['@uri'];		
 						var recordID = prevsorted[i].id;
 						var recordEntryNo = prevsorted[i].entryNo;
+						var recordPrevEntryNo=prevsorted[i].prevEntryNo;
 						var recordPayLoad = prevsorted[i].payload;
 						var payloadJSON = JSON.parse(recordPayLoad);
 						var recordPayLoadCommand = payloadJSON.command == undefined ?"":payloadJSON.command;
@@ -548,9 +603,9 @@
 							maxEntryNo = recordEntryNo;
 					
 						if(i % 2 == 0)
-							records = records + "<tr class='row"+recordEntryNo+"' id='"+recordURI+"' title='"+recordSession+"'><td class='entryNo'>"+recordEntryNo+"</td><td class='command'>"+recordPayLoadCommand+"</td><td class='args0' autocomplete-source='" + recordPayLoadArgs0Data + "'>" +recordPayLoadArgs0+"</td><td class='args1'>"+recordPayLoadArgs1+"</td><td class='args2'>"+recordPayLoadArgs2+"</td><td><a href='#' class='editRecords' title='"+recordURI+"'>Edit</a></td></tr>"; 	
+							records = records + "<tr class='row"+recordEntryNo+"' id='"+recordURI+"' title='"+recordSession+"' entryno='"+recordEntryNo+"' preventryno='"+recordPrevEntryNo+"'><td class='entryNo'>"+recordEntryNo+"</td><td class='command'>"+recordPayLoadCommand+"</td><td class='args0' autocomplete-source='" + recordPayLoadArgs0Data + "'>" +recordPayLoadArgs0+"</td><td class='args1'>"+recordPayLoadArgs1+"</td><td class='args2'>"+recordPayLoadArgs2+"</td><td><a href='#' class='editRecords' title='"+recordURI+"'>Edit</a>&nbsp;|&nbsp;<a href='#' class='deleteRecords' title='"+recordURI+"'>Delete</a></td></tr>"; 	
 						else
-							records = records + "<tr class='alt row"+recordEntryNo+"' id='"+recordURI+"' title='"+recordSession+"' class='alt'><td class='entryNo'>"+recordEntryNo+"</td><td class='command'>"+recordPayLoadCommand+"</td><td class='args0' autocomplete-source='" + recordPayLoadArgs0Data + "'>"+recordPayLoadArgs0+"</td><td class='args1'>"+recordPayLoadArgs1+"</td><td class='args2'>"+recordPayLoadArgs2+"</td><td><a href='#' class='editRecords' title='"+recordURI+"'>Edit</a></td></tr>"; 	
+							records = records + "<tr class='alt row"+recordEntryNo+"' id='"+recordURI+"' title='"+recordSession+"' entryno='"+recordEntryNo+"' preventryno='"+recordPrevEntryNo+"' class='alt'><td class='entryNo'>"+recordEntryNo+"</td><td class='command'>"+recordPayLoadCommand+"</td><td class='args0' autocomplete-source='" + recordPayLoadArgs0Data + "'>"+recordPayLoadArgs0+"</td><td class='args1'>"+recordPayLoadArgs1+"</td><td class='args2'>"+recordPayLoadArgs2+"</td><td><a href='#' class='editRecords' title='"+recordURI+"'>Edit</a>&nbsp;|&nbsp;<a href='#' class='deleteRecords' title='"+recordURI+"'>Delete</a></td></tr>"; 	
 					}
 					/*
 					jQuery("#my-table").table2csv({
@@ -577,6 +632,7 @@
 	function fillRecordsCombo(recordEns)
 	{
 		var comboInnerHTML = "";
+		if(recordEns!=undefined){		
 		for(var i=0; i<recordEns.length; i++)
 		{
 			if(i == 0)
@@ -585,6 +641,7 @@
 				comboInnerHTML = comboInnerHTML + "<option value='"+recordEns[i-1]+"'>"+recordEns[i]+"</options>";
 		}
 		$('#recordsCombo').html(comboInnerHTML);
+		}
 	}
 
 
