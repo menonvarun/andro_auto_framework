@@ -4,23 +4,28 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.content.res.Resources.NotFoundException;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
 public class Command {
 	ViewClasses vc = new ViewClasses();
-
-	public Command() {
-
-	}
-
-	String userAction;
+	JSONObject json=new JSONObject();
+	String userAction="";
 	Object view;
 	List<Object> arguments;
 	int id = 0;
 	String viewClassName = "";
+	String commandData = "";
 
+	public Command() {
+
+	}
+	
 	public void add(String command, Object view, Object... args) {
 		this.userAction = command;
 		this.view = view;
@@ -37,7 +42,6 @@ public class Command {
 			arguments.add(0, (String)view);
 			this.userAction="clicktext";
 		}
-
 	}
 	
 	public void add(String command, String... args) {
@@ -77,6 +81,7 @@ public class Command {
 			if (command.contentEquals("click")) {
 				this.userAction = "clickbyid";
 			}
+			
 		} catch (NotFoundException e) {
 			//Escaping in case the rid resource is not found
 		}
@@ -100,25 +105,35 @@ public class Command {
 		}
 		return rid;
 	}
+	
+	private void createCommandData(){
+		try {
+			json.put("command", this.userAction);
 
-	public String getData() {
-		String data = "";
-		data = data.concat("\"command\":\"" + this.userAction + "\"");
-		data = data.concat(",\"viewClassName\":\"" + this.viewClassName + "\"");
-		int i=0;
-		for (Object args:arguments) {
-			data = data.concat(",\"args[" + i + "]\":\"" + args + "\"");
-			i++;
+			json.put("viewClassName", this.viewClassName);
+			for (int i = 0; i < arguments.size(); i++) {
+				json.put("args[" + i + "]", arguments.get(i));
+			}
+			commandData=json.toString();
+			commandData = commandData.replace("\"", "\\\"");
+			
+			Log.i("bot-bot","command data is:"+commandData);
+		} catch (JSONException e) {
+			Log.i("bot-bot", "unable to generate the JSON data in command.");
+			Log.i("bot-bot", e.getMessage());
 		}
-
-		data = data.replace("\"", "\\\"");
-		data = "{".concat(data).concat("}");
-		return data;
 	}
 
-	public void add(String command) {
-		this.userAction = command;
-		this.arguments= new ArrayList<Object>();
+	public String getData() {
+		if(commandData.contentEquals("")) createCommandData();
+		return commandData;
+	}
+
+	public void add(String data) {
+		this.commandData=data;
+		Log.i("bot-bot","Web Command data is:"+commandData);
+		this.commandData = this.commandData.replace("\\\"", "");
+		this.commandData = this.commandData.replace("\"", "\\\"");
 	}
 
 	@Override

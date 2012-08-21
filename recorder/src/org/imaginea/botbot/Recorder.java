@@ -112,25 +112,20 @@ public class Recorder {
 		Command command = new Command();
 		command.add(userAction);
 		publishCommand(command);
-		ct.publish(command);
 		commandList.add(command);
 	}
 	
-	public static void record(String userAction, String... args) {
-		
-		Command command = new Command();
-		command.add(userAction, args);
-
-		publishCommand(command);
-		commandList.add(command);
-		Log.i(LOG_TAG, "command received: " + command.toString());
-	}
-
 	public static void record(String userAction, MenuItem item) {
 		Command command = new Command();
 		command.add(userAction,item);
 		publishCommand(command);
-		ct.publish(command);
+		commandList.add(command);
+	}
+	
+	public static void webViewRecord(String data){
+		Command command=new Command();
+		command.add(data);
+		publishCommand(command);
 		commandList.add(command);
 	}
 	
