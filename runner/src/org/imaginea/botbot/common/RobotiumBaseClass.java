@@ -3,6 +3,9 @@ package org.imaginea.botbot.common;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.imaginea.botbot.webview.WebViewRunnerClient;
+import org.imaginea.botbot.webview.WebViewUtil;
+
 import com.jayway.android.robotium.solo.Solo;
 
 import junit.framework.Assert;
@@ -50,6 +53,7 @@ public class RobotiumBaseClass extends ActivityInstrumentationTestCase2 {
 		Resources resources =context.getResources();
 		assetManager = resources.getAssets();
 		prefrences.setExecutionContext(solo);
+		WebViewRunnerClient.setAssetManager(assetManager);
 	}
 
 	@Override
