@@ -14,10 +14,9 @@ import android.webkit.WebView;
 public class WebViewUtil {
 	
 	private static AssetManager assetManager;
-	private static String jqueryScript,runnerScript,jsScript;
+	private static String jqueryScript,runnerScript;
 	public static void setAssetManager(AssetManager assetManager){
 		WebViewUtil.assetManager=assetManager;
-		//WebViewUtil.jsScript=getLoadedScripts();
 		WebViewUtil.jqueryScript=openJs("jquery1.7.2.js");
 		WebViewUtil.runnerScript=openJs("testrunner.js");
 	}
