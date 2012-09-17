@@ -32,7 +32,9 @@ public class EventAdderClient extends WebViewClient{
 	}
 	@Override
 	public void onPageFinished(WebView view, String url) {
-		view.loadUrl("javascript:"+this.openJs("jquery1.7.2.js")+this.openJs("recorder.js")+"botbot.addListener();");
+		view.loadUrl("javascript:"+this.openJs("jquery1.7.2.js"));
+		view.loadUrl("javascript:"+this.openJs("recorder.js"));
+		view.loadUrl("javascript:"+"botbot.addListener();");
 	}
 	
 	@Override

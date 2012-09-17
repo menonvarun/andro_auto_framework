@@ -13,6 +13,8 @@ import android.content.Context;
 import android.text.InputType;
 import android.util.Log;
 import android.view.*;
+import android.webkit.ConsoleMessage;
+import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -112,6 +114,14 @@ public class ListenerAdder {
 		if(view instanceof WebView){
 			((WebView)view).addJavascriptInterface(new RecorderInterface(), "irecorder");
 			((WebView)view).setWebViewClient(new EventAdderClient());
+			((WebView)view).setWebChromeClient(new WebChromeClient() {
+				@Override
+				public boolean onConsoleMessage(ConsoleMessage cm) {
+					Log.i("bot-bot", cm.message()+ " -- From line "
+							+ cm.lineNumber() + " of " + cm.toString());
+					return true;
+				}
+			});
 			return;
 		}
 		if (containsClick || (view instanceof ImageView)) {
