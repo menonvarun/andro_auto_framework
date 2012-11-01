@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 
 import junit.framework.Assert;
 
+import android.app.Activity;
 import android.content.res.AssetManager;
 import android.os.SystemClock;
 import android.util.Log;
@@ -18,7 +19,7 @@ public class WebViewUtil {
 	public static void setAssetManager(AssetManager assetManager){
 		WebViewUtil.assetManager=assetManager;
 		WebViewUtil.jqueryScript=openJs("jquery1.7.2.js");
-		WebViewUtil.runnerScript=openJs("testrunner.js");
+		WebViewUtil.runnerScript=openJs("runner.js");
 	}
 	
 	private static String openJs(String fileName) {
@@ -77,8 +78,8 @@ public class WebViewUtil {
 	}
 	
 	private void loadScripts(WebView view){
-		view.loadUrl("javascript: "+jqueryScript);
-		view.loadUrl("javascript: "+runnerScript);
+		executeJavaScript(view, "javascript: "+jqueryScript);
+		executeJavaScript(view, "javascript: "+runnerScript);
 	}
 	
 	public void clickElement(WebViewInfo viewInfo,String locator,int index){
@@ -88,7 +89,8 @@ public class WebViewUtil {
 		loadScripts(view);
 		String executeScript="javascript:";
 		executeScript+=" botbotrunner.clickwebelement('"+locator+"',"+index+");";
-		view.loadUrl(executeScript);
+		
+		executeJavaScript(view,executeScript);
 		
 		boolean success= waitForCommandSuccess(runnerInterface);
 		String errorMsg=runnerInterface.getMessage();
@@ -102,7 +104,7 @@ public class WebViewUtil {
 		loadScripts(view);
 		String executeScript="javascript:";
 		executeScript+=" botbotrunner.clickwebtext('"+text+"',"+index+");";
-		view.loadUrl(executeScript);
+		executeJavaScript(view,executeScript);
 		
 		boolean success= waitForCommandSuccess(runnerInterface);
 		String errorMsg=runnerInterface.getMessage();
@@ -116,7 +118,7 @@ public class WebViewUtil {
 		loadScripts(view);
 		String executeScript="javascript:";
 		executeScript+=" botbotrunner.enterwebtext('"+locator+"',"+index+",'"+text+"');";
-		view.loadUrl(executeScript);
+		executeJavaScript(view,executeScript);
 		
 		boolean success= waitForCommandSuccess(runnerInterface);
 		String errorMsg=runnerInterface.getMessage();
@@ -130,7 +132,7 @@ public class WebViewUtil {
 		loadScripts(view);
 		String executeScript="javascript:";
 		executeScript+=" botbotrunner.iselementpresent('"+locator+"',"+index+");";
-		view.loadUrl(executeScript);
+		executeJavaScript(view,executeScript);
 		return waitForElement(runnerInterface);
 	}
 	
@@ -141,7 +143,15 @@ public class WebViewUtil {
 		loadScripts(view);
 		String executeScript="javascript:";
 		executeScript+=" botbotrunner.istextpresent('"+text+"',"+index+");";
-		view.loadUrl(executeScript);
+		executeJavaScript(view,executeScript);
 		return waitForElement(runnerInterface);
+	}
+	
+	public void executeJavaScript(WebView view,String script){
+		Activity currentActivity=(Activity) view.getContext();
+		
+		WebViewCommandRunner scriptRunner = new WebViewCommandRunner(view, script);
+		UIThreadRunnerUtil scriptRunUtil=new UIThreadRunnerUtil(currentActivity, scriptRunner);
+		scriptRunUtil.startOnUiAndWait();
 	}
 }

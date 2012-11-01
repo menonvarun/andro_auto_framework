@@ -7,6 +7,9 @@ import junit.framework.Assert;
 
 import org.imaginea.botbot.common.Command;
 import org.imaginea.botbot.common.Prefrences;
+import org.imaginea.botbot.webview.UIThreadRunnerUtil;
+import org.imaginea.botbot.webview.UiRunnableListener;
+import org.imaginea.botbot.webview.WebViewCommandRunner;
 import org.imaginea.botbot.webview.WebViewInfo;
 import org.imaginea.botbot.webview.WebViewRunnerClient;
 import org.imaginea.botbot.webview.WebViewRunnerInterface;
@@ -70,17 +73,12 @@ public class WebViewDefinition extends BaseKeywordDefinitions {
 						WebViewRunnerInterface webIntrfc = new WebViewRunnerInterface();
 						WebViewRunnerClient webClient = new WebViewRunnerClient();
 						
-						((WebView) view).addJavascriptInterface(webIntrfc,"ibotbot");
-						((WebView) view).setWebViewClient(webClient);
-						((WebView) view).setWebChromeClient(new WebChromeClient() {
-							@Override
-							public boolean onConsoleMessage(ConsoleMessage cm) {
-								Log.i("bot-bot", cm.message()+ " -- From line "
-										+ cm.lineNumber() + " of " + cm.toString());
-								return true;
-							}
-						});
-						((WebView) view).reload();
+						Activity currentActivity=(Activity) view.getContext();
+						
+						InitWebView initWebView = new InitWebView((WebView)view, webIntrfc, webClient);
+						UIThreadRunnerUtil scriptRunUtil=new UIThreadRunnerUtil(currentActivity,initWebView);
+						scriptRunUtil.startOnUiAndWait();						
+						
 						viewInfoList.add(new WebViewInfo().setView((WebView)view).setRunnerClient(webClient).setRunnerInterface(webIntrfc));
 					}
 				}
@@ -198,6 +196,35 @@ public class WebViewDefinition extends BaseKeywordDefinitions {
 			}
 		} catch (InterruptedException e) {
 		}
+	}
+	
+	private class InitWebView implements UiRunnableListener {
+		private WebView view;
+		private WebViewRunnerInterface webIntrfc;
+		private WebViewRunnerClient webClient;
+
+		public InitWebView(WebView view, WebViewRunnerInterface webIntrfc,
+				WebViewRunnerClient webClient) {
+			this.view = view;
+			this.webIntrfc = webIntrfc;
+			this.webClient = webClient;
+		}
+
+		public void onRunOnUIThread() {
+			view.addJavascriptInterface(webIntrfc, "ibotbot");
+			view.setWebViewClient(webClient);
+			view.setWebChromeClient(new WebChromeClient() {
+				@Override
+				public boolean onConsoleMessage(ConsoleMessage cm) {
+					Log.i("bot-bot",
+							cm.message() + " -- From line " + cm.lineNumber()
+									+ " of " + cm.toString());
+					return true;
+				}
+			});
+			view.reload();
+		}
+
 	}
 
 }
