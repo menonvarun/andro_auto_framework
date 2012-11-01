@@ -38,8 +38,8 @@
 	
 	<property name="dx" location="${env.ANDROID_HOME}/platform-tools/dx${bat}" />
 	<property name="apkbuilder" location="${env.ANDROID_HOME}/tools/apkbuilder${bat}" />
-	<property name="dex2jar" location="./lib/dex2jar-0.0.9.8/d2j-dex2jar${ext}" />
-	<property name="asm-verify" location="./lib/dex2jar-0.0.9.8/d2j-asm-verify${ext}" />
+	<property name="dex2jar" location="./lib/dex2jar-0.0.9.9/d2j-dex2jar${ext}" />
+	<property name="asm-verify" location="./lib/dex2jar-0.0.9.9/d2j-asm-verify${ext}" />
 	<property name="dex2jar.decoded.jar" location="${bin.dir}/dex2jar-decoded.jar" />
 	<property name="dex2jar.decoded.dir" location="${bin.dir}/dex2jar-decoded" />
 	<property name="android.lib" location="${env.ANDROID_HOME}/platforms/android-10"/>
@@ -183,8 +183,9 @@
 
 	<target name="dex">
 		<mkdir dir="${dex.dir}"/>
-		<exec executable="${dx}" failonerror="yes">
+		<exec executable="${dx}" failonerror="false">
 			<arg value="--dex" />
+			<arg value="--no-locals" />
 			<arg value="--output" />
 			<arg file="${dex.file}" />
 			<arg path="${aop}" />

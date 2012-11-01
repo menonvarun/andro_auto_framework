@@ -27,7 +27,7 @@ public class Convertor {
 	public static void main(String[] args) throws IOException {
 		Convertor con = new Convertor();
 		con.rewriteCode(args[0],args[1]);
-		con.showFile(args[1]);
+	//	con.showFile(args[1]);
 	}
 
 	public void rewriteCode(String dirPath,String outPath) throws FileNotFoundException,
