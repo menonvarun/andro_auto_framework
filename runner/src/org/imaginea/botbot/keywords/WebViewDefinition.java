@@ -71,7 +71,7 @@ public class WebViewDefinition extends BaseKeywordDefinitions {
 					if (view.getClass().isAssignableFrom(WebView.class)) {
 						available = true;
 						WebViewRunnerInterface webIntrfc = new WebViewRunnerInterface();
-						WebViewRunnerClient webClient = new WebViewRunnerClient();
+						WebViewRunnerClient webClient = new WebViewRunnerClient((WebView)view);
 						
 						Activity currentActivity=(Activity) view.getContext();
 						
