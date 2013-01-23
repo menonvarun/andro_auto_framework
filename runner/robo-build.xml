@@ -10,16 +10,17 @@
 	<property name="tested.package_name" value="${APP_PACKAGE}" />
 	<property name="tested.main_activity" value="${DEFAULT_ACTIVITY}" />
 	<property name="tested.project.apk" value="../${TEST_APK_FILENAME}" />
-	<property name="staging.dir" location="staging" />
+	<property name="staging.dir" location="${robo.bin.dir}/staging" />
 	<property name="main.dir" location="." />
 	<property name="test.app.dir" location="resources/robotium-files/bot-bot-test" />
-	<property name="bin.dir" location="robo-bin" />
+	<property name="robo.bin.dir" location="robo-bin" />
+	<property name="bin.dir" location="${robo.bin.dir}/bin-dir" />
 	<property name="test.app" location="${bin.dir}/bot-bot.apk" />
 	<property name="test.app.aapt" location="${bin.dir}/bot-bot_aapt.apk" />
 	<property name="dex.file" location="${bin.dir}/classes.dex" />
 	<property name="test.app.unsigned" location="${bin.dir}/bot-bot_unsigned.apk" />
 	<property name="test.app.signed" location="${bin.dir}/bot-bot.apk" />
-	<property name="resign.folder" location="resignapk" />
+	<property name="resign.folder" location="${robo.bin.dir}/resignapk" />
 	<property name="app.unsigned" location="${resign.folder}/app_unsigned.apk" />
 	<property name="app.signed" location="${resign.folder}/app_signed.apk" />
 	<property name="BASE_PACKAGE_FOLDER" value="org/imaginea/botbot" />
@@ -35,7 +36,7 @@
 	<property name="dx" location="${env.ANDROID_HOME}/platform-tools/dx${bat}" />
 	<property name="apkbuilder" location="${env.ANDROID_HOME}/tools/apkbuilder${bat}" />
 
-	<property name="android.lib" location="${env.ANDROID_HOME}/platforms/android-10" />
+	<property name="android.lib" location="${env.ANDROID_HOME}/platforms/${ANDROID_VERSION}" />
 	<path id="android.antlibs">
 		<pathelement path="${env.ANDROID_HOME}/tools/lib/anttasks.jar" />
 	</path>
@@ -232,7 +233,7 @@
 	</target>
 
 	<target name="-sign">
-		<signjar jar="${test.app.unsigned}" signedjar="${test.app.signed}" keystore="${key.store}" storepass="${key.store.password}" alias="${key.alias}" keypass="${key.alias.password}" verbose="false" />
+		<signjar jar="${test.app.unsigned}" signedjar="${test.app.signed}" keystore="${key.store}" storepass="${key.store.password}" alias="${key.alias}" keypass="${key.alias.password}" verbose="false" sigalg="MD5withRSA" digestalg="SHA1"/>
 	</target>
 	
 	<target name="-robo-junit-report" description="Get the junit report from emulator and generate report for it.">
