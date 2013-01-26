@@ -10,10 +10,10 @@
 	<property name="tested.package_name" value="${APP_PACKAGE}" />
 	<property name="tested.main_activity" value="${DEFAULT_ACTIVITY}" />
 	<property name="tested.project.apk" value="../${TEST_APK_FILENAME}" />
-	<property name="staging.dir" location="${robo.bin.dir}/staging" />
 	<property name="main.dir" location="." />
 	<property name="test.app.dir" location="resources/robotium-files/bot-bot-test" />
-	<property name="robo.bin.dir" location="robo-bin" />
+	<property name="robo.bin.dir" location="${main.dir}/robo-bin" />
+	<property name="staging.dir" location="${robo.bin.dir}/staging" />
 	<property name="bin.dir" location="${robo.bin.dir}/bin-dir" />
 	<property name="test.app" location="${bin.dir}/bot-bot.apk" />
 	<property name="test.app.aapt" location="${bin.dir}/bot-bot_aapt.apk" />
@@ -209,7 +209,7 @@
 	</target>
 
 	<target name="-stage.libs">
-		<copy file="${staging.dir}/libs/robotium-solo-3.3.jar" todir="${bin.dir}/libs" />
+		<copy file="${staging.dir}/libs/robotium-solo-3.6.jar" todir="${bin.dir}/libs" />
 		<copy file="${staging.dir}/libs/opencsv-2.3.jar" todir="${bin.dir}/libs" />
 		<copy file="${staging.dir}/libs/testng-6.1.1.jar" todir="${bin.dir}/libs" />
 		<copy file="${staging.dir}/libs/client-standalone.jar" todir="${bin.dir}/libs" />
