@@ -190,7 +190,8 @@ public class CommandTransmitter {
 							new InputStreamReader(connection.getInputStream()));
 					StringBuffer sb = new StringBuffer();
 					String line;
-					while ((line = rd.readLine()) != null) {
+					while (rd.ready()) {
+						line = rd.readLine();
 						sb.append(line);
 					}
 					rd.close();
@@ -209,6 +210,8 @@ public class CommandTransmitter {
 				} catch (IOException e) {
 					Log.i("bot-bot",
 							"Unable to get status of the record. Application will continue without recording");
+					Log.i("bot-bot","Url is : "+ sUrl + "/api/recordsessions/"+CommandTransmitter.sessionID);
+					Log.i("bot-bot", "Error is: "+e.toString());
 				}
 			}
 			return session;

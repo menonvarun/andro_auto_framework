@@ -3,7 +3,7 @@
 	<name>bot-bot-test</name>
 	<comment></comment>
 	<projects>
-		<project>AndroidCalculator</project>
+		<project>Wordpress</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
