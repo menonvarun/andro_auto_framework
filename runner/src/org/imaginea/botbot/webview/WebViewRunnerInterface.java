@@ -5,6 +5,7 @@ import junit.framework.Assert;
 public class WebViewRunnerInterface {
 	private boolean successfull;
 	private boolean elementFound;
+	private boolean textFound;
 	private String message;
 	
 	public WebViewRunnerInterface(){
@@ -14,6 +15,7 @@ public class WebViewRunnerInterface {
 	private void resetValues(){
 		this.successfull=false;
 		this.elementFound=false;
+		this.textFound=false;
 		this.message="No message defined";
 	}
 	
@@ -45,8 +47,18 @@ public class WebViewRunnerInterface {
 		this.elementFound=true;
 	}
 	
+	public void textFound(){
+		this.textFound=true;
+	}
+	
 	public boolean isElementFound(){
 		boolean temp=this.elementFound;
+		resetValues();
+		return temp;
+	}
+	
+	public boolean isTextFound(){
+		boolean temp=this.textFound;
 		resetValues();
 		return temp;
 	}
