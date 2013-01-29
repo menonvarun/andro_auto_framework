@@ -94,6 +94,10 @@ public class WebViewDefinition extends BaseKeywordDefinitions {
 		this.waitforelementpresent(locator, index, TIMEOUT);
 	}
 	
+	public void waitforelementpresent(String locator){
+		this.waitforelementpresent(locator, 0, TIMEOUT);
+	}
+	
 	public void clickwebelement(String locator,int index){
 		boolean executed=false;
 			for (WebViewInfo viewInfo : viewInfoList) {

@@ -51,6 +51,7 @@ public class RobotiumBaseClass extends ActivityInstrumentationTestCase2 {
 		Context context=getInstrumentation().getContext();
 		Resources resources =context.getResources();
 		assetManager = resources.getAssets();
+		prefrences.setAssetManager(assetManager);
 		prefrences.setExecutionContext(solo);
 		WebViewUtil.setAssetManager(assetManager);
 	}
