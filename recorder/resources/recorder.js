@@ -15,7 +15,7 @@ function botbotutil() {
     };
 
     this.getLocator = function () {
-        var tag = this.attrvalue['tag'];
+        var tag = !this.attrvalue['tag'] ? '' : this.attrvalue['tag'];
         var id = !this.attrvalue['id'] ? '' : this.attrvalue['id'];
         var name = !this.attrvalue['name'] ? '' : this.attrvalue['name'];
         var cls = !this.attrvalue['class'] ? '' : this.attrvalue['class'].replace(/\s/g, '.');
@@ -63,7 +63,9 @@ function botbotutil() {
             this.attrvalue['tag'] = $(ele)[0].nodeName.toLowerCase();
         }
         if ($(ele).text() != '') {
-            this.attrvalue['text'] = $(ele).text();
+        	var text = $(ele).text();
+        	text=text.replace(/[\n\r\t]/g, "");
+            this.attrvalue['text'] = text;
         }
 
         var locator = this.getLocator();
@@ -101,8 +103,7 @@ var botbot = {
 			window.irecorder.record(JSON.stringify(data));
         }, true);
 
-
-        $('input[type="text"], input[type="password"]').on('change', function (e) {
+        $('input[type="text"],input[type="textbox"], input[type="password"]').on('change', function (e) {
             var ele = e.target;
             var util = window._botbotutil;
             var attrvalue = util.getCollectedElementInfo(ele);
@@ -123,5 +124,7 @@ var botbot = {
             data['args[0]-data'] = aValues;
             window.irecorder.record(JSON.stringify(data));
         });
+        
+        console.log("Added bot-bot liteners");
     }
 };
