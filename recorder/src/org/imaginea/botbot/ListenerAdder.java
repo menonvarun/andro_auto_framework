@@ -129,7 +129,7 @@ public class ListenerAdder {
 			System.out.println("Adding onClickListener for :"+ view.getClass().getName());
 			view.setOnClickListener(new OnClickListenerTest());
 			if (view instanceof EditText) {
-				((EditText) view).setInputType(InputType.TYPE_NULL);
+				//((EditText) view).setInputType(InputType.TYPE_NULL);
 				((TextView) view).addTextChangedListener(new TextListner(
 						(TextView) view));
 				processedView.add(view);
