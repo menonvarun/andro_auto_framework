@@ -20,6 +20,7 @@ public class KeywordCaller {
 		prefrences.setFramework(framework);
 		keywordDefinitions.add(new NativeDriverKeywordDefinitions(prefrences));
 		keywordDefinitions.add(new RobotiumKeywordDefinition(prefrences));
+		keywordDefinitions.add(new WebViewDefinition(prefrences));
 		keywordDefinitions.add(new DynamicExecution(prefrences));
 	}
 
