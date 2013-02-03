@@ -9,7 +9,6 @@ import org.imaginea.botbot.common.Command;
 import org.imaginea.botbot.common.Prefrences;
 import org.imaginea.botbot.webview.UIThreadRunnerUtil;
 import org.imaginea.botbot.webview.UiRunnableListener;
-import org.imaginea.botbot.webview.WebViewCommandRunner;
 import org.imaginea.botbot.webview.WebViewInfo;
 import org.imaginea.botbot.webview.WebViewRunnerClient;
 import org.imaginea.botbot.webview.WebViewRunnerInterface;
@@ -18,9 +17,6 @@ import org.imaginea.botbot.webview.WebViewUtil;
 import android.os.SystemClock;
 import android.view.View;
 import android.app.Activity;
-import android.util.Log;
-import android.webkit.ConsoleMessage;
-import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 
 import com.jayway.android.robotium.solo.Solo;
@@ -57,6 +53,9 @@ public class WebViewDefinition extends BaseKeywordDefinitions {
 	}
 	
 	private boolean isWebViewAvailable(){
+		if(prevActivity!=null && prevActivity==solo.getCurrentActivity())
+			return true;
+		
 		boolean available = false;
 		final long endTime = SystemClock.uptimeMillis() + 10000;
 		while((SystemClock.uptimeMillis() < endTime) & !available){
@@ -66,17 +65,18 @@ public class WebViewDefinition extends BaseKeywordDefinitions {
 			if (views.size() > 0) {
 				for (View view : views) {
 					if (view.getClass().isAssignableFrom(WebView.class)) {
+						WebView wview=(WebView)view;
 						available = true;
 						WebViewRunnerInterface webIntrfc = new WebViewRunnerInterface();
 						WebViewRunnerClient webClient = new WebViewRunnerClient((WebView)view);
 						
 						Activity currentActivity=(Activity) view.getContext();
 						
-						InitWebView initWebView = new InitWebView((WebView)view, webIntrfc, webClient);
+						InitWebView initWebView = new InitWebView(wview, webIntrfc, webClient);
 						UIThreadRunnerUtil scriptRunUtil=new UIThreadRunnerUtil(currentActivity,initWebView);
 						scriptRunUtil.startOnUiAndWait();						
 						
-						viewInfoList.add(new WebViewInfo().setView((WebView)view).setRunnerClient(webClient).setRunnerInterface(webIntrfc));
+						viewInfoList.add(new WebViewInfo().setView(wview).setRunnerClient(webClient).setRunnerInterface(webIntrfc));
 					}
 				}
 			}
@@ -222,8 +222,8 @@ public class WebViewDefinition extends BaseKeywordDefinitions {
 									+ " of " + cm.toString());
 					return true;
 				}
-			});
-			view.reload();*/
+			});*/
+			view.reload();
 		}
 
 	}
