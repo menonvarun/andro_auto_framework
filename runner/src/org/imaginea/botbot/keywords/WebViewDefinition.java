@@ -17,6 +17,7 @@ import org.imaginea.botbot.webview.WebViewUtil;
 import android.os.SystemClock;
 import android.view.View;
 import android.app.Activity;
+import android.content.Intent;
 import android.webkit.WebView;
 
 import com.jayway.android.robotium.solo.Solo;
@@ -26,7 +27,7 @@ public class WebViewDefinition extends BaseKeywordDefinitions {
 	private ArrayList<WebViewInfo> viewInfoList = new ArrayList<WebViewInfo>();
 	private WebViewUtil webUtil=new WebViewUtil();
 	private int TIMEOUT=30000;
-	private Activity prevActivity;
+	private static String prevActivity;
 	
 	public WebViewDefinition(Prefrences prefrences){
 		Object executionContext=prefrences.getExecutionContext();
@@ -53,14 +54,14 @@ public class WebViewDefinition extends BaseKeywordDefinitions {
 	}
 	
 	private boolean isWebViewAvailable(){
-		if(prevActivity!=null && prevActivity==solo.getCurrentActivity())
+		if(prevActivity!=null && WebViewDefinition.prevActivity.contentEquals(solo.getCurrentActivity().getClass().toString()))
 			return true;
 		
 		boolean available = false;
 		final long endTime = SystemClock.uptimeMillis() + 10000;
 		while((SystemClock.uptimeMillis() < endTime) & !available){
 			ArrayList<View> views = solo.getViews();
-			prevActivity=solo.getCurrentActivity();
+			WebViewDefinition.prevActivity=solo.getCurrentActivity().getClass().toString();
 			viewInfoList.clear();
 			if (views.size() > 0) {
 				for (View view : views) {
@@ -74,8 +75,9 @@ public class WebViewDefinition extends BaseKeywordDefinitions {
 						
 						InitWebView initWebView = new InitWebView(wview, webIntrfc, webClient);
 						UIThreadRunnerUtil scriptRunUtil=new UIThreadRunnerUtil(currentActivity,initWebView);
-						scriptRunUtil.startOnUiAndWait();						
-						
+						scriptRunUtil.startOnUiAndWait();
+						Activity viewActivity= (Activity)wview.getContext();
+						solo.waitForActivity(viewActivity.getClass().toString());
 						viewInfoList.add(new WebViewInfo().setView(wview).setRunnerClient(webClient).setRunnerInterface(webIntrfc));
 					}
 				}
@@ -144,7 +146,7 @@ public class WebViewDefinition extends BaseKeywordDefinitions {
 		waitforelementpresent(locator, index);
 		boolean executed=false;
 			for (WebViewInfo viewInfo : viewInfoList) {
-				if(webUtil.isElementPresent(viewInfo, locator, index) && !executed){
+				if(!executed){
 					webUtil.clickElement(viewInfo, locator, index);
 					executed=true;
 				}
@@ -157,7 +159,7 @@ public class WebViewDefinition extends BaseKeywordDefinitions {
 		waitfortextpresent(text, index);
 		boolean executed=false;
 			for (WebViewInfo viewInfo : viewInfoList) {
-				if(webUtil.isTextPresent(viewInfo, text, index) && !executed){
+				if(!executed){
 					webUtil.clickElementBasedOnText(viewInfo, text, index);
 					executed=true;
 				}
@@ -174,7 +176,7 @@ public class WebViewDefinition extends BaseKeywordDefinitions {
 		waitforelementpresent(locator, index);
 		boolean executed=false;
 		for (WebViewInfo viewInfo : viewInfoList) {
-			if(webUtil.isElementPresent(viewInfo, locator, index) && !executed){
+			if(!executed){
 				webUtil.enterText(viewInfo, locator, index, text);
 				executed=true;
 			}
@@ -213,17 +215,11 @@ public class WebViewDefinition extends BaseKeywordDefinitions {
 
 		public void onRunOnUIThread() {
 			view.addJavascriptInterface(webIntrfc, "ibotbot");
-			/*view.setWebViewClient(webClient);
-			view.setWebChromeClient(new WebChromeClient() {
-				@Override
-				public boolean onConsoleMessage(ConsoleMessage cm) {
-					Log.i("bot-bot",
-							cm.message() + " -- From line " + cm.lineNumber()
-									+ " of " + cm.toString());
-					return true;
-				}
-			});*/
 			view.reload();
+			Activity act=(Activity)view.getContext();
+			Intent intent= act.getIntent();
+			act.startActivity(intent);
+			//view.reload();			
 		}
 
 	}

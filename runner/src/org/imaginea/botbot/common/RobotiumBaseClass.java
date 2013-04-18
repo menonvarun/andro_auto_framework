@@ -54,6 +54,7 @@ public class RobotiumBaseClass extends ActivityInstrumentationTestCase2 {
 		prefrences.setAssetManager(assetManager);
 		prefrences.setExecutionContext(solo);
 		WebViewUtil.setAssetManager(assetManager);
+		solo.waitForActivity(solo.getCurrentActivity().getClass().toString());
 	}
 
 	@Override

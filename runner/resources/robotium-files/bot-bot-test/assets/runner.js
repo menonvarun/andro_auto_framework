@@ -35,6 +35,7 @@ var botbotrunner = {
             window.ibotbot.setMessage("Element not available on page");
         } else if (this.isDisplayed(ele)) {
             $(ele).val(text);
+            this.fireEvent(ele);
             window.ibotbot.successfull();
         } else {
            	window.ibotbot.setMessage("Element not visible.");
@@ -63,6 +64,12 @@ var botbotrunner = {
 
     isDisplayed:function (ele) {
         return $(ele).is(':visible');
-    }
+    },
+    
+    fireEvent:function (target) {
+    var evt = document.createEvent("UIEvent");
+    evt.initEvent("keyup", true, true);
+    target.dispatchEvent(evt);
+	}
 
 }
