@@ -1,6 +1,5 @@
 package org.imaginea.botbot.webview;
 
-import android.graphics.Bitmap;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 

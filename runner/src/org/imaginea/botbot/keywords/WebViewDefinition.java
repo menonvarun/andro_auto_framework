@@ -201,6 +201,9 @@ public class WebViewDefinition extends BaseKeywordDefinitions {
 		}
 	}
 	
+	/**
+	 * Initializes the webview and adds the Javascript interface to the view
+	 */
 	private class InitWebView implements UiRunnableListener {
 		private WebView view;
 		private WebViewRunnerInterface webIntrfc;

@@ -1,7 +1,12 @@
 package org.imaginea.botbot.webview;
 
 import android.webkit.WebView;
-
+/**
+ * Stores the information of a webview
+ * 
+ * @author Varun Menon
+ *
+ */
 public class WebViewInfo {
 	private WebView view;
 	private WebViewRunnerClient runnerClient;

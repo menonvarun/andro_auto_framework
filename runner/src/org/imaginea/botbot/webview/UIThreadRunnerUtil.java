@@ -3,9 +3,7 @@ package org.imaginea.botbot.webview;
 import android.app.Activity;
 
 /**
- * Blocking Runnable executing on UI thread
- * 
- * @author
+ * Used to execute commands on the UI thread.
  * 
  */
 

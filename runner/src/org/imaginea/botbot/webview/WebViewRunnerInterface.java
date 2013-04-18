@@ -1,7 +1,12 @@
 package org.imaginea.botbot.webview;
 
 import junit.framework.Assert;
-
+/**
+ * THe java script interface to be used along with the webview
+ * 
+ * @author Varun Menon
+ *
+ */
 public class WebViewRunnerInterface {
 	private boolean successfull;
 	private boolean elementFound;

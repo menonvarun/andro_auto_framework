@@ -1,9 +1,7 @@
 package org.imaginea.botbot.webview;
 
 /**
- * Events for blocking runnable executing on UI thread
- * 
- * @author
+ * Interface to be used to invoke webview methods on the UI thread
  * 
  */
 public interface UiRunnableListener {

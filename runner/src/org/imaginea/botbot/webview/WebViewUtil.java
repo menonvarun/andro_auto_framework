@@ -12,6 +12,12 @@ import android.os.SystemClock;
 import android.util.Log;
 import android.webkit.WebView;
 
+/**
+ * Util class to execute different java script methods for each required user action.
+ * 
+ * @author Varun Menon
+ *
+ */
 public class WebViewUtil {
 	
 	private static AssetManager assetManager;
