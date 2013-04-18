@@ -3,6 +3,8 @@ package org.imaginea.botbot.common;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.imaginea.botbot.webview.WebViewUtil;
+
 import com.jayway.android.robotium.solo.Solo;
 
 import junit.framework.Assert;
@@ -49,7 +51,10 @@ public class RobotiumBaseClass extends ActivityInstrumentationTestCase2 {
 		Context context=getInstrumentation().getContext();
 		Resources resources =context.getResources();
 		assetManager = resources.getAssets();
+		prefrences.setAssetManager(assetManager);
 		prefrences.setExecutionContext(solo);
+		WebViewUtil.setAssetManager(assetManager);
+		solo.waitForActivity(solo.getCurrentActivity().getClass().toString());
 	}
 
 	@Override

@@ -77,13 +77,12 @@
 
 
 	<target name="-init">
-		<uptodate property="test.app.upto.date" targetfile="${test.app.signed}">
-			<srcfiles dir="${staging.dir}" includes="**/*" />
-			<srcfiles file="resources/default.properties" />
-		</uptodate>
+		<delete dir="${robo.bin.dir}" failonerror="false" />
+		<mkdir dir="${robo.bin.dir}" />
+		<mkdir dir="${bin.dir}" />
 	</target>
 	<target name="-resign-apk">
-		<delete dir="${resign.folder}" />
+		<delete dir="${resign.folder}" failonerror="false"/>
 		<mkdir dir="${resign.folder}" />
 		<copy file="${tested.project.apk}" tofile="${resign.folder}/testapp.zip" />
 		<unzip src="${resign.folder}/testapp.zip" dest="resignapk/testapp" />
@@ -93,7 +92,6 @@
 	</target>
 	<target name="-stage">
 		<mkdir dir="${staging.dir}" />
-		<mkdir dir="${bin.dir}" />
 		<antcall target="-prepare.manifest" />
 		<antcall target="-prepare.testserver" />
 	</target>
@@ -102,8 +100,6 @@
 		<copy todir="${staging.dir}">
 			<fileset dir="${test.app.dir}" />
 		</copy>
-		<delete dir="${staging.dir}/src" />
-		<mkdir dir="${staging.dir}" />
 		<copy todir="${staging.dir}/src">
 			<fileset dir="${main.dir}/src" />
 		</copy>
