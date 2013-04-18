@@ -130,7 +130,19 @@ public class Command {
 	}
 
 	public void add(String data) {
-		this.commandData=data;
+		try{
+			JSONObject testJson= new JSONObject(data);
+			this.commandData=data;
+		}catch(JSONException jse){
+			json=new JSONObject();
+			try{
+				json.put("command", data);
+			}catch(JSONException e){
+				Log.i("bot-bot", "unable to generate the JSON data in command.");
+				Log.i("bot-bot", e.getMessage());
+			}
+			this.commandData=json.toString();
+		}		
 		Log.i("bot-bot","Web Command data is:"+commandData);
 		this.commandData = this.commandData.replace("\\\"", "");
 		this.commandData = this.commandData.replace("\"", "\\\"");
