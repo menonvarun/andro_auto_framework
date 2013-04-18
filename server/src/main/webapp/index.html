@@ -762,6 +762,7 @@ function getDataArrayString(darr){
 	return '[]';
 	}
     var st = '["' + darr.join('","') + '"]' ;
+    st=st.replace(/'/g,"&#39;");
     return st;
 }
   </script>

@@ -40,4 +40,8 @@ public class ServerProperties {
 	public static void setResources(Context context){
 		ServerProperties.resources = context.getResources();
 	}
+	
+	public static Resources getResources(){
+		return resources;
+	}
 }

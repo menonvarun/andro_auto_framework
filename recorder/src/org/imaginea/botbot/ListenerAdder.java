@@ -1,20 +1,25 @@
 package org.imaginea.botbot;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.imaginea.botbot.OnClickListenerTest;
+import org.imaginea.botbot.webview.WebViewListnerAdder;
 
 import android.content.Context;
+import android.content.res.AssetManager;
 import android.text.InputType;
 import android.util.Log;
 import android.view.*;
+import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
@@ -106,6 +111,15 @@ public class ListenerAdder {
 
 	public void addListeners(View view) {
 		boolean containsClick = containOnClikListener(view);
+
+		if(view instanceof WebView){
+			WebView wview=(WebView)view;
+			WebViewListnerAdder wListner=new WebViewListnerAdder(wview);
+			wListner.addListner();
+			processedView.add(view);
+			return;
+		}
+		
 		if (containsClick || (view instanceof ImageView)) {
 			processedView.add(view);
 			return;
@@ -136,5 +150,5 @@ public class ListenerAdder {
 			}
 		}
 	}
-
+	
 }
