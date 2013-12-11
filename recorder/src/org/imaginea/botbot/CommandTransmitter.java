@@ -195,10 +195,17 @@ public class CommandTransmitter {
 						sb.append(line);
 					}
 					rd.close();
+                    String status="";
 					String result = sb.toString();
-					String status = result.substring(
-							result.indexOf("<status>") + 8,
-							result.indexOf("</status>"));
+                    //if(result.indexOf("<status>")>0 && result.indexOf("</status>")>0){
+                        
+                         status = result.substring(
+                                                         result.indexOf("<status>") + 8,
+                                                         result.indexOf("</status>"));
+
+                        
+                    //}
+                    
 					if (status.contentEquals("stopped")) {
 						recordID=1;
 						prevRecord=0;
@@ -212,6 +219,12 @@ public class CommandTransmitter {
 							"Unable to get status of the record. Application will continue without recording");
 					Log.i("bot-bot","Url is : "+ sUrl + "/api/recordsessions/"+CommandTransmitter.sessionID);
 					Log.i("bot-bot", "Error is: "+e.toString());
+				}catch (Exception e) {
+					Log.i("bot-bot",
+							"Unable to get status of the record. Application will continue without recording");
+					Log.i("bot-bot","Url is : "+ sUrl + "/api/recordsessions/"+CommandTransmitter.sessionID);
+					Log.i("bot-bot", "Error is: "+e.toString());
+                    session = CommandTransmitter.sessionID;
 				}
 			}
 			return session;
