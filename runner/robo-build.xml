@@ -35,8 +35,14 @@
 	<condition property="exe" value=".exe" else="">
 		<os family="windows" />
 	</condition>
-	<property name="build-tools" location="${env.ANDROID_HOME}/build-tools/android-4.3" />
-	<property name="dx" location="${build-tools}/dx${bat}" />
+    
+    <condition property="build-tools-folder" value="android-${SDK_VERSION}" else="${VERSION_CODE}">
+		<available file="${env.ANDROID_HOME}/build-tools/android-${SDK_VERSION}" type="dir" />
+	</condition>
+	
+    <property name="build-tools" location="${env.ANDROID_HOME}/build-tools/${build-tools-folder}" />
+    
+    <property name="dx" location="${build-tools}/dx${bat}" />
 	<property name="apkbuilder" location="${env.ANDROID_HOME}/tools/apkbuilder${bat}" />
 
 	<property name="android.lib" location="${env.ANDROID_HOME}/platforms/${ANDROID_VERSION}" />
