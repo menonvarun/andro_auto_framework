@@ -36,7 +36,13 @@
 		<os family="unix" />
 	</condition>
 	
-	<property name="dx" location="${env.ANDROID_HOME}/platform-tools/dx${bat}" />
+    <condition property="build-tools-folder" value="android-${SDK_VERSION}" else="${VERSION_CODE}">
+		<available file="${env.ANDROID_HOME}/build-tools/android-${SDK_VERSION}" type="dir" />
+	</condition>
+	
+    <property name="build-tools" location="${env.ANDROID_HOME}/build-tools/${build-tools-folder}" />
+    
+    <property name="dx" location="${build-tools}/dx${bat}" />
 	<property name="apkbuilder" location="${env.ANDROID_HOME}/tools/apkbuilder${bat}" />
 	<property name="dex2jar" location="./lib/dex2jar-0.0.9.9/d2j-dex2jar${ext}" />
 	<property name="asm-verify" location="./lib/dex2jar-0.0.9.9/d2j-asm-verify${ext}" />
@@ -46,7 +52,10 @@
 	<property name="out.classes.absolute.dir" location="${dex2jar.decoded.dir}"/>
 	<property name="recorder.dir" location="."/>
 	<path id="android.antlibs">
-		<pathelement path="${env.ANDROID_HOME}/tools/lib/anttasks.jar" />
+		<pathelement path="${env.ANDROID_HOME}/tools/lib/ant-tasks.jar" />
+	</path>
+	<path id="android.sdklibs">
+		<pathelement path="${env.ANDROID_HOME}/tools/lib/sdklib.jar" />
 	</path>
 	<taskdef name="xpath" classname="com.android.ant.XPathTask" classpathref="android.antlibs"/>
 	<taskdef name="aapt" classname="com.android.ant.AaptExecTask" classpathref="android.antlibs" />
@@ -103,7 +112,8 @@
 		<antcall target="dex" />
 		<delete dir="${staging.dir}/classes.dex" />
 		<copy file="${dex.file}" todir="${staging.dir}" />
-		<copydir src="${recorder.dir}/resources" dest="${staging.dir}/assets" />
+		<!--<copy file="${recorder.dir}/recorder.properties" todir="${staging.dir}/assets" />-->
+        <copydir src="${recorder.dir}/resources" dest="${staging.dir}/assets" />
 		<zip destfile="${app.unsigned}" basedir="${staging.dir}" />
 		<antcall target="-signapp" />
 	</target>
@@ -183,9 +193,8 @@
 
 	<target name="dex">
 		<mkdir dir="${dex.dir}"/>
-		<exec executable="${dx}" failonerror="false">
+		<exec executable="${dx}" failonerror="yes">
 			<arg value="--dex" />
-			<arg value="--no-locals" />
 			<arg value="--output" />
 			<arg file="${dex.file}" />
 			<arg path="${aop}" />
@@ -194,14 +203,17 @@
 
 
 	<target name="-apk">
-		<exec executable="${apkbuilder}" failonerror="yes">
+		<java classname="com.android.sdklib.build.ApkBuilderMain" failonerror="yes">
+			<classpath>
+             <path refid="android.sdklibs"/>
+           </classpath>
 			<arg file="${test.app.unsigned}" />
 			<arg value="-u" />
 			<arg value="-z" />
 			<arg file="${test.app.aapt}" />
 			<arg value="-f" />
 			<arg file="${dex.file}" />
-		</exec>
+		</java>
 	</target>
 	<target name ="-signapp" description="Signs the app under test">
 		<signjar jar="${app.unsigned}" signedjar="${app.signed}" keystore="${key.store}" storepass="${key.store.password}" alias="${key.alias}" keypass="${key.alias.password}" verbose="false" sigalg="MD5withRSA" digestalg="SHA1"/>

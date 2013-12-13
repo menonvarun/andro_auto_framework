@@ -15,7 +15,7 @@
 	</target>
 
 	<target name="server">
-		<java dir="./server/" fork="true" jar="./server/bot-bot-server-standalone.jar"/>
+		<java dir="./server/" fork="true" jar="./server/target/bot-bot-server-standalone.jar"/><!-- inserted  "target" in  to the existing path -->
 	</target>
 
 	<target name="usage">
