@@ -112,7 +112,6 @@ public class Recorder {
 		Command command = new Command();
 		command.add(userAction);
 		publishCommand(command);
-		ct.publish(command);
 		commandList.add(command);
 	}
 	
@@ -120,7 +119,13 @@ public class Recorder {
 		Command command = new Command();
 		command.add(userAction,item);
 		publishCommand(command);
-		ct.publish(command);
+		commandList.add(command);
+	}
+	
+	public static void webViewRecord(String data){
+		Command command=new Command();
+		command.add(data);
+		publishCommand(command);
 		commandList.add(command);
 	}
 	
